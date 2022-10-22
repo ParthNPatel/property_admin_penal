@@ -7,7 +7,7 @@ class EditPropertyController extends GetxController {
   String? price;
   String? totalBedRooms;
   String? totalBathrooms;
-  List? listOfImage;
+  List? listOfImage = [];
   String? category;
   String? description;
   bool? isParkingAvailable;

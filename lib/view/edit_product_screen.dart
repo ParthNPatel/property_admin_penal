@@ -47,6 +47,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
   @override
   void initState() {
+    print(
+        'editProductController.propertyName   ${editProductController.propertyName}');
     propertyName =
         TextEditingController(text: editProductController.propertyName);
     address = TextEditingController(text: editProductController.address);

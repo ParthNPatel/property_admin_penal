@@ -116,6 +116,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             itemBuilder: (context, index) => ProductTile(
               onEdit: () {
                 editPropertyController.listOfImage!.clear();
+
+                print('listOfImage   ${properties[index].get("listOfImage")}');
                 editPropertyController.addPropertyData(
                   docId: properties[index].id,
                   listOfImage: properties[index].get("listOfImage"),
