@@ -8,19 +8,19 @@ import '../components/common_widget.dart';
 import '../constant/color_const.dart';
 import '../constant/text_const.dart';
 import '../constant/text_styel.dart';
+import '../controller/edit_property_controller.dart';
 import '../model/req_model/add_property_req_model.dart';
+import 'package:get/get.dart';
 
-class AddPropertyScreen extends StatefulWidget {
-  const AddPropertyScreen({Key? key}) : super(key: key);
+class EditPropertyScreen extends StatefulWidget {
+  const EditPropertyScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPropertyScreen> createState() => _AddPropertyScreenState();
+  State<EditPropertyScreen> createState() => _EditPropertyScreenState();
 }
 
-class _AddPropertyScreenState extends State<AddPropertyScreen> {
+class _EditPropertyScreenState extends State<EditPropertyScreen> {
   double progress = 0.0;
-
-  List<Uint8List> _listOfImage = [];
 
   String category = "Home";
 
@@ -30,26 +30,60 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     'Apartment',
   ];
 
-  final propertyName = TextEditingController();
-  final address = TextEditingController();
-  final country = TextEditingController();
-  final pinCode = TextEditingController();
-  final size = TextEditingController();
-  final price = TextEditingController();
-  final totalBedRooms = TextEditingController();
-  final totalBathrooms = TextEditingController();
-  final description = TextEditingController();
-  final propertyStatus = TextEditingController();
-  final label = TextEditingController();
-  final garages = TextEditingController();
-  final nearByPlaces = TextEditingController();
+  EditPropertyController editProductController = Get.find();
 
-  bool isParkingAvailable = false;
+  TextEditingController? propertyName;
+  TextEditingController? address;
+  TextEditingController? country;
+  TextEditingController? pinCode;
+
+  TextEditingController? postalCode;
+  TextEditingController? size;
+  TextEditingController? price;
+  TextEditingController? totalBedRooms;
+  TextEditingController? totalBathrooms;
+  TextEditingController? description;
+  TextEditingController? propertyStatus;
+
+  TextEditingController? label;
+  TextEditingController? garages;
+  TextEditingController? nearByPlaces;
+
+  int groupValue = 1;
 
   AddPropertyReqModel _addProductReqModel = AddPropertyReqModel();
   bool isLoading = true;
 
-  int groupValue = 1;
+  bool isParkingAvailable = false;
+
+  @override
+  void initState() {
+    print(
+        'editProductController.propertyName   ${editProductController.propertyName}');
+    propertyName =
+        TextEditingController(text: editProductController.propertyName);
+    address = TextEditingController(text: editProductController.address);
+    country = TextEditingController(text: editProductController.country);
+    pinCode = TextEditingController(text: editProductController.pinCode);
+    size = TextEditingController(text: editProductController.size);
+    price = TextEditingController(text: editProductController.price);
+    totalBedRooms =
+        TextEditingController(text: editProductController.totalBedRooms);
+    totalBathrooms =
+        TextEditingController(text: editProductController.totalBathrooms);
+    description =
+        TextEditingController(text: editProductController.description);
+    propertyStatus =
+        TextEditingController(text: editProductController.propertyStatus);
+    label = TextEditingController(text: editProductController.label);
+    garages = TextEditingController(text: editProductController.garages);
+    nearByPlaces =
+        TextEditingController(text: editProductController.nearByPlaces);
+
+    category = editProductController.category!;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,66 +94,77 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       },
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.only(top: 6.sp, left: 13.sp),
+          padding: EdgeInsets.only(top: 6.sp, left: 10.sp),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonWidget.commonSizedBox(height: 20),
                 CommonText.textBoldWight700(
-                    text: 'Add New Property', fontSize: 10.sp),
+                    text: 'Edit Property', fontSize: 10.sp),
                 CommonWidget.commonSizedBox(height: 20),
-                Row(
-                  children: [
-                    _listOfImage.length != 0
-                        ? Row(
-                            children: List.generate(
-                              _listOfImage.length,
-                              (index) => Container(
-                                height: 200,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: MemoryImage(_listOfImage[index]),
-                                        fit: BoxFit.cover),
-                                    border: Border.all(color: Colors.black)),
+                GetBuilder<EditPropertyController>(
+                  builder: (controller) => Row(
+                    children: [
+                      editProductController.listOfImage!.length != 0
+                          ? Row(
+                              children: List.generate(
+                                editProductController.listOfImage!.length,
+                                (index) => Container(
+                                  height: 200,
+                                  width: 200,
+                                  child: editProductController
+                                              .listOfImage![index]
+                                              .runtimeType ==
+                                          Uint8List
+                                      ? Image.memory(
+                                          editProductController
+                                              .listOfImage![index] as Uint8List,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.network(
+                                          '${editProductController.listOfImage![index].toString()}',
+                                          fit: BoxFit.cover),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black)),
+                                ),
                               ),
-                            ),
-                          )
-                        : SizedBox(),
-                    InkWell(
-                      onTap: () async {
-                        FilePickerResult? selectedImages =
-                            await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
-                        );
-                        // final List<XFile>? selectedImages =
-                        //     await _picker.pickMultiImage();
+                            )
+                          : SizedBox(),
+                      InkWell(
+                        onTap: () async {
+                          FilePickerResult? selectedImages =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
+                          );
 
-                        if (selectedImages != null) {
-                          selectedImages.files.forEach((element) {
-                            _listOfImage.add(element.bytes!);
-                          });
-                          // Uint8List? file = selectedImages.files.first.bytes;
+                          if (selectedImages != null) {
+                            selectedImages.files.forEach((element) {
+                              editProductController.listOfImage!
+                                  .add(element.bytes!);
+                            });
 
-                          print('selectedImages  image of  ${selectedImages}');
-                        }
-                        print("Image List Length:${_listOfImage.length}");
-                        setState(() {});
-                      },
-                      child: Container(
-                        height: 200,
-                        width: 200,
-                        child: Icon(Icons.add),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black)),
+                            print(
+                                'selectedImages  image of  ${selectedImages.files.first.bytes.runtimeType}');
+                          }
+                          print(
+                              "Image List Length:${editProductController.listOfImage!.length}");
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          child: Icon(Icons.add),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                CommonWidget.commonSizedBox(height: 35),
+                CommonWidget.commonSizedBox(height: 30),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -129,7 +174,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         CommonText.textBoldWight500(
                             text: 'Property Name', fontSize: 7.sp),
                         CommonWidget.commonSizedBox(height: 10),
-                        CommonWidget.textFormField(controller: propertyName),
+                        CommonWidget.textFormField(controller: propertyName!),
                       ],
                     ),
                     SizedBox(
@@ -177,9 +222,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   children: [
                     //CommonWidget.commonSizedBox(height: 20),
                     CommonText.textBoldWight500(
-                        text: 'Addresss', fontSize: 7.sp),
+                        text: 'Address', fontSize: 7.sp),
                     CommonWidget.commonSizedBox(height: 10),
-                    CommonWidget.textFormField(controller: address),
+                    CommonWidget.textFormField(controller: address!),
+                    CommonWidget.commonSizedBox(height: 20),
                   ],
                 ),
                 Row(
@@ -193,7 +239,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: country,
+                            controller: country!,
                           ),
                         ),
                       ],
@@ -211,7 +257,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: pinCode,
+                            controller: pinCode!,
                           ),
                         ),
                         CommonWidget.commonSizedBox(height: 20),
@@ -250,7 +296,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     CommonText.textBoldWight500(text: 'Size', fontSize: 7.sp),
                     CommonWidget.commonSizedBox(height: 10),
                     CommonWidget.textFormField(
-                      controller: size,
+                      controller: size!,
                     ),
                   ],
                 ),
@@ -266,9 +312,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: totalBedRooms,
+                            controller: totalBedRooms!,
                           ),
                         ),
+                        CommonWidget.commonSizedBox(height: 20),
                       ],
                     ),
                     SizedBox(
@@ -283,50 +330,26 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: totalBathrooms,
+                            controller: totalBathrooms!,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                Row(
+                CommonWidget.commonSizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CommonText.textBoldWight500(
-                            text: 'Property Status', fontSize: 7.sp),
-                        CommonWidget.commonSizedBox(height: 10),
-                        SizedBox(
-                          width: 70.sp,
-                          child: CommonWidget.textFormField(
-                            controller: propertyStatus,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CommonWidget.commonSizedBox(height: 20),
-                        CommonText.textBoldWight500(
-                            text: 'Price', fontSize: 7.sp),
-                        CommonWidget.commonSizedBox(height: 10),
-                        SizedBox(
-                          width: 70.sp,
-                          child: CommonWidget.textFormField(
-                            controller: price,
-                          ),
-                        ),
-                        CommonWidget.commonSizedBox(height: 20),
-                      ],
+                    CommonText.textBoldWight500(
+                        text: 'Property Status', fontSize: 7.sp),
+                    CommonWidget.commonSizedBox(height: 10),
+                    CommonWidget.textFormField(
+                      controller: propertyStatus!,
                     ),
                   ],
                 ),
+                CommonWidget.commonSizedBox(height: 20),
                 Row(
                   children: [
                     Column(
@@ -338,7 +361,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: label,
+                            controller: label!,
                           ),
                         ),
                       ],
@@ -355,13 +378,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           width: 70.sp,
                           child: CommonWidget.textFormField(
-                            controller: garages,
+                            controller: garages!,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
+                CommonWidget.commonSizedBox(height: 20),
                 CommonWidget.commonSizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,11 +394,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         text: 'NearBy Places', fontSize: 7.sp),
                     CommonWidget.commonSizedBox(height: 10),
                     CommonWidget.textFormField(
-                      controller: nearByPlaces,
+                      controller: nearByPlaces!,
                     ),
                   ],
                 ),
-                CommonWidget.commonSizedBox(height: 20),
+                CommonWidget.commonSizedBox(height: 30),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -421,71 +445,86 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   child: isLoading
                       ? MaterialButton(
                           onPressed: () async {
-                            if (_listOfImage.length != 0 &&
-                                size.text.isNotEmpty &&
-                                address.text.isNotEmpty &&
-                                totalBedRooms.text.isNotEmpty &&
-                                totalBathrooms.text.isNotEmpty &&
-                                propertyName.text.isNotEmpty) {
+                            if (editProductController.listOfImage!.length !=
+                                    0 &&
+                                price!.text.isNotEmpty &&
+                                propertyName!.text.isNotEmpty &&
+                                size!.text.isNotEmpty &&
+                                description!.text.isNotEmpty &&
+                                totalBathrooms!.text.isNotEmpty &&
+                                totalBedRooms!.text.isNotEmpty) {
                               isLoading = false;
                               setState(() {});
+                              List uploadImage = [];
+                              List existImage = [];
 
-                              var getAllURL = await uploadFiles(_listOfImage);
-                              print('url of image $getAllURL');
+                              try {
+                                editProductController.listOfImage!
+                                    .forEach((element) {
+                                  if (element.runtimeType == Uint8List) {
+                                    uploadImage.add(element);
+                                  } else {
+                                    existImage.add(element);
+                                  }
+                                });
+                              } catch (e) {}
+                              print(
+                                  'image length for up  ${uploadImage.length}  ${existImage.length}');
+                              if (uploadImage.length != 0) {
+                                var getAllURL = await uploadFiles(uploadImage);
+                                getAllURL.forEach((element) {
+                                  existImage.add(element);
+                                });
+                                print('url of image ${existImage}');
+                              }
 
-                              var getOldCount = FirebaseFirestore.instance
-                                  .collection('Admin')
-                                  .doc('property_count');
-                              var fetchCount = await getOldCount.get();
-
-                              _addProductReqModel.listOfImage = getAllURL;
+                              _addProductReqModel.listOfImage = existImage;
                               _addProductReqModel.propertyName =
-                                  propertyName.text;
-                              _addProductReqModel.size = size.text;
-                              _addProductReqModel.address = address.text;
+                                  propertyName!.text;
+                              _addProductReqModel.size = size!.text;
+                              _addProductReqModel.address = address!.text;
+                              _addProductReqModel.country = country!.text;
+                              _addProductReqModel.pinCode = pinCode!.text;
                               _addProductReqModel.totalBathrooms =
-                                  totalBathrooms.text;
+                                  totalBathrooms!.text;
                               _addProductReqModel.totalBedRooms =
-                                  totalBedRooms.text;
+                                  totalBedRooms!.text;
                               _addProductReqModel.isParkingAvailable =
                                   isParkingAvailable;
-                              _addProductReqModel.price = price.text;
+                              _addProductReqModel.price = price!.text;
                               _addProductReqModel.size =
-                                  "${size.text}${groupValue == 0 ? ' Metres' : ' Squares'}";
+                                  "${size!.text}${groupValue == 0 ? ' Metres' : ' Squares'}";
                               _addProductReqModel.description =
-                                  description.text;
+                                  totalBathrooms!.text;
                               _addProductReqModel.category = category;
-                              _addProductReqModel.country = country.text;
-                              _addProductReqModel.pinCode = pinCode.text;
-                              _addProductReqModel.nearByPlaces =
-                                  nearByPlaces.text;
                               _addProductReqModel.propertyStatus =
-                                  propertyStatus.text;
-                              _addProductReqModel.label = label.text;
-                              _addProductReqModel.garages = garages.text;
-                              _addProductReqModel.propertyId =
-                                  '${fetchCount['total_count'] + 1}';
+                                  propertyStatus!.text;
+                              _addProductReqModel.label = label!.text;
+                              _addProductReqModel.garages = garages!.text;
+                              _addProductReqModel.nearByPlaces =
+                                  nearByPlaces!.text;
 
                               await FirebaseFirestore.instance
                                   .collection('Admin')
                                   .doc('all_properties')
                                   .collection('property_data')
-                                  .add(_addProductReqModel.toJson());
+                                  .doc(editProductController.docId)
+                                  .update(_addProductReqModel.toJson());
 
-                              size.clear();
-                              address.clear();
-                              country.clear();
-                              pinCode.clear();
-                              propertyStatus.clear();
-                              label.clear();
-                              garages.clear();
-                              nearByPlaces.clear();
-                              totalBedRooms.clear();
-                              totalBathrooms.clear();
-                              propertyName.clear();
+                              size!.clear();
+                              address!.clear();
+                              country!.clear();
+                              pinCode!.clear();
+                              propertyStatus!.clear();
+                              label!.clear();
+                              garages!.clear();
+                              nearByPlaces!.clear();
+                              totalBedRooms!.clear();
+                              totalBathrooms!.clear();
+                              propertyName!.clear();
+
                               category = "Home";
-
-                              _listOfImage.clear();
+                              editProductController.listOfImage!.clear();
                               isLoading = true;
                               setState(() {});
                               Navigator.pop(context);
@@ -493,12 +532,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   color: themColors309D9D,
                                   duration: 2,
                                   title: 'Successful!',
-                                  message: 'Your Property Added Successfully');
+                                  message: 'Your Property has been Edited');
                             } else {
                               CommonWidget.getSnackBar(
-                                  duration: 2,
                                   title: 'Required',
-                                  message: 'Please Enter All Valid Details');
+                                  message: 'Please Enter Valid Details');
                             }
                           },
                           shape: RoundedRectangleBorder(
@@ -512,7 +550,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   CommonText.textBoldWight500(
-                                      text: "Add",
+                                      text: "Edit",
                                       color: Colors.white,
                                       fontSize: 5.sp)
                                 ]),
@@ -549,27 +587,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         .putData(_image, SettableMetadata(contentType: 'image/jpeg'))
         .then((p0) async {
       finalImage = await p0.storage.ref(getUrl).getDownloadURL();
-      //   _uploadOfImage.add(await p0.storage.ref(getUrl).getDownloadURL());
     });
-    // await task.snapshotEvents.listen((event) async {
-    //   double progress = 0.0;
-    //
-    //   progress =
-    //       ((event.bytesTransferred.toDouble() / event.totalBytes.toDouble()) *
-    //               100)
-    //           .roundToDouble();
-    //
-    //   if (progress == 100) {
-    //     finalImage = await event.ref.getDownloadURL();
-    //     log('final url for  ${finalImage}');
-    //     _uploadOfImage.add(finalImage);
-    //   } else {
-    //     finalImage = '';
-    //   }
-    //
-    //   print(progress);
-    // });
-
     return finalImage;
   }
 }

@@ -9,51 +9,16 @@ import '../constant/image_const.dart';
 import '../controller/edit_property_controller.dart';
 import '../responsive/responsive.dart';
 
-class DashBoardScreen extends StatefulWidget {
+class PropertiesScreen extends StatefulWidget {
   final globalKey;
 
-  const DashBoardScreen({super.key, this.globalKey});
+  const PropertiesScreen({super.key, this.globalKey});
   @override
-  State<DashBoardScreen> createState() => _DashBoardScreenState();
+  State<PropertiesScreen> createState() => _PropertiesScreenState();
 }
 
-class _DashBoardScreenState extends State<DashBoardScreen> {
+class _PropertiesScreenState extends State<PropertiesScreen> {
   EditPropertyController editPropertyController = Get.find();
-
-  List<Map<String, dynamic>> data = [
-    {
-      'image': ImageConst.women3,
-      'title': 'CLAUDETTE CORSET',
-      'subtitle': 'TMP Company',
-      'price': '₹999,00',
-      'oldPrice': '₹1299,00',
-      'rating': '(200 Ratings)'
-    },
-    {
-      'image': ImageConst.women4,
-      'title': ' Tailored FULL Skirta',
-      'subtitle': 'TMP Company',
-      'price': '₹999,00',
-      'oldPrice': '₹1299,00',
-      'rating': '(200 Ratings)'
-    },
-    {
-      'image': ImageConst.women5,
-      'title': 'CLAUDETTE CORSET',
-      'subtitle': 'TMP Company',
-      'price': '₹999,00',
-      'oldPrice': '₹1299,00',
-      'rating': '(200 Ratings)'
-    },
-    {
-      'image': ImageConst.women6,
-      'title': ' Tailored FULL Skirta',
-      'subtitle': 'TMP Company',
-      'price': '₹999,00',
-      'oldPrice': '₹1299,00',
-      'rating': '(200 Ratings)'
-    },
-  ];
 
   String searchText = '';
 
@@ -62,7 +27,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      flex: 6,
+      flex: 8,
       child: SingleChildScrollView(
         child: ConstrainedBox(
           constraints:
@@ -118,6 +83,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 editPropertyController.listOfImage!.clear();
 
                 print('listOfImage   ${properties[index].get("listOfImage")}');
+
                 editPropertyController.addPropertyData(
                   docId: properties[index].id,
                   listOfImage: properties[index].get("listOfImage"),
@@ -125,12 +91,18 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   description: properties[index].get("description"),
                   category: properties[index].get("category"),
                   address: properties[index].get("address"),
+                  country: properties[index].get("country"),
+                  pinCode: properties[index].get("pinCode"),
                   isParkingAvailable:
                       properties[index].get("isParkingAvailable"),
                   price: properties[index].get("price"),
                   size: properties[index].get("size"),
                   totalBathrooms: properties[index].get("totalBathrooms"),
                   totalBedRooms: properties[index].get("totalBedRooms"),
+                  garages: properties[index].get("garages"),
+                  label: properties[index].get("label"),
+                  propertyStatus: properties[index].get("propertyStatus"),
+                  nearByPlaces: properties[index].get("nearByPlaces"),
                 );
                 // Get.to(() => EditProductScreen());
                 Navigator.pushNamed(context, '/EditProperty');
@@ -214,7 +186,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             width: 3.sp,
           ),
           CommonWidget.commonButton(
-              onTap: () {}, text: "Add New Property", radius: 40),
+              onTap: () {
+                Navigator.pushNamed(context, '/AddProperty');
+              },
+              text: "Add New Property",
+              radius: 40),
           SizedBox(
             width: 6.sp,
           ),

@@ -2,10 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:property/view/add_property_screen.dart';
-import 'package:property/view/edit_product_screen.dart';
+import 'package:property/view/edit_property_screen.dart';
 import 'package:property/view/home_page.dart';
 import 'package:sizer/sizer.dart';
-
 import 'constant/color_const.dart';
 import 'controller/edit_property_controller.dart';
 
@@ -41,6 +40,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => HomePage(),
+          '/AddProperty': (context) => AddPropertyScreen(),
           '/EditProperty': (context) => EditPropertyScreen(),
         },
         title: 'Property Admin Panel',

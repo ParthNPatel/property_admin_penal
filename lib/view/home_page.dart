@@ -7,7 +7,8 @@ import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
 import '../responsive/responsive.dart';
 import 'add_property_screen.dart';
-import 'dashboard_screen.dart';
+import 'dash_board_screen.dart';
+import 'properties_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> items = [
     {'name': "Dashboard", 'image': 'assets/images/dashboard.svg'},
-    {'name': "Add Property", 'image': 'assets/images/add_product.svg'},
+    {'name': "Properties", 'image': 'assets/images/add_product.svg'},
     {'name': "Inbox", 'image': 'assets/images/inbox.svg'},
     {'name': "Support", 'image': 'assets/images/support.svg'},
   ];
@@ -40,9 +41,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           Responsive.isDesktop(context)
               ? Flexible(
-                  flex: 1,
+                  flex: 2,
                   child: Container(
-                    width: 30.w,
+                    width: 40.w,
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
                           color: CommonColor.greyColorD9D9D9,
@@ -53,31 +54,40 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 2.h,
+                          height: 3.h,
                         ),
-                        CircleAvatar(
-                          radius: 15.sp,
-                          backgroundImage: AssetImage('assets/images/user.png'),
+                        CommonWidget.commonSvgPitcher(
+                          image: 'assets/images/logo.svg',
+                          height: 15.sp,
+                          width: 30.sp,
+                          color: themColors309D9D,
                         ),
+                        // SizedBox(
+                        //   height: 2.h,
+                        // ),
+                        // CircleAvatar(
+                        //   radius: 15.sp,
+                        //   backgroundImage: AssetImage('assets/images/user.png'),
+                        // ),
+                        // SizedBox(
+                        //   height: 1.h,
+                        // ),
+                        // Column(
+                        //   children: [
+                        //     CommonText.textBoldWight500(
+                        //         text: "Naman Sharma", fontSize: 8.sp),
+                        //     SizedBox(
+                        //       height: 3.sp,
+                        //     ),
+                        //     CommonText.textBoldWight500(
+                        //         textDecoration: TextDecoration.underline,
+                        //         text: "View Profile",
+                        //         fontSize: 5.sp,
+                        //         color: themColors309D9D),
+                        //   ],
+                        // ),
                         SizedBox(
-                          height: 1.h,
-                        ),
-                        Column(
-                          children: [
-                            CommonText.textBoldWight500(
-                                text: "Naman Sharma", fontSize: 8.sp),
-                            SizedBox(
-                              height: 3.sp,
-                            ),
-                            CommonText.textBoldWight500(
-                                textDecoration: TextDecoration.underline,
-                                text: "View Profile",
-                                fontSize: 5.sp,
-                                color: themColors309D9D),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 2.h,
+                          height: 3.h,
                         ),
                         Column(
                           children: List.generate(
@@ -128,11 +138,11 @@ class _HomePageState extends State<HomePage> {
                 )
               : SizedBox(),
           selected == 0
-              ? DashBoardScreen(
-                  globalKey: globalKey,
-                )
+              ? DashBoardScreen()
               : selected == 1
-                  ? AddPropertyScreen()
+                  ? PropertiesScreen(
+                      globalKey: globalKey,
+                    )
                   : selected == 2
                       ? Center(child: Text("Inbox"))
                       : Center(child: Text("Support"))

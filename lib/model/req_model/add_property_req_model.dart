@@ -3,13 +3,20 @@ String category = "Home";
 class AddPropertyReqModel {
   String? propertyName;
   String? address;
+  String? country;
+  String? pinCode;
   String? size;
   String? price;
   String? totalBedRooms;
   String? totalBathrooms;
+  String? propertyStatus;
+  String? nearByPlaces;
+  String? label;
+  String? garages;
   List? listOfImage;
   String? category;
   String? description;
+  String? propertyId;
   bool? isParkingAvailable;
 
   AddPropertyReqModel({
@@ -22,20 +29,28 @@ class AddPropertyReqModel {
     this.listOfImage,
     this.category,
     this.description,
+    this.propertyId,
     this.isParkingAvailable = false,
   });
   Map<String, dynamic> toJson() {
     return {
       "propertyName": propertyName,
       "address": address,
+      "country": country,
+      "pinCode": pinCode,
       "size": size,
       "price": price,
       "totalBedRooms": totalBedRooms,
       "totalBathrooms": totalBathrooms,
+      "propertyStatus": propertyStatus,
+      "nearByPlaces": nearByPlaces,
+      "label": label,
+      "garages": garages,
       "listOfImage": listOfImage,
       "category": category,
       "description": description,
       "isParkingAvailable": isParkingAvailable,
+      "productId": propertyId,
       "create_time": DateTime.now().toString()
     };
   }
