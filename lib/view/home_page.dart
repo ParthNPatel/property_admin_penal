@@ -6,7 +6,7 @@ import '../components/common_widget.dart';
 import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
 import '../responsive/responsive.dart';
-import 'add_product_screen.dart';
+import 'add_property_screen.dart';
 import 'dashboard_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> items = [
     {'name': "Dashboard", 'image': 'assets/images/dashboard.svg'},
-    {'name': "Add Product", 'image': 'assets/images/add_product.svg'},
+    {'name': "Add Property", 'image': 'assets/images/add_product.svg'},
     {'name': "Inbox", 'image': 'assets/images/inbox.svg'},
     {'name': "Support", 'image': 'assets/images/support.svg'},
   ];
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                   globalKey: globalKey,
                 )
               : selected == 1
-                  ? AddProductScreen()
+                  ? AddPropertyScreen()
                   : selected == 2
                       ? Center(child: Text("Inbox"))
                       : Center(child: Text("Support"))

@@ -93,25 +93,27 @@ class DashBoardShimmer extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                5,
-                (index) => Icon(
+              children: [
+                Icon(
                   Icons.star,
-                  size: 10,
+                  size: 15,
                   color: Colors.grey,
                 ),
-              ),
+                SizedBox(
+                  width: 5,
+                ),
+                Container(
+                  height: 15,
+                  width: 25,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 10,
-            ),
-            Container(
-              height: 15,
-              width: 60,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-              ),
             ),
           ],
         ),

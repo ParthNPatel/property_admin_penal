@@ -80,7 +80,7 @@ class CommonWidget {
       onPressed: onTap,
       shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-      color: CommonColor.themColor309D9D,
+      color: themColors309D9D,
       height: 10.sp,
       child: Padding(
         padding: const EdgeInsets.all(8),

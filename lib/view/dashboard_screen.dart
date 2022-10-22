@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:sizer/sizer.dart';
 import 'package:get/get.dart';
 import '../components/common_widget.dart';
 import '../components/dashboard_shimmer.dart';
 import '../components/product_tile.dart';
 import '../constant/image_const.dart';
-import '../controller/edit_product_controller.dart';
+import '../controller/edit_property_controller.dart';
 import '../responsive/responsive.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -19,7 +18,7 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
-  EditProductController editProductController = Get.find();
+  EditPropertyController editPropertyController = Get.find();
 
   List<Map<String, dynamic>> data = [
     {
@@ -59,6 +58,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   String searchText = '';
 
   TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -71,7 +71,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               searchBar(context),
-              products(),
+              properties(),
             ],
           ),
         ),
@@ -79,22 +79,22 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> products() {
+  StreamBuilder<QuerySnapshot<Object?>> properties() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('Admin')
-          .doc('all_product')
-          .collection('product_data')
+          .doc('all_properties')
+          .collection('property_data')
           .orderBy('create_time', descending: true)
           .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
-          List<DocumentSnapshot> products = snapshot.data!.docs;
-          print("length======>${products.length}");
+          List<DocumentSnapshot> properties = snapshot.data!.docs;
+          print("length======>${properties.length}");
           if (searchText.isNotEmpty) {
-            products = products.where((element) {
+            properties = properties.where((element) {
               return element
-                  .get('productName')
+                  .get('propertyName')
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase());
@@ -103,42 +103,44 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           return GridView.builder(
             //reverse: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: products.length,
+            itemCount: properties.length,
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 10,
-                mainAxisExtent: 400
+                mainAxisExtent: 450
                 //hildAspectRatio:
                 //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
                 ),
             itemBuilder: (context, index) => ProductTile(
               onEdit: () {
-                editProductController.listOfImage!.clear();
-                editProductController.addProductData(
-                  docId: products[index].id,
-                  listOfImage: products[index].get("listOfImage"),
-                  productName: products[index].get("productName"),
-                  brand: products[index].get("brand"),
-                  price: products[index].get("price"),
-                  oldPrice: products[index].get("oldPrice"),
-                  color: products[index].get("color"),
-                  category: products[index].get("category"),
-                  description: products[index].get("description"),
-                  material: products[index].get("material"),
-                  season: products[index].get("season"),
-                  subCategory: products[index].get("subCategory"),
+                editPropertyController.listOfImage!.clear();
+                editPropertyController.addPropertyData(
+                  docId: properties[index].id,
+                  listOfImage: properties[index].get("listOfImage"),
+                  propertyName: properties[index].get("propertyName"),
+                  description: properties[index].get("description"),
+                  category: properties[index].get("category"),
+                  address: properties[index].get("address"),
+                  isParkingAvailable:
+                      properties[index].get("isParkingAvailable"),
+                  price: properties[index].get("price"),
+                  size: properties[index].get("size"),
+                  totalBathrooms: properties[index].get("totalBathrooms"),
+                  totalBedRooms: properties[index].get("totalBedRooms"),
                 );
                 // Get.to(() => EditProductScreen());
-                Navigator.pushNamed(context, '/EditProduct');
+                Navigator.pushNamed(context, '/EditProperty');
               },
-              image: products[index].get("listOfImage")[0],
-              title: products[index].get("productName"),
-              subtitle: products[index].get("brand"),
-              price: products[index].get("price"),
-              oldPrice: products[index].get("oldPrice"),
-              rating: '(200 Ratings)',
+              image: properties[index].get("listOfImage")[0],
+              title: properties[index].get("propertyName"),
+              subtitle: properties[index].get("address"),
+              price: properties[index].get("price"),
+              size: properties[index].get("size"),
+              totalBedroom: properties[index].get("totalBedRooms"),
+              totalWashroom: properties[index].get("totalBathrooms"),
+              rating: '5',
             ),
           );
         } else {
@@ -210,7 +212,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             width: 3.sp,
           ),
           CommonWidget.commonButton(
-              onTap: () {}, text: "Add New Product", radius: 40),
+              onTap: () {}, text: "Add New Property", radius: 40),
           SizedBox(
             width: 6.sp,
           ),

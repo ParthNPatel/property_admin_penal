@@ -10,8 +10,10 @@ class ProductTile extends StatelessWidget {
   final title;
   final subtitle;
   final price;
-  final oldPrice;
+  final size;
   final rating;
+  final totalBedroom;
+  final totalWashroom;
   final VoidCallback? onEdit;
 
   const ProductTile({
@@ -20,9 +22,11 @@ class ProductTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.price,
-    required this.oldPrice,
+    required this.size,
     required this.rating,
     this.onEdit,
+    this.totalBedroom,
+    this.totalWashroom,
   });
 
   @override
@@ -33,41 +37,38 @@ class ProductTile extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Padding(
-          padding: EdgeInsets.only(right: 4.w),
-          child: Stack(
-            children: [
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: 250,
-                  width: 250,
-                  decoration: BoxDecoration(
-                    color: CommonColor.greyColorF2F2F2,
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                        image: NetworkImage(image), fit: BoxFit.cover),
+        Stack(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                height: 250,
+                width: 250,
+                decoration: BoxDecoration(
+                  color: CommonColor.greyColorF2F2F2,
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                      image: NetworkImage(image), fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 4.sp,
+              right: 4.sp,
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.white,
+                child: InkWell(
+                  onTap: onEdit,
+                  child: Icon(
+                    Icons.edit,
+                    size: 20,
+                    color: CommonColor.greyColor838589,
                   ),
                 ),
               ),
-              Positioned(
-                top: 4.sp,
-                right: 4.sp,
-                child: CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.white,
-                  child: InkWell(
-                    onTap: onEdit,
-                    child: Icon(
-                      Icons.edit,
-                      size: 20,
-                      color: CommonColor.greyColor838589,
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
         SizedBox(
           height: 10,
@@ -84,15 +85,18 @@ class ProductTile extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CommonText.textBoldWight700(text: price, fontSize: 15),
+            CommonText.textBoldWight700(text: "${price}/year", fontSize: 15),
             SizedBox(
               width: 1.w,
             ),
-            CommonText.textBoldWight700(
-                color: CommonColor.greyColorD9D9D9,
-                textDecoration: TextDecoration.lineThrough,
-                text: oldPrice,
-                fontSize: 13),
+            Row(
+              children: [
+                CommonText.textBoldWight700(
+                    color: themColors309D9D, text: "Size: ", fontSize: 13),
+                CommonText.textBoldWight700(
+                    color: Colors.grey, text: size, fontSize: 13),
+              ],
+            )
           ],
         ),
         SizedBox(
@@ -100,20 +104,46 @@ class ProductTile extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            5,
-            (index) => Icon(
-              Icons.star,
-              size: 10,
-              color: CommonColor.yellowColor,
+          children: [
+            Row(
+              children: [
+                CommonText.textBoldWight700(
+                    text: totalBedroom, fontSize: 13, color: Colors.grey),
+                CommonText.textBoldWight700(
+                    color: themColors309D9D, text: " Bedroom", fontSize: 11),
+              ],
             ),
-          ),
+            SizedBox(
+              width: 1.w,
+            ),
+            Row(
+              children: [
+                CommonText.textBoldWight700(
+                    color: Colors.grey, text: totalWashroom, fontSize: 13),
+                CommonText.textBoldWight700(
+                    color: themColors309D9D, text: " Bathroom", fontSize: 11),
+              ],
+            )
+          ],
         ),
         SizedBox(
           height: 10,
         ),
-        CommonText.textBoldWight400(
-            text: rating, fontSize: 13, color: CommonColor.greyColor838589),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.star,
+            size: 15,
+            color: CommonColor.yellowColor,
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          CommonText.textBoldWight400(
+              text: rating, fontSize: 15, color: CommonColor.greyColor838589),
+        ]),
+        SizedBox(
+          height: 10,
+        ),
       ],
     );
   }

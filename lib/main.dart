@@ -1,12 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:property/view/add_product_screen.dart';
+import 'package:property/view/add_property_screen.dart';
 import 'package:property/view/edit_product_screen.dart';
 import 'package:property/view/home_page.dart';
 import 'package:sizer/sizer.dart';
 
-import 'controller/edit_product_controller.dart';
+import 'constant/color_const.dart';
+import 'controller/edit_property_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,15 +32,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) => GetMaterialApp(
+        theme: ThemeData(
+          colorScheme:
+              ColorScheme.fromSwatch().copyWith(primary: themColors309D9D),
+        ),
         // home: HomePage(),
         debugShowCheckedModeBanner: false, initialBinding: BaseBindings(),
         initialRoute: '/',
         routes: {
           '/': (context) => HomePage(),
-          '/AddProduct': (context) => AddProductScreen(),
-          '/EditProduct': (context) => EditProductScreen(),
+          '/EditProperty': (context) => EditPropertyScreen(),
         },
-        title: 'Inzoid Admin Panel',
+        title: 'Property Admin Panel',
       ),
     );
   }
@@ -48,6 +52,6 @@ class MyApp extends StatelessWidget {
 class BaseBindings extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => EditProductController(), fenix: true);
+    Get.lazyPut(() => EditPropertyController(), fenix: true);
   }
 }
