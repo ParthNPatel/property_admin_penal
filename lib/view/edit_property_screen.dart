@@ -495,7 +495,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                               _addProductReqModel.size =
                                   "${size!.text}${groupValue == 0 ? ' Metres' : ' Squares'}";
                               _addProductReqModel.description =
-                                  totalBathrooms!.text;
+                                  description!.text;
                               _addProductReqModel.category = category;
                               _addProductReqModel.propertyStatus =
                                   propertyStatus!.text;

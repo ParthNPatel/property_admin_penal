@@ -71,21 +71,28 @@ class ProductTile extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 10,
+          height: 12,
         ),
         CommonText.textBoldWight700(text: title, fontSize: 15),
         SizedBox(
-          height: 5,
+          height: 6,
         ),
         CommonText.textBoldWight400(
             text: subtitle, fontSize: 14, color: CommonColor.greyColor838589),
         SizedBox(
-          height: 10,
+          height: 12,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CommonText.textBoldWight700(text: "${price}/year", fontSize: 15),
+            Row(
+              children: [
+                CommonText.textBoldWight700(
+                    text: price, fontSize: 15, color: themColors309D9D),
+                CommonText.textBoldWight700(
+                    text: '/year', fontSize: 15, color: Colors.grey),
+              ],
+            ),
             SizedBox(
               width: 1.w,
             ),
@@ -100,7 +107,7 @@ class ProductTile extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 10,
+          height: 12,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +134,7 @@ class ProductTile extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 10,
+          height: 12,
         ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
@@ -142,7 +149,7 @@ class ProductTile extends StatelessWidget {
               text: rating, fontSize: 15, color: CommonColor.greyColor838589),
         ]),
         SizedBox(
-          height: 10,
+          height: 12,
         ),
       ],
     );
