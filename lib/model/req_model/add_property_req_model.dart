@@ -16,7 +16,7 @@ class AddPropertyReqModel {
   List? listOfImage;
   String? category;
   String? description;
-  String? propertyId;
+  int? propertyId;
   bool? isParkingAvailable;
 
   AddPropertyReqModel({

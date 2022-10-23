@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:property/view/edit_property_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:get/get.dart';
 import '../components/common_widget.dart';
@@ -86,6 +87,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
 
                 editPropertyController.addPropertyData(
                   docId: properties[index].id,
+                  productId: properties[index].get("productId").toString(),
                   listOfImage: properties[index].get("listOfImage"),
                   propertyName: properties[index].get("propertyName"),
                   description: properties[index].get("description"),
@@ -104,8 +106,8 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   propertyStatus: properties[index].get("propertyStatus"),
                   nearByPlaces: properties[index].get("nearByPlaces"),
                 );
-                // Get.to(() => EditProductScreen());
-                Navigator.pushNamed(context, '/EditProperty');
+                Get.to(() => EditPropertyScreen());
+                //Navigator.pushNamed(context, '/EditProperty');
               },
               image: properties[index].get("listOfImage")[0],
               title: properties[index].get("propertyName"),
@@ -134,18 +136,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           SizedBox(
             width: 6.sp,
           ),
-          Responsive.isDesktop(context)
-              ? SizedBox()
-              : IconButton(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onPressed: () {
-                    widget.globalKey.currentState!.openDrawer();
-                  },
-                  icon: Icon(Icons.menu),
-                ),
           SizedBox(
             height: 20.sp,
             width: 80.sp,

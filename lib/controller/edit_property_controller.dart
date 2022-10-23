@@ -17,10 +17,12 @@ class EditPropertyController extends GetxController {
   String? category;
   String? description;
   bool? isParkingAvailable;
+  String? productId;
   String? docId;
 
   void addPropertyData({
     String? docId,
+    String? productId,
     String? propertyName,
     String? address,
     String? country,
@@ -39,6 +41,7 @@ class EditPropertyController extends GetxController {
     bool? isParkingAvailable = false,
   }) {
     this.docId = docId;
+    this.productId = productId;
     this.propertyName = propertyName;
     this.address = address;
     this.country = country;

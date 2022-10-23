@@ -9,6 +9,7 @@ import '../constant/color_const.dart';
 import '../constant/text_const.dart';
 import '../constant/text_styel.dart';
 import '../model/req_model/add_property_req_model.dart';
+import 'package:get/get.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -277,6 +278,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        CommonWidget.commonSizedBox(height: 20),
                         CommonText.textBoldWight500(
                             text: 'Total BathRooms', fontSize: 7.sp),
                         CommonWidget.commonSizedBox(height: 10),
@@ -415,6 +417,34 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     ),
                   ],
                 ),
+                CommonWidget.commonSizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonWidget.commonSizedBox(height: 10),
+                    SizedBox(
+                      width: 70.sp,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            activeColor: themColors309D9D,
+                            value: isParkingAvailable,
+                            onChanged: (value) {
+                              setState(() {
+                                isParkingAvailable = value!;
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          CommonText.textBoldWight500(
+                              text: 'Parking Available', fontSize: 7.sp),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 CommonWidget.commonSizedBox(height: 50),
                 SizedBox(
                   width: 50.sp,
@@ -464,7 +494,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               _addProductReqModel.label = label.text;
                               _addProductReqModel.garages = garages.text;
                               _addProductReqModel.propertyId =
-                                  '${fetchCount['total_count'] + 1}';
+                                  fetchCount['total_count'] + 1;
 
                               await FirebaseFirestore.instance
                                   .collection('Admin')

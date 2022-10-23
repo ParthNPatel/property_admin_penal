@@ -439,6 +439,34 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                     ),
                   ],
                 ),
+                CommonWidget.commonSizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonWidget.commonSizedBox(height: 10),
+                    SizedBox(
+                      width: 70.sp,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            activeColor: themColors309D9D,
+                            value: isParkingAvailable,
+                            onChanged: (value) {
+                              setState(() {
+                                isParkingAvailable = value!;
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          CommonText.textBoldWight500(
+                              text: 'Parking Available', fontSize: 7.sp),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 CommonWidget.commonSizedBox(height: 50),
                 SizedBox(
                   width: 50.sp,
@@ -492,8 +520,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                               _addProductReqModel.isParkingAvailable =
                                   isParkingAvailable;
                               _addProductReqModel.price = price!.text;
-                              _addProductReqModel.size =
-                                  "${size!.text}${groupValue == 0 ? ' Metres' : ' Squares'}";
+                              _addProductReqModel.size = "${size!.text}";
                               _addProductReqModel.description =
                                   description!.text;
                               _addProductReqModel.category = category;
@@ -503,6 +530,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                               _addProductReqModel.garages = garages!.text;
                               _addProductReqModel.nearByPlaces =
                                   nearByPlaces!.text;
+                              _addProductReqModel.propertyId =
+                                  int.parse(editProductController.productId!);
 
                               await FirebaseFirestore.instance
                                   .collection('Admin')
