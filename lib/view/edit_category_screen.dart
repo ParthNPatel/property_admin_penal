@@ -61,7 +61,6 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                     onTap: () async {
                       FilePickerResult? selectedImages =
                           await FilePicker.platform.pickFiles(
-                        allowMultiple: true,
                         type: FileType.custom,
                         allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
                       );

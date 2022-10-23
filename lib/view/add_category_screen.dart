@@ -50,7 +50,6 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                   onTap: () async {
                     FilePickerResult? selectedImages =
                         await FilePicker.platform.pickFiles(
-                      allowMultiple: true,
                       type: FileType.custom,
                       allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
                     );
