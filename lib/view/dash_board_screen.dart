@@ -173,7 +173,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                       var total;
 
                                       try {
-                                        log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                        // log("===>>>${snapshot.data.docs[0]['is_check']}");
                                         print("===>>>${snapshot.data}");
                                         total = snapshot.data!.docs.length;
                                       } catch (e) {
@@ -228,9 +228,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   builder: (context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       var total;
-
+                                      //log("===>>>${snapshot.data.docs[0]['is_check']}");
                                       try {
-                                        log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                        //log("===>>>${snapshot.data.docs[0]['is_check']}");
                                         print("===>>>${snapshot.data}");
                                         total = snapshot.data!.docs.length;
                                       } catch (e) {
@@ -295,7 +295,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   var total;
 
                                   try {
-                                    log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                    //log("===>>>${snapshot.data.docs[0]['is_check']}");
                                     print("===>>>${snapshot.data}");
                                     total = snapshot.data!.docs.length;
                                   } catch (e) {
@@ -351,7 +351,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   var total;
 
                                   try {
-                                    log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                    //log("===>>>${snapshot.data.docs[0]['is_check']}");
                                     print("===>>>${snapshot.data}");
                                     total = snapshot.data!.docs.length;
                                   } catch (e) {
