@@ -90,6 +90,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     return WillPopScope(
       onWillPop: () {
         Navigator.pop(context);
+        // Get.back();
         return new Future(() => true);
       },
       child: Scaffold(
@@ -225,7 +226,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                         text: 'Address', fontSize: 7.sp),
                     CommonWidget.commonSizedBox(height: 10),
                     CommonWidget.textFormField(controller: address!),
-                    CommonWidget.commonSizedBox(height: 20),
                   ],
                 ),
                 Row(
@@ -337,7 +337,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                     ),
                   ],
                 ),
-                CommonWidget.commonSizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -385,7 +384,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                     ),
                   ],
                 ),
-                CommonWidget.commonSizedBox(height: 20),
                 CommonWidget.commonSizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -587,8 +585,9 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                         )
                       : Center(
                           child: CircularProgressIndicator(
-                          color: themColors309D9D,
-                        )),
+                            color: themColors309D9D,
+                          ),
+                        ),
                 ),
                 CommonWidget.commonSizedBox(height: 30),
               ],

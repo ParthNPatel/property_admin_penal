@@ -138,7 +138,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           ),
           SizedBox(
             height: 20.sp,
-            width: 80.sp,
+            width: 200.sp,
             child: Center(
               child: TextFormField(
                 controller: searchController,

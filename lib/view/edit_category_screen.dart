@@ -22,7 +22,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
 
   double progress = 0.0;
 
-  List<Uint8List> _listOfImage = [];
+  List _listOfImage = [];
   bool isLoading = true;
 
   TextEditingController? categoryTitle;
@@ -39,6 +39,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     return WillPopScope(
       onWillPop: () {
         Navigator.pop(context);
+        //Get.back();
         return new Future(() => true);
       },
       child: Scaffold(
@@ -81,7 +82,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                     child: Container(
                       height: 200,
                       width: 200,
-                      child: controller.categoryImage!.length != 0
+                      child: editCategoryController.categoryImage!.length != 0
                           ? editCategoryController
                                       .categoryImage![0].runtimeType ==
                                   Uint8List
@@ -120,9 +121,32 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                               isLoading = false;
                               setState(() {});
 
-                              var getAllURL = await uploadFiles(
-                                  editCategoryController.categoryImage!);
-                              print('url of image $getAllURL');
+                              // var getAllURL = await uploadFiles(
+                              //     editCategoryController.categoryImage!);
+                              // print('url of image $getAllURL');
+
+                              List uploadImage = [];
+                              List existImage = [];
+
+                              try {
+                                editCategoryController.categoryImage!
+                                    .forEach((element) {
+                                  if (element.runtimeType == Uint8List) {
+                                    uploadImage.add(element);
+                                  } else {
+                                    existImage.add(element);
+                                  }
+                                });
+                              } catch (e) {}
+                              print(
+                                  'image length for up  ${uploadImage.length}  ${existImage.length}');
+                              if (uploadImage.length != 0) {
+                                var getAllURL = await uploadFiles(uploadImage);
+                                getAllURL.forEach((element) {
+                                  existImage.add(element);
+                                });
+                                print('url of image ${existImage}');
+                              }
 
                               await FirebaseFirestore.instance
                                   .collection('Admin')
@@ -131,7 +155,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                                   .doc(editCategoryController.docId)
                                   .update({
                                 'category_name': categoryTitle!.text,
-                                'category_image': getAllURL,
+                                'category_image': existImage,
                               });
 
                               _listOfImage.clear();
@@ -148,6 +172,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                                   title: 'Successful!',
                                   message: 'Your Category Edited Successfully');
                             } else {
+                              isLoading = false;
                               CommonWidget.getSnackBar(
                                   duration: 2,
                                   title: 'Required',

@@ -17,7 +17,7 @@ class CategoryShimmer extends StatelessWidget {
             crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
             crossAxisSpacing: 1,
             mainAxisSpacing: 10,
-            mainAxisExtent: 400),
+            mainAxisExtent: 350),
         itemBuilder: (context, index) => Column(
           children: [
             SizedBox(

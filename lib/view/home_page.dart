@@ -143,86 +143,99 @@ class _HomePageState extends State<HomePage> {
                     )
                   : selected == 2
                       ? CategoriesScreen()
-                      : Center(child: Text("Support"))
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: Responsive.isDesktop(context)
+                                  ? 200.sp
+                                  : 70.sp,
+                            ),
+                            Text(
+                              "Coming Soon...",
+                              textScaleFactor: 2,
+                            ),
+                          ],
+                        )
         ],
       ),
     );
   }
 
-  Drawer drawerWidget(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 2.h,
-          ),
-          CircleAvatar(
-            radius: 15.sp,
-            backgroundImage: AssetImage('assets/images/user.png'),
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Column(
-            children: [
-              CommonText.textBoldWight500(text: "Naman Sharma", fontSize: 8.sp),
-              SizedBox(
-                height: 3.sp,
-              ),
-              CommonText.textBoldWight500(
-                  textDecoration: TextDecoration.underline,
-                  text: "View Profile",
-                  fontSize: 5.sp,
-                  color: themColors309D9D),
-            ],
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
-          Column(
-            children: List.generate(
-              4,
-              (index) => InkWell(
-                onTap: () {
-                  setState(() {
-                    selected = index;
-                  });
-                },
-                child: Container(
-                  height: 25.sp,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: selected == index
-                          ? Colors.grey.withOpacity(0.2)
-                          : Colors.white),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 2.w),
-                    child: Row(
-                      children: [
-                        CommonWidget.commonSvgPitcher(
-                            image: items[index]['image'],
-                            height: 10.sp,
-                            width: 10.sp,
-                            color: selected == index
-                                ? themColors309D9D
-                                : Colors.grey.shade400),
-                        SizedBox(
-                          width: 3.w,
-                        ),
-                        CommonText.textBoldWight500(
-                            text: items[index]['name'],
-                            fontSize: 5.sp,
-                            color:
-                                selected == index ? Colors.black : Colors.grey),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  // Drawer drawerWidget(BuildContext context) {
+  //   return Drawer(
+  //     child: Column(
+  //       children: [
+  //         SizedBox(
+  //           height: 2.h,
+  //         ),
+  //         CircleAvatar(
+  //           radius: 15.sp,
+  //           backgroundImage: AssetImage('assets/images/user.png'),
+  //         ),
+  //         SizedBox(
+  //           height: 1.h,
+  //         ),
+  //         Column(
+  //           children: [
+  //             CommonText.textBoldWight500(text: "Naman Sharma", fontSize: 8.sp),
+  //             SizedBox(
+  //               height: 3.sp,
+  //             ),
+  //             CommonText.textBoldWight500(
+  //                 textDecoration: TextDecoration.underline,
+  //                 text: "View Profile",
+  //                 fontSize: 5.sp,
+  //                 color: themColors309D9D),
+  //           ],
+  //         ),
+  //         SizedBox(
+  //           height: 2.h,
+  //         ),
+  //         Column(
+  //           children: List.generate(
+  //             4,
+  //             (index) => InkWell(
+  //               onTap: () {
+  //                 setState(() {
+  //                   selected = index;
+  //                 });
+  //               },
+  //               child: Container(
+  //                 height: 25.sp,
+  //                 width: double.infinity,
+  //                 decoration: BoxDecoration(
+  //                     color: selected == index
+  //                         ? Colors.grey.withOpacity(0.2)
+  //                         : Colors.white),
+  //                 child: Padding(
+  //                   padding: EdgeInsets.only(left: 2.w),
+  //                   child: Row(
+  //                     children: [
+  //                       CommonWidget.commonSvgPitcher(
+  //                           image: items[index]['image'],
+  //                           height: 10.sp,
+  //                           width: 10.sp,
+  //                           color: selected == index
+  //                               ? themColors309D9D
+  //                               : Colors.grey.shade400),
+  //                       SizedBox(
+  //                         width: 3.w,
+  //                       ),
+  //                       CommonText.textBoldWight500(
+  //                           text: items[index]['name'],
+  //                           fontSize: 5.sp,
+  //                           color:
+  //                               selected == index ? Colors.black : Colors.grey),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 }

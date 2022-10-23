@@ -37,7 +37,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               searchBar(context),
-              properties(),
+              categories(),
             ],
           ),
         ),
@@ -45,7 +45,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
-  StreamBuilder<QuerySnapshot<Object?>> properties() {
+  StreamBuilder<QuerySnapshot<Object?>> categories() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('Admin')
@@ -74,7 +74,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 10,
-                mainAxisExtent: 450
+                mainAxisExtent: 350
                 //hildAspectRatio:
                 //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
                 ),
@@ -93,10 +93,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         decoration: BoxDecoration(
                           color: CommonColor.greyColorF2F2F2,
                           borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  categories[index]['category_image'][0]),
-                              fit: BoxFit.cover),
+                        ),
+                        child: Center(
+                          child: Image.network(
+                            categories[index]['category_image'][0],
+                            height: 180,
+                            width: 180,
+                          ),
                         ),
                       ),
                     ),
@@ -198,7 +201,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           ),
           SizedBox(
             height: 20.sp,
-            width: 80.sp,
+            width: 200.sp,
             child: Center(
               child: TextFormField(
                 controller: searchController,
