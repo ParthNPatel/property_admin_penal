@@ -6,6 +6,7 @@ import 'package:property/responsive/responsive.dart';
 import 'package:sizer/sizer.dart';
 import '../components/count_shimmer.dart';
 import '../constant/text_styel.dart';
+import 'dart:developer';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({Key? key}) : super(key: key);
@@ -164,13 +165,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 FutureBuilder(
                                   future: FirebaseFirestore.instance
                                       .collection('All_User_Details')
-                                      .where('to_sell & to_let',
-                                          isEqualTo: 'male')
+                                      .where('is_check_valuation',
+                                          isEqualTo: true)
                                       .get(),
-                                  builder: (context, snapshot) {
+                                  builder: (context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       var total;
+
                                       try {
+                                        log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                        print("===>>>${snapshot.data}");
                                         total = snapshot.data!.docs.length;
                                       } catch (e) {
                                         total = 0;
@@ -218,13 +222,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 FutureBuilder(
                                   future: FirebaseFirestore.instance
                                       .collection('All_User_Details')
-                                      .where('to_sell & to_let',
-                                          isEqualTo: 'male')
+                                      .where('is_check_mortgage',
+                                          isEqualTo: true)
                                       .get(),
-                                  builder: (context, snapshot) {
+                                  builder: (context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       var total;
+
                                       try {
+                                        log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                        print("===>>>${snapshot.data}");
                                         total = snapshot.data!.docs.length;
                                       } catch (e) {
                                         total = 0;
@@ -281,12 +288,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             FutureBuilder(
                               future: FirebaseFirestore.instance
                                   .collection('All_User_Details')
-                                  .where('to_sell & to_let', isEqualTo: 'male')
+                                  .where('is_check_valuation', isEqualTo: true)
                                   .get(),
-                              builder: (context, snapshot) {
+                              builder: (context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   var total;
+
                                   try {
+                                    log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                    print("===>>>${snapshot.data}");
                                     total = snapshot.data!.docs.length;
                                   } catch (e) {
                                     total = 0;
@@ -334,12 +344,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             FutureBuilder(
                               future: FirebaseFirestore.instance
                                   .collection('All_User_Details')
-                                  .where('to_sell & to_let', isEqualTo: 'male')
+                                  .where('is_check_mortgage', isEqualTo: true)
                                   .get(),
-                              builder: (context, snapshot) {
+                              builder: (context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   var total;
+
                                   try {
+                                    log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                    print("===>>>${snapshot.data}");
                                     total = snapshot.data!.docs.length;
                                   } catch (e) {
                                     total = 0;
