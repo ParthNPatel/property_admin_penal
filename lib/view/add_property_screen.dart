@@ -467,7 +467,12 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               var getOldCount = FirebaseFirestore.instance
                                   .collection('Admin')
                                   .doc('property_count');
+
                               var fetchCount = await getOldCount.get();
+
+                              getOldCount.update({
+                                'total_count':FieldValue.increment(1)
+                              });
 
                               _addProductReqModel.listOfImage = getAllURL;
                               _addProductReqModel.propertyName =
