@@ -63,13 +63,14 @@ class CommonWidget {
       required String message,
       Color color = themColors309D9D,
       Color colorText = Colors.white,
-      int duration = 1}) {
+      int duration = 2}) {
     Get.snackbar(
       title,
       message,
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       colorText: colorText,
       duration: Duration(seconds: duration),
+      padding: EdgeInsets.only(left: 100),
       backgroundColor: color,
     );
   }

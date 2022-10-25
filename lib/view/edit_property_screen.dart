@@ -25,6 +25,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   String category = "Home";
 
   List<String> categoryList = [
+    'All',
     'Home',
     'Villa',
     'Apartment',
@@ -528,6 +529,9 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                               _addProductReqModel.garages = garages!.text;
                               _addProductReqModel.nearByPlaces =
                                   nearByPlaces!.text;
+                              _addProductReqModel.propertySlugName =
+                                  propertyName!.text.toLowerCase();
+
                               _addProductReqModel.propertyId =
                                   int.parse(editProductController.productId!);
 

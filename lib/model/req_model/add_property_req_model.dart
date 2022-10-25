@@ -2,6 +2,7 @@ String category = "Home";
 
 class AddPropertyReqModel {
   String? propertyName;
+  String? propertySlugName;
   String? address;
   String? country;
   String? pinCode;
@@ -21,6 +22,7 @@ class AddPropertyReqModel {
 
   AddPropertyReqModel({
     this.propertyName,
+    this.propertySlugName,
     this.address,
     this.size,
     this.price,
@@ -34,6 +36,7 @@ class AddPropertyReqModel {
   });
   Map<String, dynamic> toJson() {
     return {
+      "propertySlugName": propertySlugName,
       "propertyName": propertyName,
       "address": address,
       "country": country,

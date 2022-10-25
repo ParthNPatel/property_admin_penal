@@ -26,6 +26,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   String category = "Home";
 
   List<String> categoryList = [
+    'All',
     'Home',
     'Villa',
     'Apartment',
@@ -493,6 +494,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   propertyStatus.text;
                               _addProductReqModel.label = label.text;
                               _addProductReqModel.garages = garages.text;
+                              _addProductReqModel.propertySlugName =
+                                  propertyName.text.toLowerCase();
                               _addProductReqModel.propertyId =
                                   fetchCount['total_count'] + 1;
 

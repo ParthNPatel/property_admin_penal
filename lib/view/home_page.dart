@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:property/auth/views/login_view.dart';
 
 import 'package:sizer/sizer.dart';
 
+import '../auth/email_auth/email_auth_services.dart';
 import '../components/common_widget.dart';
 import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
@@ -10,6 +12,7 @@ import 'add_property_screen.dart';
 import 'categories_screen.dart';
 import 'dash_board_screen.dart';
 import 'properties_screen.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -130,7 +133,36 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      EmailAuth.logOut()
+                          .then((value) => Get.off(() => LoginView()));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 2.w),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.exit_to_app,
+                            size: 10.sp,
+                            color: Colors.grey.shade400,
+                          ),
+                          SizedBox(
+                            width: 3.w,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: "Log Out",
+                            fontSize: 5.sp,
+                            color: Colors.grey.shade400,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
