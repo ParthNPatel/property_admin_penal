@@ -283,15 +283,15 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                 ),
                 SizedBox(
-                  height: size.height * 0.01,
+                  height: size.height * 0.02,
                 ),
                 Text(
-                  'Creating an account means you\'re okay with our Terms of Services and our Privacy Policy',
-                  style: kLoginTermsAndPrivacyStyle(size),
+                  'Creating an account means you\'re okay with\nour Terms of Services and our Privacy Policy',
+                  style: TextStyle(color: Colors.grey,fontSize: 6.sp),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: size.height * 0.02,
+                  height: size.height * 0.03,
                 ),
 
                 /// SignUp Button

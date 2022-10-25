@@ -37,7 +37,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               searchBar(context),
-              categories(),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      categories(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -59,7 +68,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           if (searchText.isNotEmpty) {
             categories = categories.where((element) {
               return element
-                  .get('category_name')
+                  .get('category_nam  e')
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase());
@@ -68,11 +77,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           return GridView.builder(
             //reverse: true,
             physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             itemCount: categories.length,
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-                crossAxisSpacing: 1,
+                crossAxisSpacing: 15,
                 mainAxisSpacing: 10,
                 mainAxisExtent: 350
                 //hildAspectRatio:

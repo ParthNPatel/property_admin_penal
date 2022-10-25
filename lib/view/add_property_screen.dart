@@ -531,7 +531,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               CommonWidget.getSnackBar(
                                   duration: 2,
                                   title: 'Required',
-                                  message: 'Please Enter All Valid Details');
+                                  message: 'Please Fill All Required Property Details');
                             }
                           },
                           shape: RoundedRectangleBorder(

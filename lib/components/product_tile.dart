@@ -78,7 +78,7 @@ class ProductTile extends StatelessWidget {
           height: 6,
         ),
         CommonText.textBoldWight400(
-            text: subtitle, fontSize: 14, color: CommonColor.greyColor838589),
+            text: subtitle, fontSize: 7.sp, color: CommonColor.greyColor838589),
         SizedBox(
           height: 12,
         ),
@@ -88,9 +88,9 @@ class ProductTile extends StatelessWidget {
             Row(
               children: [
                 CommonText.textBoldWight700(
-                    text: price, fontSize: 15, color: themColors309D9D),
+                    text: price, fontSize: 7.sp, color: themColors309D9D),
                 CommonText.textBoldWight700(
-                    text: '/year', fontSize: 15, color: Colors.grey),
+                    text: '/year', fontSize: 7.sp, color: Colors.grey),
               ],
             ),
             SizedBox(
@@ -99,9 +99,9 @@ class ProductTile extends StatelessWidget {
             Row(
               children: [
                 CommonText.textBoldWight700(
-                    color: themColors309D9D, text: "Size: ", fontSize: 13),
+                    color: themColors309D9D, text: "Size: ", fontSize: 6.sp),
                 CommonText.textBoldWight700(
-                    color: Colors.grey, text: size, fontSize: 13),
+                    color: Colors.grey, text: size, fontSize: 6.sp),
               ],
             )
           ],
@@ -115,9 +115,9 @@ class ProductTile extends StatelessWidget {
             Row(
               children: [
                 CommonText.textBoldWight700(
-                    text: totalBedroom, fontSize: 13, color: Colors.grey),
+                    text: totalBedroom, fontSize: 6.sp, color: Colors.grey),
                 CommonText.textBoldWight700(
-                    color: themColors309D9D, text: " Bedroom", fontSize: 11),
+                    color: themColors309D9D, text: " Bedroom", fontSize: 5.sp),
               ],
             ),
             SizedBox(
@@ -126,9 +126,9 @@ class ProductTile extends StatelessWidget {
             Row(
               children: [
                 CommonText.textBoldWight700(
-                    color: Colors.grey, text: totalWashroom, fontSize: 13),
+                    color: Colors.grey, text: totalWashroom, fontSize: 6.sp),
                 CommonText.textBoldWight700(
-                    color: themColors309D9D, text: " Bathroom", fontSize: 11),
+                    color: themColors309D9D, text: " Bathroom", fontSize: 5.sp),
               ],
             )
           ],
@@ -139,14 +139,14 @@ class ProductTile extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.star,
-            size: 15,
+            size: 7.sp,
             color: CommonColor.yellowColor,
           ),
           SizedBox(
             width: 5,
           ),
           CommonText.textBoldWight400(
-              text: rating, fontSize: 15, color: CommonColor.greyColor838589),
+              text: rating, fontSize: 7.sp, color: CommonColor.greyColor838589),
         ]),
         SizedBox(
           height: 12,

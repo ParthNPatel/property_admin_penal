@@ -12,10 +12,11 @@ class DashBoardShimmer extends StatelessWidget {
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         itemCount: 10,
+        padding: EdgeInsets.symmetric(horizontal: 15),
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-            crossAxisSpacing: 1,
+            crossAxisSpacing: 15,
             mainAxisSpacing: 10,
             mainAxisExtent: 400),
         itemBuilder: (context, index) => Column(

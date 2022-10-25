@@ -37,7 +37,15 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               searchBar(context),
-              properties(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      properties(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -69,11 +77,12 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           return GridView.builder(
             //reverse: true,
             physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             itemCount: properties.length,
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-                crossAxisSpacing: 1,
+                crossAxisSpacing: 15,
                 mainAxisSpacing: 10,
                 mainAxisExtent: 450
                 //hildAspectRatio:
