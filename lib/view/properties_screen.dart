@@ -6,14 +6,13 @@ import 'package:get/get.dart';
 import '../components/common_widget.dart';
 import '../components/dashboard_shimmer.dart';
 import '../components/product_tile.dart';
-import '../constant/image_const.dart';
+
 import '../controller/edit_property_controller.dart';
 import '../responsive/responsive.dart';
 
 class PropertiesScreen extends StatefulWidget {
-  final globalKey;
 
-  const PropertiesScreen({super.key, this.globalKey});
+  const PropertiesScreen({super.key});
   @override
   State<PropertiesScreen> createState() => _PropertiesScreenState();
 }

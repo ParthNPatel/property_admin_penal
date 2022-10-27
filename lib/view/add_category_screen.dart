@@ -40,8 +40,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonWidget.commonSizedBox(height: 20),
-                CommonText.textBoldWight700(
-                    text: 'Add New Category', fontSize: 10.sp),
+                Center(
+                  child: CommonText.textBoldWight700(
+                      text: 'Add New Category', fontSize: 10.sp),
+                ),
                 CommonWidget.commonSizedBox(height: 20),
                 CommonText.textBoldWight500(
                     text: 'Upload Category Icon', fontSize: 7.sp),

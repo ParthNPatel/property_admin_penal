@@ -1,4 +1,4 @@
- import 'dart:typed_data';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,12 +24,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
   String category = "Home";
 
-  List<String> categoryList = [
-    'All',
-    'Home',
-    'Villa',
-    'Apartment',
-  ];
+  // List<String> categoryList = [
+  //   'Home',
+  //   'Villa',
+  //   'Apartment',
+  // ];
 
   EditPropertyController editProductController = Get.find();
 
@@ -102,8 +101,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonWidget.commonSizedBox(height: 20),
-                CommonText.textBoldWight700(
-                    text: 'Edit Property', fontSize: 10.sp),
+                Center(
+                  child: CommonText.textBoldWight700(
+                      text: 'Edit Property', fontSize: 10.sp),
+                ),
                 CommonWidget.commonSizedBox(height: 20),
                 GetBuilder<EditPropertyController>(
                   builder: (controller) => Row(
@@ -189,30 +190,46 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                         CommonText.textBoldWight500(
                             text: 'Select Category', fontSize: 7.sp),
                         CommonWidget.commonSizedBox(height: 10),
-                        Container(
-                          height: 14.sp,
-                          width: 50.sp,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(3),
-                              border: Border.all(color: Colors.grey)),
-                          child: Center(
-                            child: DropdownButton(
-                              underline: SizedBox(),
-                              value: category,
-                              items: categoryList.map((e) {
-                                return DropdownMenuItem(
-                                  child: Text(e),
-                                  value: e,
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  category = value!;
-                                });
-                              },
-                            ),
-                          ),
+                        FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection('Admin')
+                              .doc('categories')
+                              .collection('categories_list')
+                              .get(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                height: 14.sp,
+                                width: 55.sp,
+                                padding: EdgeInsets.only(left: 2.sp),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                    border: Border.all(color: Colors.grey)),
+                                child: Center(
+                                  child: DropdownButton(
+                                    underline: SizedBox(),
+                                    value: category,
+                                    items: snapshot.data!.docs.map((e) {
+                                      return DropdownMenuItem(
+                                        child: Text(e['category_name']),
+                                        value: e['category_name'],
+                                      );
+                                    }).toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        category = value as String;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          },
                         ),
                         CommonWidget.commonSizedBox(height: 30),
                       ],

@@ -50,8 +50,10 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonWidget.commonSizedBox(height: 20),
-                CommonText.textBoldWight700(
-                    text: 'Edit Category', fontSize: 10.sp),
+                Center(
+                  child: CommonText.textBoldWight700(
+                      text: 'Edit Category', fontSize: 10.sp),
+                ),
                 CommonWidget.commonSizedBox(height: 20),
                 CommonText.textBoldWight500(
                     text: 'Edit Category Icon', fontSize: 7.sp),

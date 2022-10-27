@@ -32,7 +32,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   shrinkWrap: true,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: Responsive.isDesktop(context)?4:2,
+                    crossAxisCount: Responsive.isDesktop(context) ? 4 : 2,
                     mainAxisExtent: 200,
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
@@ -151,7 +151,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CommonWidget.commonSvgPitcher(
-                            image: 'assets/images/valuation.svg',
+                            image: 'assets/images/services.svg',
                             height: 70,
                             width: 70,
                             color: themColors309D9D,
@@ -160,19 +160,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             height: 15,
                           ),
                           CommonText.textBoldWight500(
-                              text: 'Valuation Enquiries',
-                              fontSize: 7.sp),
+                              text: 'Service Enquiries', fontSize: 7.sp),
                           SizedBox(
                             height: 10,
                           ),
                           FutureBuilder(
                             future: FirebaseFirestore.instance
-                                .collection('All_User_Details')
-                                .where('is_check_valuation',
-                                isEqualTo: true)
+                                .collection('Admin')
+                                .doc('inquires_list')
+                                .collection('inquiries')
                                 .get(),
-                            builder:
-                                (context, AsyncSnapshot snapshot) {
+                            builder: (context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
                                 var total;
 
@@ -207,7 +205,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CommonWidget.commonSvgPitcher(
-                            image: 'assets/images/morgage.svg',
+                            image: 'assets/images/valuation.svg',
                             height: 70,
                             width: 70,
                             color: themColors309D9D,
@@ -216,34 +214,54 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             height: 15,
                           ),
                           CommonText.textBoldWight500(
-                              text: 'Mortgage Enquiries',
-                              fontSize: 7.sp),
+                              text: 'Property Enquiries', fontSize: 7.sp),
                           SizedBox(
                             height: 10,
                           ),
                           FutureBuilder(
                             future: FirebaseFirestore.instance
-                                .collection('All_User_Details')
-                                .where('is_check_mortgage',
-                                isEqualTo: true)
+                                .collection('Admin')
+                                .doc('inquires_list')
+                                .collection('get_a_free_valuation')
                                 .get(),
-                            builder:
-                                (context, AsyncSnapshot snapshot) {
+                            builder: (context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
                                 var total;
-                                //log("===>>>${snapshot.data.docs[0]['is_check']}");
+                                log("11===>>>${snapshot.data.docs.length}");
                                 try {
+                                  return FutureBuilder(
+                                    future: FirebaseFirestore.instance
+                                        .collection('Admin')
+                                        .doc('inquires_list')
+                                        .collection('free_martgage_check')
+                                        .get(),
+                                    builder: (context, AsyncSnapshot inq) {
+                                      if (inq.hasData) {
+                                        print("22===>>>}");
+
+                                        total = snapshot.data.docs.length +
+                                            inq.data.docs.length;
+                                        return CommonText.textBoldWight500(
+                                          text: '${total}',
+                                          fontSize: 7.sp,
+                                          fontWeight: FontWeight.bold,
+                                        );
+                                      } else {
+                                        return CountShimmer();
+                                      }
+                                    },
+                                  );
                                   //log("===>>>${snapshot.data.docs[0]['is_check']}");
-                                  print("===>>>${snapshot.data}");
-                                  total = snapshot.data!.docs.length;
+
                                 } catch (e) {
                                   total = 0;
                                 }
-                                return CommonText.textBoldWight500(
-                                  text: '${total}',
-                                  fontSize: 7.sp,
-                                  fontWeight: FontWeight.bold,
-                                );
+                                // return CommonText.textBoldWight500(
+                                //   text: '${total}',
+                                //   fontSize: 7.sp,
+                                //   fontWeight: FontWeight.bold,
+                                // );
+                                return SizedBox();
                               } else {
                                 return CountShimmer();
                               }

@@ -25,12 +25,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   String category = "Home";
 
-  List<String> categoryList = [
-    'All',
-    'Home',
-    'Villa',
-    'Apartment',
-  ];
+  // List<String> categoryList = [
+  //   'Home',
+  //   'Villa',
+  //   'Apartment',
+  // ];
 
   final propertyName = TextEditingController();
   final address = TextEditingController();
@@ -68,8 +67,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonWidget.commonSizedBox(height: 20),
-                CommonText.textBoldWight700(
-                    text: 'Add New Property', fontSize: 10.sp),
+                Center(
+                  child: CommonText.textBoldWight700(
+                      text: 'Add New Property', fontSize: 10.sp),
+                ),
                 CommonWidget.commonSizedBox(height: 20),
                 Row(
                   children: [
@@ -144,30 +145,45 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         CommonText.textBoldWight500(
                             text: 'Select Category', fontSize: 7.sp),
                         CommonWidget.commonSizedBox(height: 10),
-                        Container(
-                          height: 14.sp,
-                          width: 50.sp,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(3),
-                              border: Border.all(color: Colors.grey)),
-                          child: Center(
-                            child: DropdownButton(
-                              underline: SizedBox(),
-                              value: category,
-                              items: categoryList.map((e) {
-                                return DropdownMenuItem(
-                                  child: Text(e),
-                                  value: e,
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  category = value!;
-                                });
-                              },
-                            ),
-                          ),
+                        FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection('Admin')
+                              .doc('categories')
+                              .collection('categories_list')
+                              .get(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                height: 14.sp,
+                                width: 50.sp,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(3),
+                                    border: Border.all(color: Colors.grey)),
+                                child: Center(
+                                  child: DropdownButton(
+                                    underline: SizedBox(),
+                                    value: category,
+                                    items: snapshot.data!.docs.map((e) {
+                                      return DropdownMenuItem(
+                                        child: Text(e['category_name']),
+                                        value: e['category_name'],
+                                      );
+                                    }).toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        category = value as String;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          },
                         ),
                         CommonWidget.commonSizedBox(height: 30),
                       ],
@@ -470,9 +486,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
                               var fetchCount = await getOldCount.get();
 
-                              getOldCount.update({
-                                'total_count':FieldValue.increment(1)
-                              });
+                              getOldCount.update(
+                                  {'total_count': FieldValue.increment(1)});
 
                               _addProductReqModel.listOfImage = getAllURL;
                               _addProductReqModel.propertyName =
@@ -536,7 +551,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               CommonWidget.getSnackBar(
                                   duration: 2,
                                   title: 'Required',
-                                  message: 'Please Fill All Required Property Details');
+                                  message:
+                                      'Please Fill All Required Property Details');
                             }
                           },
                           shape: RoundedRectangleBorder(

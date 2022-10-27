@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:property/auth/views/login_view.dart';
-
+import 'package:property/view/property_inquiry_screen.dart';
+import 'package:property/view/service_inquiry_screen.dart';
 import 'package:sizer/sizer.dart';
-
 import '../auth/email_auth/email_auth_services.dart';
 import '../components/common_widget.dart';
 import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
 import '../responsive/responsive.dart';
-import 'add_property_screen.dart';
 import 'categories_screen.dart';
 import 'dash_board_screen.dart';
 import 'properties_screen.dart';
@@ -26,8 +25,10 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> items = [
     {'name': "Dashboard", 'image': 'assets/images/dashboard.svg'},
-    {'name': "Properties", 'image': 'assets/images/add_product.svg'},
     {'name': "Categories", 'image': 'assets/images/inbox.svg'},
+    {'name': "Properties", 'image': 'assets/images/add_product.svg'},
+    {'name': "Service Inquiry", 'image': 'assets/images/services.svg'},
+    {'name': "Property Inquiry", 'image': 'assets/images/morgage.svg'},
     {'name': "Support", 'image': 'assets/images/support.svg'},
   ];
 
@@ -93,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Column(
                     children: List.generate(
-                      4,
+                      items.length,
                       (index) => InkWell(
                         onTap: () {
                           setState(() {
@@ -139,8 +140,25 @@ class _HomePageState extends State<HomePage> {
                   ),
                   InkWell(
                     onTap: () {
-                      EmailAuth.logOut()
-                          .then((value) => Get.off(() => LoginView()));
+                      Get.dialog(AlertDialog(
+                        title: Text("Are you sure that you want to Log Out?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: Text('NO'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              EmailAuth.logOut()
+                                  .then((value) => Get.off(() => LoginView()));
+                              Get.back();
+                            },
+                            child: Text('YES'),
+                          ),
+                        ],
+                      ));
                     },
                     child: Padding(
                       padding: EdgeInsets.only(left: 2.w),
@@ -170,104 +188,106 @@ class _HomePageState extends State<HomePage> {
           selected == 0
               ? DashBoardScreen()
               : selected == 1
-                  ? PropertiesScreen(
-                      globalKey: globalKey,
-                    )
+                  ? CategoriesScreen()
                   : selected == 2
-                      ? CategoriesScreen()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: Responsive.isDesktop(context)
-                                  ? 200.sp
-                                  : 70.sp,
-                            ),
-                            Text(
-                              "Coming Soon...",
-                              textScaleFactor: 2,
-                            ),
-                          ],
-                        )
+                      ? PropertiesScreen()
+                      : selected == 3
+                          ? ServiceInquiryScreen()
+                          : selected == 4
+                              ? PropertyInquiryScreen()
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: Responsive.isDesktop(context)
+                                          ? 200.sp
+                                          : 70.sp,
+                                    ),
+                                    Text(
+                                      "Coming Soon...",
+                                      textScaleFactor: 2,
+                                    ),
+                                  ],
+                                )
         ],
       ),
     );
   }
 
-  // Drawer drawerWidget(BuildContext context) {
-  //   return Drawer(
-  //     child: Column(
-  //       children: [
-  //         SizedBox(
-  //           height: 2.h,
-  //         ),
-  //         CircleAvatar(
-  //           radius: 15.sp,
-  //           backgroundImage: AssetImage('assets/images/user.png'),
-  //         ),
-  //         SizedBox(
-  //           height: 1.h,
-  //         ),
-  //         Column(
-  //           children: [
-  //             CommonText.textBoldWight500(text: "Naman Sharma", fontSize: 8.sp),
-  //             SizedBox(
-  //               height: 3.sp,
-  //             ),
-  //             CommonText.textBoldWight500(
-  //                 textDecoration: TextDecoration.underline,
-  //                 text: "View Profile",
-  //                 fontSize: 5.sp,
-  //                 color: themColors309D9D),
-  //           ],
-  //         ),
-  //         SizedBox(
-  //           height: 2.h,
-  //         ),
-  //         Column(
-  //           children: List.generate(
-  //             4,
-  //             (index) => InkWell(
-  //               onTap: () {
-  //                 setState(() {
-  //                   selected = index;
-  //                 });
-  //               },
-  //               child: Container(
-  //                 height: 25.sp,
-  //                 width: double.infinity,
-  //                 decoration: BoxDecoration(
-  //                     color: selected == index
-  //                         ? Colors.grey.withOpacity(0.2)
-  //                         : Colors.white),
-  //                 child: Padding(
-  //                   padding: EdgeInsets.only(left: 2.w),
-  //                   child: Row(
-  //                     children: [
-  //                       CommonWidget.commonSvgPitcher(
-  //                           image: items[index]['image'],
-  //                           height: 10.sp,
-  //                           width: 10.sp,
-  //                           color: selected == index
-  //                               ? themColors309D9D
-  //                               : Colors.grey.shade400),
-  //                       SizedBox(
-  //                         width: 3.w,
-  //                       ),
-  //                       CommonText.textBoldWight500(
-  //                           text: items[index]['name'],
-  //                           fontSize: 5.sp,
-  //                           color:
-  //                               selected == index ? Colors.black : Colors.grey),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
+// Drawer drawerWidget(BuildContext context) {
+//   return Drawer(
+//     child: Column(
+//       children: [
+//         SizedBox(
+//           height: 2.h,
+//         ),
+//         CircleAvatar(
+//           radius: 15.sp,
+//           backgroundImage: AssetImage('assets/images/user.png'),
+//         ),
+//         SizedBox(
+//           height: 1.h,
+//         ),
+//         Column(
+//           children: [
+//             CommonText.textBoldWight500(text: "Naman Sharma", fontSize: 8.sp),
+//             SizedBox(
+//               height: 3.sp,
+//             ),
+//             CommonText.textBoldWight500(
+//                 textDecoration: TextDecoration.underline,
+//                 text: "View Profile",
+//                 fontSize: 5.sp,
+//                 color: themColors309D9D),
+//           ],
+//         ),
+//         SizedBox(
+//           height: 2.h,
+//         ),
+//         Column(
+//           children: List.generate(
+//             4,
+//             (index) => InkWell(
+//               onTap: () {
+//                 setState(() {
+//                   selected = index;
+//                 });
+//               },
+//               child: Container(
+//                 height: 25.sp,
+//                 width: double.infinity,
+//                 decoration: BoxDecoration(
+//                     color: selected == index
+//                         ? Colors.grey.withOpacity(0.2)
+//                         : Colors.white),
+//                 child: Padding(
+//                   padding: EdgeInsets.only(left: 2.w),
+//                   child: Row(
+//                     children: [
+//                       CommonWidget.commonSvgPitcher(
+//                           image: items[index]['image'],
+//                           height: 10.sp,
+//                           width: 10.sp,
+//                           color: selected == index
+//                               ? themColors309D9D
+//                               : Colors.grey.shade400),
+//                       SizedBox(
+//                         width: 3.w,
+//                       ),
+//                       CommonText.textBoldWight500(
+//                           text: items[index]['name'],
+//                           fontSize: 5.sp,
+//                           color:
+//                               selected == index ? Colors.black : Colors.grey),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         )
+//       ],
+//     ),
+//   );
+// }
 }
