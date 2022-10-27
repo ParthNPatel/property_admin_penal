@@ -5,8 +5,6 @@ import 'package:property/constant/color_const.dart';
 import 'package:property/responsive/responsive.dart';
 import 'package:sizer/sizer.dart';
 import '../components/common_widget.dart';
-import '../components/count_shimmer.dart';
-import '../components/dashboard_shimmer.dart';
 import '../constant/text_styel.dart';
 
 class ServiceInquiryScreen extends StatefulWidget {
