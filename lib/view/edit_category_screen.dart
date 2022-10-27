@@ -191,7 +191,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   CommonText.textBoldWight500(
-                                      text: "Edit Category",
+                                      text: "Update Category",
                                       color: Colors.white,
                                       fontSize: 5.sp)
                                 ]),

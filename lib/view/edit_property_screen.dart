@@ -598,7 +598,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   CommonText.textBoldWight500(
-                                      text: "Edit",
+                                      text: "Update",
                                       color: Colors.white,
                                       fontSize: 5.sp)
                                 ]),
