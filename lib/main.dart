@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:property/auth/views/signUp_view.dart';
 import 'package:property/controller/edit_category_controller.dart';
+import 'package:property/controller/handle_screen_controller.dart';
 import 'package:property/view/add_property_screen.dart';
 import 'package:property/view/edit_property_screen.dart';
 import 'package:property/view/home_page.dart';
@@ -76,5 +77,6 @@ class BaseBindings extends Bindings {
     Get.lazyPut(() => EditPropertyController(), fenix: true);
     Get.lazyPut(() => EditCategoryController(), fenix: true);
     Get.lazyPut(() => SimpleUIController(), fenix: true);
+    Get.lazyPut(() => HandleScreenController(), fenix: true);
   }
 }

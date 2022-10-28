@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:property/controller/handle_screen_controller.dart';
 import 'package:property/view/edit_property_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../components/dashboard_shimmer.dart';
 import '../components/product_tile.dart';
 import '../controller/edit_property_controller.dart';
 import '../responsive/responsive.dart';
+import 'home_page.dart';
 
 class PropertiesScreen extends StatefulWidget {
   const PropertiesScreen({super.key});
@@ -17,6 +19,8 @@ class PropertiesScreen extends StatefulWidget {
 
 class _PropertiesScreenState extends State<PropertiesScreen> {
   EditPropertyController editPropertyController = Get.find();
+
+  HandleScreenController handleScreenController = Get.find();
 
   String searchText = '';
 
@@ -72,59 +76,66 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             }).toList();
           }
           return GridView.builder(
-            //reverse: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            itemCount: properties.length,
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 10,
-                mainAxisExtent: 450
-                //hildAspectRatio:
-                //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
-                ),
-            itemBuilder: (context, index) => ProductTile(
-              onEdit: () {
-                editPropertyController.listOfImage!.clear();
+              //reverse: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              itemCount: properties.length,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 10,
+                  mainAxisExtent: 450
+                  //hildAspectRatio:
+                  //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
+                  ),
+              itemBuilder: (context, index) =>
+                  GetBuilder<HandleScreenController>(
+                    builder: (controller) => ProductTile(
+                      onEdit: () {
+                        controller.changeTapped1(true);
+                        editPropertyController.listOfImage!.clear();
 
-                print('listOfImage   ${properties[index].get("listOfImage")}');
+                        print(
+                            'listOfImage   ${properties[index].get("listOfImage")}');
 
-                editPropertyController.addPropertyData(
-                  docId: properties[index].id,
-                  productId: properties[index].get("productId").toString(),
-                  listOfImage: properties[index].get("listOfImage"),
-                  propertyName: properties[index].get("propertyName"),
-                  description: properties[index].get("description"),
-                  category: properties[index].get("category"),
-                  address: properties[index].get("address"),
-                  country: properties[index].get("country"),
-                  pinCode: properties[index].get("pinCode"),
-                  isParkingAvailable:
-                      properties[index].get("isParkingAvailable"),
-                  price: properties[index].get("price"),
-                  size: properties[index].get("size"),
-                  totalBathrooms: properties[index].get("totalBathrooms"),
-                  totalBedRooms: properties[index].get("totalBedRooms"),
-                  garages: properties[index].get("garages"),
-                  label: properties[index].get("label"),
-                  propertyStatus: properties[index].get("propertyStatus"),
-                  nearByPlaces: properties[index].get("nearByPlaces"),
-                );
-                Get.to(() => EditPropertyScreen());
-                //Navigator.pushNamed(context, '/EditProperty');
-              },
-              image: properties[index].get("listOfImage")[0],
-              title: properties[index].get("propertyName"),
-              subtitle: properties[index].get("address"),
-              price: properties[index].get("price"),
-              size: properties[index].get("size"),
-              totalBedroom: properties[index].get("totalBedRooms"),
-              totalWashroom: properties[index].get("totalBathrooms"),
-              rating: '5',
-            ),
-          );
+                        editPropertyController.addPropertyData(
+                          docId: properties[index].id,
+                          productId:
+                              properties[index].get("productId").toString(),
+                          listOfImage: properties[index].get("listOfImage"),
+                          propertyName: properties[index].get("propertyName"),
+                          description: properties[index].get("description"),
+                          category: properties[index].get("category"),
+                          address: properties[index].get("address"),
+                          country: properties[index].get("country"),
+                          pinCode: properties[index].get("pinCode"),
+                          isParkingAvailable:
+                              properties[index].get("isParkingAvailable"),
+                          price: properties[index].get("price"),
+                          size: properties[index].get("size"),
+                          totalBathrooms:
+                              properties[index].get("totalBathrooms"),
+                          totalBedRooms: properties[index].get("totalBedRooms"),
+                          garages: properties[index].get("garages"),
+                          label: properties[index].get("label"),
+                          propertyStatus:
+                              properties[index].get("propertyStatus"),
+                          nearByPlaces: properties[index].get("nearByPlaces"),
+                        );
+                        //Get.to(() => EditPropertyScreen());
+                        //Navigator.pushNamed(context, '/EditProperty');
+                      },
+                      image: properties[index].get("listOfImage")[0],
+                      title: properties[index].get("propertyName"),
+                      subtitle: properties[index].get("address"),
+                      price: properties[index].get("price"),
+                      size: properties[index].get("size"),
+                      totalBedroom: properties[index].get("totalBedRooms"),
+                      totalWashroom: properties[index].get("totalBathrooms"),
+                      rating: '5',
+                    ),
+                  ));
         } else {
           return DashBoardShimmer();
         }
@@ -181,12 +192,15 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           SizedBox(
             width: 3.sp,
           ),
-          CommonWidget.commonButton(
-              onTap: () {
-                Navigator.pushNamed(context, '/AddProperty');
-              },
-              text: "Add New Property",
-              radius: 40),
+          GetBuilder<HandleScreenController>(
+            builder: (controller) => CommonWidget.commonButton(
+                onTap: () {
+                  controller.changeTapped(true);
+                  //Navigator.pushNamed(context, '/AddProperty');
+                },
+                text: "Add New Property",
+                radius: 40),
+          ),
           SizedBox(
             width: 6.sp,
           ),

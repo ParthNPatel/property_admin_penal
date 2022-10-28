@@ -14,10 +14,32 @@ class ServiceInquiryScreen extends StatefulWidget {
   State<ServiceInquiryScreen> createState() => _ServiceInquiryScreenState();
 }
 
-class _ServiceInquiryScreenState extends State<ServiceInquiryScreen> {
+class _ServiceInquiryScreenState extends State<ServiceInquiryScreen>
+    with SingleTickerProviderStateMixin {
   String searchText = '';
 
   TextEditingController searchController = TextEditingController();
+
+  TabController? tabController;
+
+  List<String> items = [
+    'Sales',
+    'Lettings',
+    'Auction',
+    'Conveyancing',
+    'EPC',
+    'Accomodation',
+    'Heating & Electrical',
+    'Mortgages',
+    'Inspection Report',
+  ];
+
+  int selected = 0;
+  @override
+  void initState() {
+    tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +56,42 @@ class _ServiceInquiryScreenState extends State<ServiceInquiryScreen> {
               CommonWidget.commonSizedBox(height: 20),
               CommonText.textBoldWight700(
                   text: 'All Service Inquiries', fontSize: 10.sp),
+              CommonWidget.commonSizedBox(height: 20),
+              SizedBox(
+                width: 200.sp,
+                child: TabBar(
+                  physics: BouncingScrollPhysics(),
+                  indicatorColor: Colors.transparent,
+                  controller: tabController,
+                  onTap: (value) {
+                    setState(() {
+                      selected = value;
+                    });
+                  },
+                  tabs: List.generate(
+                    items.length,
+                    (index) => Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: selected == index
+                            ? themColors309D9D
+                            : Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Text(
+                          items[index],
+                          style: TextStyle(
+                              color: selected == index
+                                  ? Colors.white
+                                  : Colors.grey),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               CommonWidget.commonSizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(

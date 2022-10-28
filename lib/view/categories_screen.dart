@@ -9,6 +9,7 @@ import '../components/category_shimmer.dart';
 import '../components/common_widget.dart';
 import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
+import '../controller/handle_screen_controller.dart';
 import '../responsive/responsive.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -25,6 +26,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   EditCategoryController editCategoryController = Get.find();
 
+  HandleScreenController handleScreenController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -37,7 +40,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               searchBar(context),
-
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -68,7 +70,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           if (searchText.isNotEmpty) {
             categories = categories.where((element) {
               return element
-                  .get('category_nam  e')
+                  .get('category_name')
                   .toString()
                   .toLowerCase()
                   .contains(searchText.toLowerCase());
@@ -84,7 +86,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 10,
-                mainAxisExtent: 350
+                mainAxisExtent: 300
                 //hildAspectRatio:
                 //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
                 ),
@@ -116,24 +118,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     Positioned(
                       top: 4.sp,
                       right: 16.sp,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.white,
-                        child: InkWell(
-                          onTap: () {
-                            editCategoryController.addCategoryData(
-                              docId: categories[index].id,
-                              categoryName: categories[index]['category_name'],
-                              categoryImage: categories[index]
-                                  ['category_image'],
-                            );
+                      child: GetBuilder<HandleScreenController>(
+                        builder: (controller) => CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.white,
+                          child: InkWell(
+                            onTap: () {
+                              controller.changeTapped3(true);
 
-                            Get.to(() => EditCategoryScreen());
-                          },
-                          child: Icon(
-                            Icons.edit,
-                            size: 20,
-                            color: CommonColor.greyColor838589,
+                              editCategoryController.addCategoryData(
+                                docId: categories[index].id,
+                                categoryName: categories[index]
+                                    ['category_name'],
+                                categoryImage: categories[index]
+                                    ['category_image'],
+                              );
+
+                              //Get.to(() => EditCategoryScreen());
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              size: 20,
+                              color: CommonColor.greyColor838589,
+                            ),
                           ),
                         ),
                       ),
@@ -230,12 +237,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             ),
           ),
           Spacer(),
-          CommonWidget.commonButton(
-              onTap: () {
-                Get.to(() => AddCategoryScreen());
-              },
-              text: "Add New Category",
-              radius: 40),
+          GetBuilder<HandleScreenController>(
+            builder: (controller) => CommonWidget.commonButton(
+                onTap: () {
+                  controller.changeTapped2(true);
+                  //Navigator.pushNamed(context, '/AddProperty');
+                },
+                text: "Add New Category",
+                radius: 40),
+          ),
           SizedBox(
             width: 6.sp,
           ),
