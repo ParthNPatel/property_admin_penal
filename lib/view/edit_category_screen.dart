@@ -21,6 +21,8 @@ class EditCategoryScreen extends StatefulWidget {
 class _EditCategoryScreenState extends State<EditCategoryScreen> {
   EditCategoryController editCategoryController = Get.find();
 
+  HandleScreenController controller = Get.find();
+
   double progress = 0.0;
 
   List _listOfImage = [];
@@ -173,7 +175,8 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                           setState(() {});
 
                           //Get.back();
-                          Navigator.pop(context);
+                          //Navigator.pop(context);
+                          controller.changeTapped3(false);
 
                           CommonWidget.getSnackBar(
                               color: themColors309D9D,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
 import '../components/common_widget.dart';
 import '../components/dashboard_shimmer.dart';
 import '../components/inquiry_shimmer.dart';
@@ -53,6 +52,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
               SizedBox(
                 width: 200.sp,
                 child: TabBar(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
                   physics: BouncingScrollPhysics(),
                   indicatorColor: Colors.transparent,
                   controller: tabController,
@@ -215,7 +215,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                           subtitle: Text(inquiries[index]['to_sell & to_let']),
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -298,7 +298,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                           subtitle: Text(inquiries[index]['email']),
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

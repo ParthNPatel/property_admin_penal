@@ -26,6 +26,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   final categoryTitle = TextEditingController();
 
+  HandleScreenController controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -132,7 +134,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           setState(() {});
 
                           //Get.back();
-                          Navigator.pop(context);
+                          //Navigator.pop(context);
+                          controller.changeTapped2(false);
 
                           CommonWidget.getSnackBar(
                               color: themColors309D9D,

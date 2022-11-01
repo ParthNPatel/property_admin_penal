@@ -53,6 +53,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   int groupValue = 1;
 
+  HandleScreenController controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -550,7 +552,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             _listOfImage.clear();
                             isLoading = true;
                             setState(() {});
-                            Navigator.pop(context);
+                            controller.changeTapped(false);
+                            //Navigator.pop(context);
                             CommonWidget.getSnackBar(
                                 color: themColors309D9D,
                                 duration: 2,

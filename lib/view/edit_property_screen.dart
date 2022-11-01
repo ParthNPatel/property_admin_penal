@@ -587,7 +587,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                             editProductController.listOfImage!.clear();
                             isLoading = true;
                             setState(() {});
-                            Navigator.pop(context);
+                            //Navigator.pop(context);
+                            controller.changeTapped1(false);
                             CommonWidget.getSnackBar(
                                 color: themColors309D9D,
                                 duration: 2,
