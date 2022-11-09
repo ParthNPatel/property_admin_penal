@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:property/components/inquiry_shimmer.dart';
 import 'package:property/constant/color_const.dart';
 import 'package:property/responsive/responsive.dart';

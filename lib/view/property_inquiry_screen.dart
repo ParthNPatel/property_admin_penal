@@ -50,7 +50,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
               searchBar(context),
               CommonWidget.commonSizedBox(height: 20),
               SizedBox(
-                width: 200.sp,
+                width: 150.sp,
                 child: TabBar(
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                   physics: BouncingScrollPhysics(),
@@ -65,7 +65,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                     2,
                     (index) => Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 0, vertical: 11),
                       decoration: BoxDecoration(
                         color: selected == index
                             ? themColors309D9D

@@ -13,5 +13,6 @@ class EditCategoryController extends GetxController {
     this.docId = docId;
     this.categoryName = categoryName;
     this.categoryImage = categoryImage;
+    update();
   }
 }

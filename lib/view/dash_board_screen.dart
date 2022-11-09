@@ -21,7 +21,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     return Flexible(
       flex: 8,
       child: Padding(
-        padding: EdgeInsets.only(left: 20, top: 20),
+        padding: EdgeInsets.only(left: 0, top: 20),
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints:
@@ -30,12 +30,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               children: [
                 GridView(
                   shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: Responsive.isDesktop(context) ? 4 : 2,
-                    mainAxisExtent: 200,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
+                    crossAxisCount: Responsive.isDesktop(context) ? 2 : 2,
+                    mainAxisExtent: 300,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
                   ),
                   children: [
                     Container(
