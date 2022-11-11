@@ -13,6 +13,7 @@ import '../controller/edit_property_controller.dart';
 import '../responsive/responsive.dart';
 import 'home_page.dart';
 
+
 class PropertiesScreen extends StatefulWidget {
   const PropertiesScreen({super.key});
   @override
