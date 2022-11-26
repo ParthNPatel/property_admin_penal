@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import '../constant/color_const.dart';
@@ -14,6 +15,7 @@ class CommonWidget {
 
   static Widget textFormField(
       {String? hintText,
+      int? maxLines,
       List<TextInputFormatter>? inpuFormator,
       required TextEditingController controller,
       int? maxLength,
@@ -24,6 +26,7 @@ class CommonWidget {
       height: 19.sp,
       width: 150.sp,
       child: TextFormField(
+        maxLines: maxLines,
         obscureText: isObscured,
         inputFormatters: inpuFormator,
         maxLength: maxLength,
@@ -63,15 +66,24 @@ class CommonWidget {
       required String message,
       Color color = themColors309D9D,
       Color colorText = Colors.white,
-      int duration = 1}) {
-    Get.snackbar(
-      title,
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      colorText: colorText,
-      duration: Duration(seconds: duration),
-      backgroundColor: color,
-    );
+      int duration = 2}) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: color,
+        textColor: colorText,
+        fontSize: 16.0);
+    // Get.snackbar(
+    //   title,
+    //   message,
+    //   snackPosition: SnackPosition.TOP,
+    //   colorText: colorText,
+    //   duration: Duration(seconds: duration),
+    //   padding: EdgeInsets.only(left: 100),
+    //   backgroundColor: color,
+    // );
   }
 
   static commonButton(

@@ -14,7 +14,10 @@ class ProductTile extends StatelessWidget {
   final rating;
   final totalBedroom;
   final totalWashroom;
+  final status;
   final VoidCallback? onEdit;
+  final VoidCallback? onAdd;
+  final VoidCallback? onDelete;
 
   const ProductTile({
     super.key,
@@ -27,122 +30,179 @@ class ProductTile extends StatelessWidget {
     this.onEdit,
     this.totalBedroom,
     this.totalWashroom,
+    this.status,
+    this.onAdd,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          height: 10,
-        ),
-        Stack(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                height: 250,
-                width: 250,
-                decoration: BoxDecoration(
-                  color: CommonColor.greyColorF2F2F2,
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                      image: NetworkImage(image), fit: BoxFit.cover),
-                ),
+            Container(
+              height: 100,
+              width: 100,
+              margin: EdgeInsets.only(top: 7, bottom: 7, right: 20),
+              decoration: BoxDecoration(
+                color: CommonColor.greyColorF2F2F2,
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    image: NetworkImage(image), fit: BoxFit.cover),
               ),
             ),
-            Positioned(
-              top: 4.sp,
-              right: 4.sp,
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: InkWell(
-                  onTap: onEdit,
-                  child: Icon(
-                    Icons.edit,
-                    size: 20,
-                    color: CommonColor.greyColor838589,
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+              width: 50.sp,
+              child: CommonText.textBoldWight700(text: title, fontSize: 15),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            SizedBox(
+              width: 50.sp,
+              child: CommonText.textBoldWight400(
+                  text: subtitle,
+                  fontSize: 14,
+                  color: CommonColor.greyColor838589),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+              width: 50.sp,
+              child: CommonText.textBoldWight700(text: price, fontSize: 15),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+              child: Center(
+                child: CommonText.textBoldWight700(
+                    color: Colors.grey,
+                    textDecoration: TextDecoration.lineThrough,
+                    text: totalBedroom,
+                    fontSize: 13),
+              ),
+              width: 50.sp,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+                width: 50.sp,
+                child: Center(
+                  child: CommonText.textBoldWight700(
+                      text: totalWashroom, fontSize: 15),
+                )),
+            SizedBox(
+              width: 10,
+            ),
+            // SizedBox(
+            //   width: 50.sp,
+            //   child:
+            //       CommonText.textBoldWight700(text: subCategory, fontSize: 15),
+            // ),
+            // SizedBox(
+            //   width: 10,
+            // ),
+            SizedBox(
+                width: 30.sp,
+                child: Center(
+                  child:
+                      CommonText.textBoldWight700(text: status, fontSize: 15),
+                )),
+            SizedBox(
+              width: 10,
+            ),
+            // SizedBox(
+            //   width: 50.sp,
+            //   child: CommonText.textBoldWight700(text: season, fontSize: 15),
+            // ),
+            // SizedBox(
+            //   width: 10,
+            // ),
+            SizedBox(
+              width: 50.sp,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CommonText.textBoldWight700(
+                      color: Colors.black, text: "5", fontSize: 13),
+                  Icon(
+                    Icons.star,
+                    size: 15,
+                    color: CommonColor.yellowColor,
                   ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            InkWell(
+              onTap: onDelete,
+              child: Container(
+                height: 10.sp,
+                width: 10.sp,
+                decoration: BoxDecoration(
+                  border: Border.all(color: themColors309D9D, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Icon(
+                  Icons.delete,
+                  size: 20,
+                  color: CommonColor.greyColor838589,
                 ),
               ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        CommonText.textBoldWight700(text: title, fontSize: 15),
-        SizedBox(
-          height: 5,
-        ),
-        CommonText.textBoldWight400(
-            text: subtitle, fontSize: 14, color: CommonColor.greyColor838589),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CommonText.textBoldWight700(text: "${price}/year", fontSize: 15),
-            SizedBox(
-              width: 1.w,
-            ),
-            Row(
-              children: [
-                CommonText.textBoldWight700(
-                    color: themColors309D9D, text: "Size: ", fontSize: 13),
-                CommonText.textBoldWight700(
-                    color: Colors.grey, text: size, fontSize: 13),
-              ],
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                CommonText.textBoldWight700(
-                    text: totalBedroom, fontSize: 13, color: Colors.grey),
-                CommonText.textBoldWight700(
-                    color: themColors309D9D, text: " Bedroom", fontSize: 11),
-              ],
             ),
             SizedBox(
-              width: 1.w,
+              width: 10,
             ),
-            Row(
-              children: [
-                CommonText.textBoldWight700(
-                    color: Colors.grey, text: totalWashroom, fontSize: 13),
-                CommonText.textBoldWight700(
-                    color: themColors309D9D, text: " Bathroom", fontSize: 11),
-              ],
-            )
+            InkWell(
+              onTap: onEdit,
+              child: Container(
+                height: 10.sp,
+                width: 10.sp,
+                decoration: BoxDecoration(
+                  border: Border.all(color: themColors309D9D, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Icon(
+                  Icons.edit,
+                  size: 20,
+                  color: CommonColor.greyColor838589,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            InkWell(
+              onTap: onAdd,
+              child: Container(
+                height: 10.sp,
+                width: 10.sp,
+                decoration: BoxDecoration(
+                  border: Border.all(color: themColors309D9D, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Icon(
+                  Icons.add,
+                  size: 20,
+                  color: CommonColor.greyColor838589,
+                ),
+              ),
+            ),
           ],
         ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
-            Icons.star,
-            size: 15,
-            color: CommonColor.yellowColor,
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          CommonText.textBoldWight400(
-              text: rating, fontSize: 15, color: CommonColor.greyColor838589),
-        ]),
-        SizedBox(
-          height: 10,
+        Divider(
+          thickness: 1,
+          color: Colors.grey,
         ),
       ],
     );
