@@ -45,6 +45,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   final label = TextEditingController();
   final garages = TextEditingController();
   final nearByPlaces = TextEditingController();
+  final propertyDate = TextEditingController();
+  final distance = TextEditingController();
 
   bool isParkingAvailable = false;
 
@@ -119,6 +121,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         selectedImages.files.forEach((element) {
                           _listOfImage.add(element.bytes!);
                         });
+
                         // Uint8List? file = selectedImages.files.first.bytes;
 
                         print('selectedImages  image of  ${selectedImages}');
@@ -207,8 +210,48 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CommonText.textBoldWight500(
+                      text: 'Description', fontSize: 7.sp),
+                  CommonWidget.commonSizedBox(height: 10),
+                  SizedBox(
+                    width: 150.sp,
+                    child: TextFormField(
+                      controller: description,
+                      maxLines: 5,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: TextConst.fontFamily,
+                      ),
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
+                        filled: true,
+                        fillColor: Colors.white,
+                        // hintText: "Write Description here",
+                        hintStyle: TextStyle(
+                            fontFamily: TextConst.fontFamily,
+                            fontWeight: FontWeight.w500,
+                            color: CommonColor.hinTextColor),
+                        border: InputBorder.none,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: themColors309D9D),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              CommonWidget.commonSizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   //CommonWidget.commonSizedBox(height: 20),
-                  CommonText.textBoldWight500(text: 'Addresss', fontSize: 7.sp),
+                  CommonText.textBoldWight500(text: 'Address', fontSize: 7.sp),
                   CommonWidget.commonSizedBox(height: 10),
                   CommonWidget.textFormField(controller: address),
                 ],
@@ -401,22 +444,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   CommonText.textBoldWight500(
                       text: 'NearBy Places', fontSize: 7.sp),
                   CommonWidget.commonSizedBox(height: 10),
-                  CommonWidget.textFormField(
-                    controller: nearByPlaces,
-                  ),
-                ],
-              ),
-              CommonWidget.commonSizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonText.textBoldWight500(
-                      text: 'Description', fontSize: 7.sp),
-                  CommonWidget.commonSizedBox(height: 10),
                   SizedBox(
                     width: 150.sp,
                     child: TextFormField(
-                      controller: description,
+                      controller: nearByPlaces,
                       maxLines: 5,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,

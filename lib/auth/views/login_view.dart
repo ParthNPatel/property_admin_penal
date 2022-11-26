@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:property/auth/email_auth/email_auth_services.dart';
 import 'package:property/auth/views/signUp_view.dart';
 import 'package:sizer/sizer.dart';
-
 import '../../components/common_widget.dart';
 import '../../constant/color_const.dart';
 import '../constants.dart';
@@ -175,6 +173,7 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     controller: emailController,
+                    autofillHints: [AutofillHints.email],
                     // The validator receives the text that the user has entered.
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -220,6 +219,7 @@ class _LoginViewState extends State<LoginView> {
                       style: kTextFormFieldStyle(),
                       controller: passwordController,
                       obscureText: simpleUIController.isObscure.value,
+                      autofillHints: [AutofillHints.password],
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.lock_open),
                         suffixIcon: IconButton(
@@ -256,7 +256,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 Text(
                   'Creating an account means you\'re okay with\nour Terms of Services and our Privacy Policy',
-                   style: TextStyle(color: Colors.grey,fontSize: 6.sp),
+                  style: TextStyle(color: Colors.grey, fontSize: 6.sp),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(

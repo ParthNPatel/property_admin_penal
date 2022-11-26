@@ -15,6 +15,7 @@ class CommonWidget {
 
   static Widget textFormField(
       {String? hintText,
+      int? maxLines,
       List<TextInputFormatter>? inpuFormator,
       required TextEditingController controller,
       int? maxLength,
@@ -25,6 +26,7 @@ class CommonWidget {
       height: 19.sp,
       width: 150.sp,
       child: TextFormField(
+        maxLines: maxLines,
         obscureText: isObscured,
         inputFormatters: inpuFormator,
         maxLength: maxLength,
@@ -70,10 +72,9 @@ class CommonWidget {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.TOP,
         timeInSecForIosWeb: 2,
-        backgroundColor:color,
+        backgroundColor: color,
         textColor: colorText,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
     // Get.snackbar(
     //   title,
     //   message,
