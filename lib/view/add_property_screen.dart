@@ -265,14 +265,12 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             _addProductReqModel.listOfImage = getAllURL;
                             _addProductReqModel.propertyName =
                                 propertyName.text;
-                            _addProductReqModel.size = size.text;
-                            _addProductReqModel.address = address.text;
+
                             _addProductReqModel.totalBathrooms =
                                 totalBathrooms.text;
                             _addProductReqModel.totalBedRooms =
                                 totalBedRooms.text;
-                            _addProductReqModel.isParkingAvailable =
-                                isParkingAvailable;
+                            _addProductReqModel.isParking isParkingAvailable;
                             _addProductReqModel.price = size.text;
                             _addProductReqModel.description =
                                 totalBathrooms.text;
