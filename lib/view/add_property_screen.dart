@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:property/controller/handle_screen_controller.dart';
 import 'package:sizer/sizer.dart';
 import '../components/common_widget.dart';
@@ -11,6 +12,8 @@ import '../constant/text_const.dart';
 import '../constant/text_styel.dart';
 import '../model/req_model/add_property_req_model.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:google_api_headers/google_api_headers.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -506,6 +509,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 50),
+              SearchPlacesScreen(),
               SizedBox(
                 width: 50.sp,
                 child: isLoading
@@ -666,5 +670,61 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     // });
 
     return finalImage;
+  }
+}
+
+class SearchPlacesScreen extends StatefulWidget {
+  const SearchPlacesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SearchPlacesScreen> createState() => _SearchPlacesScreenState();
+}
+
+const kGoogleApiKey = 'AIzaSyBLjgELUHE9X1z5OI0if3tMRDG5nWK2Rt8';
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+
+class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
+  final Mode _mode = Mode.overlay;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: _handlePressButton, child: const Text("Search Places"));
+  }
+
+  Future<void> _handlePressButton() async {
+    Prediction? p = await PlacesAutocomplete.show(
+        context: context,
+        apiKey: kGoogleApiKey,
+        mode: _mode,
+        language: 'in',
+        strictbounds: false,
+        types: [""],
+        decoration: InputDecoration(
+            hintText: 'Search',
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.white))),
+        components: [
+          Component(Component.country, "in"),
+          // Component(Component.country, "in")
+        ]);
+
+    displayPrediction(p!, homeScaffoldKey.currentState);
+  }
+
+  Future<void> displayPrediction(
+      Prediction p, ScaffoldState? currentState) async {
+    GoogleMapsPlaces places = GoogleMapsPlaces(
+        apiKey: kGoogleApiKey,
+        apiHeaders: await const GoogleApiHeaders().getHeaders());
+
+    PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
+
+    final lat = detail.result.geometry!.location.lat;
+    final lng = detail.result.geometry!.location.lng;
+    print('get lat long by map $lat  $lng  ');
+
+    setState(() {});
   }
 }

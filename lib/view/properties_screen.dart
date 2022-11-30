@@ -44,10 +44,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              searchBar(context),
               SizedBox(
-                height: 10.sp,
+                height: 40.sp,
               ),
+              searchBar(context),
+              SizedBox(height: 10.sp),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
