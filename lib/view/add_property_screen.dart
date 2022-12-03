@@ -556,7 +556,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             _addProductReqModel.addressSearch =
                                 address.text.toLowerCase();
                             _addProductReqModel.countrySearch =
-                                address.text.toLowerCase();
+                                country.text.toLowerCase();
                             _addProductReqModel.pinCode = pinCode.text;
                             _addProductReqModel.nearByPlaces =
                                 nearByPlaces.text;

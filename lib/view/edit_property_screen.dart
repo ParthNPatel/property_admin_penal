@@ -13,6 +13,7 @@ import '../controller/edit_property_controller.dart';
 import '../model/req_model/add_property_req_model.dart';
 import 'package:get/get.dart';
 
+
 class EditPropertyScreen extends StatefulWidget {
   const EditPropertyScreen({Key? key}) : super(key: key);
 
