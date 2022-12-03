@@ -78,7 +78,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                           style: TextStyle(
                               color: selected == index
                                   ? Colors.white
-                                  : Colors.grey),
+                                  : Colors.black),
                         ),
                       ),
                     ),

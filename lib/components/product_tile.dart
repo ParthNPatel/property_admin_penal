@@ -61,7 +61,7 @@ class ProductTile extends StatelessWidget {
               child: CommonText.textBoldWight700(text: title, fontSize: 15),
             ),
             SizedBox(
-              width: 5,
+              width: 15,
             ),
             SizedBox(
               width: 50.sp,
@@ -74,7 +74,7 @@ class ProductTile extends StatelessWidget {
               width: 10,
             ),
             SizedBox(
-              width: 50.sp,
+              width: 25.sp,
               child: CommonText.textBoldWight700(text: price, fontSize: 15),
             ),
             SizedBox(

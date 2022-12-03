@@ -5,6 +5,8 @@ class AddPropertyReqModel {
   String? propertySlugName;
   String? address;
   String? country;
+  String? addressSearch;
+  String? countrySearch;
   String? pinCode;
   String? size;
   String? price;
@@ -24,6 +26,9 @@ class AddPropertyReqModel {
     this.propertyName,
     this.propertySlugName,
     this.address,
+    this.country,
+    this.addressSearch,
+    this.countrySearch,
     this.size,
     this.price,
     this.totalBedRooms,
@@ -40,6 +45,8 @@ class AddPropertyReqModel {
       "propertyName": propertyName,
       "address": address,
       "country": country,
+      "address_search": addressSearch,
+      "country_search": countrySearch,
       "pinCode": pinCode,
       "size": size,
       "price": price,

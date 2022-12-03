@@ -31,22 +31,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   HandleScreenController handleScreenController = Get.find();
 
-  TextEditingController? categoryTitle;
+  TextEditingController categoryTitle = TextEditingController();
 
   bool isLoading = true;
 
   List<Uint8List> _listOfImage = [];
-
-  @override
-  void initState() {
-    try {
-      categoryTitle =
-          TextEditingController(text: editCategoryController.categoryName);
-    } catch (e) {
-      categoryTitle = TextEditingController();
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +47,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               searchBar(context),
               SizedBox(
@@ -66,6 +56,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         height: 20.sp,
@@ -160,370 +151,406 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
             itemCount: categories.length,
             shrinkWrap: true,
-            itemBuilder: (context, index) => Row(
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  height: 100,
-                  width: 100,
-                  margin: EdgeInsets.only(right: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: CommonColor.greyColorF2F2F2,
-                    // image: DecorationImage(
-                    //   image:
-                    //       NetworkImage(categories[index]['category_image'][0]),
-                    //   fit: BoxFit.cover,
-                    // ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Image.network(
-                      categories[index]['category_image'][0],
-                      height: 70,
-                      width: 70,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: 50.sp,
-                  child: CommonText.textBoldWight700(
-                      text: categories[index]['category_name'], fontSize: 15),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: 50.sp,
-                  child: CommonText.textBoldWight700(
-                      text: '09/11/22', fontSize: 15),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                GetBuilder<HandleScreenController>(
-                  builder: (controller) => InkWell(
-                    onTap: () {
-                      //controller.changeTapped3(true);
-                      editCategoryController.addCategoryData(
-                        docId: categories[index].id,
-                        categoryName: categories[index]['category_name'],
-                        categoryImage: categories[index]['category_image'],
-                      );
-                      Get.dialog(
-                        StatefulBuilder(
-                          builder: (context, setState) => Dialog(
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(left: 13.sp, right: 13.sp),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CommonWidget.commonSizedBox(height: 20),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Center(
-                                        child: CommonText.textBoldWight700(
-                                            text: 'Edit Category',
-                                            fontSize: 8.sp),
-                                      ),
-                                      SizedBox(
-                                        width: 20.w,
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          Get.back();
-                                        },
-                                        icon: Icon(Icons.close),
-                                      ),
-                                    ],
-                                  ),
-                                  CommonWidget.commonSizedBox(height: 20),
-                                  CommonText.textBoldWight500(
-                                      text: 'Edit Category Icon',
-                                      fontSize: 7.sp),
-                                  CommonWidget.commonSizedBox(height: 10),
-                                  GetBuilder<EditCategoryController>(
-                                    builder: (controller) => InkWell(
-                                      onTap: () async {
-                                        FilePickerResult? selectedImages =
-                                            await FilePicker.platform.pickFiles(
-                                          type: FileType.custom,
-                                          allowedExtensions: [
-                                            'jpg',
-                                            'png',
-                                            'webp',
-                                            'jpeg'
+            itemBuilder: (context, index) => categories[index]
+                        ['category_name'] ==
+                    "All"
+                ? SizedBox()
+                : Row(
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        margin: EdgeInsets.only(right: 20, bottom: 20),
+                        decoration: BoxDecoration(
+                          color: CommonColor.greyColorF2F2F2,
+                          // image: DecorationImage(
+                          //   image:
+                          //       NetworkImage(categories[index]['category_image'][0]),
+                          //   fit: BoxFit.cover,
+                          // ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Image.network(
+                            categories[index]['category_image'][0],
+                            height: 70,
+                            width: 70,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        width: 50.sp,
+                        child: CommonText.textBoldWight700(
+                            text: categories[index]['category_name'],
+                            fontSize: 15),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        width: 50.sp,
+                        child: CommonText.textBoldWight700(
+                            text: '09/11/22', fontSize: 15),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GetBuilder<HandleScreenController>(
+                        builder: (controller) => InkWell(
+                          onTap: () {
+                            //controller.changeTapped3(true);
+                            editCategoryController.addCategoryData(
+                                docId: categories[index].id,
+                                categoryName: categories[index]
+                                    ['category_name'],
+                                categoryImage: categories[index]
+                                    ['category_image']);
+
+                            categoryTitle = TextEditingController(
+                                text: editCategoryController.categoryName);
+                            Get.dialog(
+                              StatefulBuilder(
+                                builder: (context, setState) => Dialog(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 13.sp, right: 13.sp),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CommonWidget.commonSizedBox(height: 20),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Center(
+                                              child:
+                                                  CommonText.textBoldWight700(
+                                                      text: 'Edit Category',
+                                                      fontSize: 8.sp),
+                                            ),
+                                            SizedBox(
+                                              width: 20.w,
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              icon: Icon(Icons.close),
+                                            ),
                                           ],
-                                        );
-
-                                        if (selectedImages != null) {
-                                          selectedImages.files
-                                              .forEach((element) {
-                                            editCategoryController
-                                                    .categoryImage![0] =
-                                                element.bytes;
-                                          });
-
-                                          //Uint8List? file = selectedImages!.files.first.bytes;
-
-                                          print(
-                                              'selectedImages  image of  ${selectedImages}');
-                                          //print("Image List Length:${_listOfImage.length}");
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: Container(
-                                        height: 200,
-                                        width: 200,
-                                        child: editCategoryController
-                                                    .categoryImage!.length !=
-                                                0
-                                            ? editCategoryController
-                                                        .categoryImage![0]
-                                                        .runtimeType ==
-                                                    Uint8List
-                                                ? Image.memory(
-                                                    editCategoryController
-                                                            .categoryImage![0]
-                                                        as Uint8List,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Image.network(
-                                                    '${editCategoryController.categoryImage![0].toString()}',
-                                                    fit: BoxFit.cover)
-                                            : Icon(Icons.add),
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.black),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  CommonWidget.commonSizedBox(height: 35),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CommonText.textBoldWight500(
-                                          text: 'Category Name',
-                                          fontSize: 7.sp),
-                                      CommonWidget.commonSizedBox(height: 10),
-                                      SizedBox(
-                                        width: 30.w,
-                                        child: CommonWidget.textFormField(
-                                            controller: categoryTitle!),
-                                      ),
-                                    ],
-                                  ),
-                                  CommonWidget.commonSizedBox(height: 50),
-                                  SizedBox(
-                                    width: 50.sp,
-                                    child: isLoading
-                                        ? MaterialButton(
-                                            onPressed: () async {
-                                              if (categoryTitle!
-                                                  .text.isNotEmpty) {
-                                                isLoading = false;
-                                                setState(() {});
+                                        CommonWidget.commonSizedBox(height: 20),
+                                        CommonText.textBoldWight500(
+                                            text: 'Edit Category Icon',
+                                            fontSize: 7.sp),
+                                        CommonWidget.commonSizedBox(height: 10),
+                                        GetBuilder<EditCategoryController>(
+                                          builder: (controller) => InkWell(
+                                            onTap: () async {
+                                              FilePickerResult? selectedImages =
+                                                  await FilePicker.platform
+                                                      .pickFiles(
+                                                type: FileType.custom,
+                                                allowedExtensions: [
+                                                  'jpg',
+                                                  'png',
+                                                  'webp',
+                                                  'jpeg'
+                                                ],
+                                              );
 
-                                                // var getAllURL = await uploadFiles(
-                                                //     editCategoryController.categoryImage!);
-                                                // print('url of image $getAllURL');
-
-                                                List uploadImage = [];
-                                                List existImage = [];
-
-                                                try {
+                                              if (selectedImages != null) {
+                                                selectedImages.files
+                                                    .forEach((element) {
                                                   editCategoryController
-                                                      .categoryImage!
-                                                      .forEach((element) {
-                                                    if (element.runtimeType ==
-                                                        Uint8List) {
-                                                      uploadImage.add(element);
-                                                    } else {
-                                                      existImage.add(element);
-                                                    }
-                                                  });
-                                                } catch (e) {}
-                                                print(
-                                                    'image length for up  ${uploadImage.length}  ${existImage.length}');
-                                                if (uploadImage.length != 0) {
-                                                  var getAllURL =
-                                                      await uploadFiles(
-                                                          uploadImage);
-                                                  getAllURL.forEach((element) {
-                                                    existImage.add(element);
-                                                  });
-                                                  print(
-                                                      'url of image ${existImage}');
-                                                }
-
-                                                await FirebaseFirestore.instance
-                                                    .collection('Admin')
-                                                    .doc('categories')
-                                                    .collection(
-                                                        'categories_list')
-                                                    .doc(editCategoryController
-                                                        .docId)
-                                                    .update({
-                                                  'category_name':
-                                                      categoryTitle!.text,
-                                                  'category_image': existImage,
+                                                          .categoryImage![0] =
+                                                      element.bytes;
                                                 });
 
-                                                _listOfImage.clear();
+                                                //Uint8List? file = selectedImages!.files.first.bytes;
 
-                                                isLoading = true;
+                                                print(
+                                                    'selectedImages  image of  ${selectedImages}');
+                                                //print("Image List Length:${_listOfImage.length}");
                                                 setState(() {});
-
-                                                //Get.back();
-                                                //Navigator.pop(context);
-                                                controller.changeTapped3(false);
-                                                Get.back();
-                                                CommonWidget.getSnackBar(
-                                                    color: themColors309D9D,
-                                                    duration: 2,
-                                                    title: 'Successful!',
-                                                    message:
-                                                        'Your Category Edited Successfully');
-                                              } else {
-                                                isLoading = false;
-                                                CommonWidget.getSnackBar(
-                                                    duration: 2,
-                                                    title: 'Required',
-                                                    message:
-                                                        'Please Enter All Valid Details');
                                               }
                                             },
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
+                                            child: Container(
+                                              height: 200,
+                                              width: 200,
+                                              child: editCategoryController
+                                                          .categoryImage!
+                                                          .length !=
+                                                      0
+                                                  ? editCategoryController
+                                                              .categoryImage![0]
+                                                              .runtimeType ==
+                                                          Uint8List
+                                                      ? Image.memory(
+                                                          editCategoryController
+                                                                  .categoryImage![
+                                                              0] as Uint8List,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : Image.network(
+                                                          '${editCategoryController.categoryImage![0].toString()}',
+                                                          fit: BoxFit.cover)
+                                                  : Icon(Icons.add),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black),
+                                              ),
                                             ),
-                                            color: themColors309D9D,
-                                            height: 20.sp,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    CommonText.textBoldWight500(
-                                                        text: "Update Category",
-                                                        color: Colors.white,
-                                                        fontSize: 5.sp)
-                                                  ]),
+                                          ),
+                                        ),
+                                        CommonWidget.commonSizedBox(height: 35),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CommonText.textBoldWight500(
+                                                text: 'Category Name',
+                                                fontSize: 7.sp),
+                                            CommonWidget.commonSizedBox(
+                                                height: 10),
+                                            SizedBox(
+                                              width: 30.w,
+                                              child: CommonWidget.textFormField(
+                                                  controller: categoryTitle),
                                             ),
-                                          )
-                                        : Center(
-                                            child: CircularProgressIndicator(
-                                            color: themColors309D9D,
-                                          )),
+                                          ],
+                                        ),
+                                        CommonWidget.commonSizedBox(height: 50),
+                                        SizedBox(
+                                          width: 50.sp,
+                                          child: isLoading
+                                              ? MaterialButton(
+                                                  onPressed: () async {
+                                                    if (categoryTitle
+                                                        .text.isNotEmpty) {
+                                                      isLoading = false;
+                                                      setState(() {});
+
+                                                      // var getAllURL = await uploadFiles(
+                                                      //     editCategoryController.categoryImage!);
+                                                      // print('url of image $getAllURL');
+
+                                                      List uploadImage = [];
+                                                      List existImage = [];
+
+                                                      try {
+                                                        editCategoryController
+                                                            .categoryImage!
+                                                            .forEach((element) {
+                                                          if (element
+                                                                  .runtimeType ==
+                                                              Uint8List) {
+                                                            uploadImage
+                                                                .add(element);
+                                                          } else {
+                                                            existImage
+                                                                .add(element);
+                                                          }
+                                                        });
+                                                      } catch (e) {}
+                                                      print(
+                                                          'image length for up  ${uploadImage.length}  ${existImage.length}');
+                                                      if (uploadImage.length !=
+                                                          0) {
+                                                        var getAllURL =
+                                                            await uploadFiles(
+                                                                uploadImage);
+                                                        getAllURL
+                                                            .forEach((element) {
+                                                          existImage
+                                                              .add(element);
+                                                        });
+                                                        print(
+                                                            'url of image ${existImage}');
+                                                      }
+
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection('Admin')
+                                                          .doc('categories')
+                                                          .collection(
+                                                              'categories_list')
+                                                          .doc(
+                                                              editCategoryController
+                                                                  .docId)
+                                                          .update({
+                                                        'category_name':
+                                                            categoryTitle.text,
+                                                        'category_image':
+                                                            existImage,
+                                                      });
+
+                                                      _listOfImage.clear();
+
+                                                      isLoading = true;
+                                                      setState(() {});
+
+                                                      //Get.back();
+                                                      //Navigator.pop(context);
+                                                      controller
+                                                          .changeTapped3(false);
+                                                      Get.back();
+                                                      CommonWidget.getSnackBar(
+                                                          color:
+                                                              themColors309D9D,
+                                                          duration: 2,
+                                                          title: 'Successful!',
+                                                          message:
+                                                              'Your Category Edited Successfully');
+                                                    } else {
+                                                      isLoading = false;
+                                                      CommonWidget.getSnackBar(
+                                                          duration: 2,
+                                                          title: 'Required',
+                                                          message:
+                                                              'Please Enter All Valid Details');
+                                                    }
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  color: themColors309D9D,
+                                                  height: 20.sp,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          CommonText
+                                                              .textBoldWight500(
+                                                                  text:
+                                                                      "Update Category",
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      5.sp)
+                                                        ]),
+                                                  ),
+                                                )
+                                              : Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                  color: themColors309D9D,
+                                                )),
+                                        ),
+                                        CommonWidget.commonSizedBox(height: 30),
+                                      ],
+                                    ),
                                   ),
-                                  CommonWidget.commonSizedBox(height: 30),
-                                ],
+                                ),
                               ),
+                            );
+                            //Get.to(() => EditCategoryScreen());
+                          },
+                          child: Container(
+                            height: 10.sp,
+                            width: 10.sp,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: themColors309D9D, width: 1),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              size: 20,
+                              color: CommonColor.greyColor838589,
                             ),
                           ),
                         ),
-                      );
-                      //Get.to(() => EditCategoryScreen());
-                    },
-                    child: Container(
-                      height: 10.sp,
-                      width: 10.sp,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: themColors309D9D, width: 1),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Icon(
-                        Icons.edit,
-                        size: 20,
-                        color: CommonColor.greyColor838589,
+                      SizedBox(
+                        width: 10,
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.dialog(AlertDialog(
-                      title: Text(
-                          "Are you sure that you want to delete this category?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: Text('NO'),
+                      InkWell(
+                        onTap: () {
+                          Get.dialog(AlertDialog(
+                            title: Text(
+                                "Are you sure that you want to delete this category?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: Text('NO'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseFirestore.instance
+                                      .collection('Admin')
+                                      .doc('categories')
+                                      .collection('categories_list')
+                                      .doc(categories[index].id)
+                                      .delete();
+                                  Get.back();
+                                },
+                                child: Text('YES'),
+                              ),
+                            ],
+                          ));
+                        },
+                        child: Container(
+                          height: 10.sp,
+                          width: 10.sp,
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: themColors309D9D, width: 1),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: CommonColor.greyColor838589,
+                          ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            FirebaseFirestore.instance
-                                .collection('Admin')
-                                .doc('categories')
-                                .collection('categories_list')
-                                .doc(categories[index].id)
-                                .delete();
-                            Get.back();
-                          },
-                          child: Text('YES'),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          Get.dialog(
+                            await addCategory(),
+                          );
+                        },
+                        child: Container(
+                          height: 10.sp,
+                          width: 10.sp,
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: themColors309D9D, width: 1),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            size: 20,
+                            color: CommonColor.greyColor838589,
+                          ),
                         ),
-                      ],
-                    ));
-                  },
-                  child: Container(
-                    height: 10.sp,
-                    width: 10.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: themColors309D9D, width: 1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Icon(
-                      Icons.delete,
-                      size: 20,
-                      color: CommonColor.greyColor838589,
-                    ),
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () async {
-                    Get.dialog(
-                      await addCategory(),
-                    );
-                  },
-                  child: Container(
-                    height: 10.sp,
-                    width: 10.sp,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: themColors309D9D, width: 1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      size: 20,
-                      color: CommonColor.greyColor838589,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-              ],
-            ),
           );
         } else {
           return CategoryShimmer();
@@ -753,7 +780,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   CommonText.textBoldWight500(
                       text: 'Category Name', fontSize: 7.sp),
                   CommonWidget.commonSizedBox(height: 10),
-                  CommonWidget.textFormField(controller: categoryTitle!),
+                  CommonWidget.textFormField(controller: categoryTitle),
                 ],
               ),
               CommonWidget.commonSizedBox(height: 50),
@@ -763,7 +790,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     ? MaterialButton(
                         onPressed: () async {
                           if (_listOfImage.length != 0 &&
-                              categoryTitle!.text.isNotEmpty) {
+                              categoryTitle.text.isNotEmpty) {
                             isLoading = false;
                             setState(() {});
 
@@ -775,11 +802,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 .doc('categories')
                                 .collection('categories_list')
                                 .add({
-                              'category_name': categoryTitle!.text,
+                              'category_name': categoryTitle.text,
                               'category_image': getAllURL,
                             });
 
-                            categoryTitle!.clear();
+                            categoryTitle.clear();
                             _listOfImage.clear();
 
                             _listOfImage.clear();

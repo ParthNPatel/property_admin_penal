@@ -9,81 +9,84 @@ class CategoryShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      child: GridView.builder(
+      child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
-        itemCount: 10,
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        itemCount: 5,
+        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
         shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 10,
-            mainAxisExtent: 350),
-        itemBuilder: (context, index) => Column(
+        itemBuilder: (context, index) => Row(
           children: [
             SizedBox(
-              height: 10,
-            ),
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 250,
-                    width: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 4.sp,
-                  right: 16.sp,
-                  child: CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.white,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.edit,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 4.sp,
-                  right: 4.sp,
-                  child: CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.white,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.delete,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 12,
+              width: 10,
             ),
             Container(
-              height: 15,
-              width: 50,
+              height: 100,
+              width: 100,
+              margin: EdgeInsets.only(right: 20, bottom: 20),
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             SizedBox(
-              height: 6,
+              width: 10,
+            ),
+            Container(
+              height: 10,
+              width: 20.sp,
+              margin: EdgeInsets.only(right: 20, bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              height: 10,
+              width: 20.sp,
+              margin: EdgeInsets.only(right: 20, bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              height: 10.sp,
+              width: 10.sp,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              height: 10.sp,
+              width: 10.sp,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Container(
+              height: 10.sp,
+              width: 10.sp,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey),
+            ),
+            SizedBox(
+              width: 12,
             ),
           ],
         ),
@@ -94,6 +97,3 @@ class CategoryShimmer extends StatelessWidget {
     );
   }
 }
-
-
-

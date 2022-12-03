@@ -92,7 +92,7 @@ class _ServiceInquiryScreenState extends State<ServiceInquiryScreen>
                             style: TextStyle(
                                 color: selected == index
                                     ? Colors.white
-                                    : Colors.grey),
+                                    : Colors.black),
                           ),
                         ),
                       ),

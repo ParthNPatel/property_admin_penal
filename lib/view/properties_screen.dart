@@ -28,7 +28,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
 
   TextEditingController searchController = TextEditingController();
 
-  String category = "Home";
+  String category = "All";
 
   DateTime? startDate;
   DateTime? endDate;
@@ -44,9 +44,9 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 40.sp,
-              ),
+              // SizedBox(
+              //   height: 10.sp,
+              // ),
               searchBar(context),
               SizedBox(height: 10.sp),
               Expanded(
@@ -82,23 +82,23 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               SizedBox(
                                 width: 50.sp,
                                 child: CommonText.textBoldWight700(
-                                    text: "PROPERTY NAME", fontSize: 15),
+                                    text: "PROPERTY NAME", fontSize: 13),
                               ),
                               SizedBox(
-                                width: 5,
+                                width: 15,
                               ),
                               SizedBox(
                                 width: 50.sp,
                                 child: CommonText.textBoldWight700(
-                                    text: "ADDRESS", fontSize: 15),
+                                    text: "ADDRESS", fontSize: 13),
                               ),
                               SizedBox(
                                 width: 1.w,
                               ),
                               SizedBox(
-                                width: 50.sp,
+                                width: 25.sp,
                                 child: CommonText.textBoldWight700(
-                                    text: "PRICE", fontSize: 15),
+                                    text: "PRICE", fontSize: 13),
                               ),
                               SizedBox(
                                 width: 10,
@@ -106,7 +106,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                               SizedBox(
                                 width: 50.sp,
                                 child: CommonText.textBoldWight700(
-                                    text: "TOTAL BEDROOMS", fontSize: 15),
+                                    text: "TOTAL BEDROOMS", fontSize: 13),
                               ),
                               SizedBox(
                                 width: 10,
@@ -122,7 +122,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     CommonText.textBoldWight700(
-                                        text: "TOTAL BATHROOMS", fontSize: 15),
+                                        text: "TOTAL BATHROOMS", fontSize: 13),
                                   ],
                                 ),
                               ),
@@ -133,7 +133,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   width: 30.sp,
                                   child: Center(
                                     child: CommonText.textBoldWight700(
-                                        text: "STATUS", fontSize: 15),
+                                        text: "STATUS", fontSize: 13),
                                   )),
 
                               SizedBox(
@@ -143,7 +143,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   width: 50.sp,
                                   child: Center(
                                     child: CommonText.textBoldWight700(
-                                        text: "RATING", fontSize: 15),
+                                        text: "RATING", fontSize: 13),
                                   )),
                               FutureBuilder(
                                 future: FirebaseFirestore.instance
@@ -158,7 +158,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                   if (snapshot.hasData) {
                                     return Container(
                                       height: 14.sp,
-                                      width: 50.sp,
+                                      width: 45.sp,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
@@ -206,108 +206,16 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     );
   }
 
-  // StreamBuilder<QuerySnapshot<Object?>> properties() {
-  //   return StreamBuilder<QuerySnapshot>(
-  //     stream: FirebaseFirestore.instance
-  //         .collection('Admin')
-  //         .doc('all_properties')
-  //         .collection('property_data')
-  //         .orderBy('create_time', descending: true)
-  //         .snapshots(),
-  //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-  //       if (snapshot.hasData) {
-  //         List<DocumentSnapshot> properties = snapshot.data!.docs;
-  //         print("length======>${properties.length}");
-  //         if (searchText.isNotEmpty) {
-  //           properties = properties.where((element) {
-  //             return element
-  //                 .get('propertyName')
-  //                 .toString()
-  //                 .toLowerCase()
-  //                 .contains(searchText.toLowerCase());
-  //           }).toList();
-  //         }
-  //         return GridView.builder(
-  //             //reverse: true,
-  //             physics: NeverScrollableScrollPhysics(),
-  //             padding: EdgeInsets.symmetric(horizontal: 15),
-  //             itemCount: properties.length,
-  //             shrinkWrap: true,
-  //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //                 crossAxisCount: Responsive.isDesktop(context) ? 5 : 3,
-  //                 crossAxisSpacing: 15,
-  //                 mainAxisSpacing: 10,
-  //                 mainAxisExtent: 450
-  //                 //hildAspectRatio:
-  //                 //Responsive.isDesktop(context) ? 2 / 2.4 : 2 / 2.9,
-  //                 ),
-  //             itemBuilder: (context, index) =>
-  //                 GetBuilder<HandleScreenController>(
-  //                   builder: (controller) => ProductTile(
-  //                     onEdit: () {
-  //                       controller.changeTapped1(true);
-  //                       editPropertyController.listOfImage!.clear();
-  //
-  //                       print(
-  //                           'listOfImage   ${properties[index].get("listOfImage")}');
-  //
-  //                       editPropertyController.addPropertyData(
-  //                         docId: properties[index].id,
-  //                         productId:
-  //                             properties[index].get("productId").toString(),
-  //                         listOfImage: properties[index].get("listOfImage"),
-  //                         propertyName: properties[index].get("propertyName"),
-  //                         description: properties[index].get("description"),
-  //                         category: properties[index].get("category"),
-  //                         address: properties[index].get("address"),
-  //                         country: properties[index].get("country"),
-  //                         pinCode: properties[index].get("pinCode"),
-  //                         isParkingAvailable:
-  //                             properties[index].get("isParkingAvailable"),
-  //                         price: properties[index].get("price"),
-  //                         size: properties[index].get("size"),
-  //                         totalBathrooms:
-  //                             properties[index].get("totalBathrooms"),
-  //                         totalBedRooms: properties[index].get("totalBedRooms"),
-  //                         garages: properties[index].get("garages"),
-  //                         label: properties[index].get("label"),
-  //                         propertyStatus:
-  //                             properties[index].get("propertyStatus"),
-  //                         nearByPlaces: properties[index].get("nearByPlaces"),
-  //                       );
-  //                       //Get.to(() => EditPropertyScreen());
-  //                       //Navigator.pushNamed(context, '/EditProperty');
-  //                     },
-  //                     image: properties[index].get("listOfImage")[0],
-  //                     title: properties[index].get("propertyName"),
-  //                     subtitle: properties[index].get("address"),
-  //                     price: properties[index].get("price"),
-  //                     size: properties[index].get("size"),
-  //                     totalBedroom: properties[index].get("totalBedRooms"),
-  //                     totalWashroom: properties[index].get("totalBathrooms"),
-  //                     rating: '5',
-  //                   ),
-  //                 ));
-  //       } else {
-  //         return DashBoardShimmer();
-  //       }
-  //     },
-  //   );
-  // }
-
   StreamBuilder<QuerySnapshot<Object?>> products() {
     return StreamBuilder<QuerySnapshot>(
-      stream: category == 'Home'
+      stream: category == 'All'
           ? FirebaseFirestore.instance
-              .collection('Admin')
-              .doc('all_properties')
               .collection('property_data')
               .orderBy('create_time', descending: true)
               .snapshots()
           : FirebaseFirestore.instance
-              .collection('Admin')
-              .doc('all_properties')
               .collection('property_data')
+              .where("category", isEqualTo: category)
               .orderBy('create_time', descending: true)
               .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -401,7 +309,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             ),
           );
         } else {
-          return DashBoardShimmer();
+          return ProductShimmer();
         }
       },
     );

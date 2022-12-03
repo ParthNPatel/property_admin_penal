@@ -509,7 +509,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 50),
-              SearchPlacesScreen(),
+              // SearchPlacesScreen(),
               SizedBox(
                 width: 50.sp,
                 child: isLoading
@@ -552,6 +552,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             _addProductReqModel.description = description.text;
                             _addProductReqModel.category = category;
                             _addProductReqModel.country = country.text;
+                            _addProductReqModel.address = address.text;
+                            _addProductReqModel.addressSearch =
+                                address.text.toLowerCase();
+                            _addProductReqModel.countrySearch =
+                                address.text.toLowerCase();
                             _addProductReqModel.pinCode = pinCode.text;
                             _addProductReqModel.nearByPlaces =
                                 nearByPlaces.text;
@@ -565,8 +570,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 fetchCount['total_count'] + 1;
 
                             await FirebaseFirestore.instance
-                                .collection('Admin')
-                                .doc('all_properties')
                                 .collection('property_data')
                                 .add(_addProductReqModel.toJson());
 
@@ -650,6 +653,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       finalImage = await p0.storage.ref(getUrl).getDownloadURL();
       //   _uploadOfImage.add(await p0.storage.ref(getUrl).getDownloadURL());
     });
+
     // await task.snapshotEvents.listen((event) async {
     //   double progress = 0.0;
     //

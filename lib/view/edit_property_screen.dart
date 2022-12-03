@@ -447,7 +447,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                       ),
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
+                        contentPadding: EdgeInsets.only(top: 13.sp, left: 6.sp),
                         filled: true,
                         fillColor: Colors.white,
                         // hintText: "Write Description here",
@@ -541,6 +541,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                             _addProductReqModel.size = size!.text;
                             _addProductReqModel.address = address!.text;
                             _addProductReqModel.country = country!.text;
+                            _addProductReqModel.addressSearch =
+                                address!.text.toLowerCase();
+                            _addProductReqModel.countrySearch =
+                                country!.text.toLowerCase();
                             _addProductReqModel.pinCode = pinCode!.text;
                             _addProductReqModel.totalBathrooms =
                                 totalBathrooms!.text;
@@ -565,8 +569,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                                 int.parse(editProductController.productId!);
 
                             await FirebaseFirestore.instance
-                                .collection('Admin')
-                                .doc('all_properties')
                                 .collection('property_data')
                                 .doc(editProductController.docId)
                                 .update(_addProductReqModel.toJson());
