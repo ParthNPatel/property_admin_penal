@@ -64,8 +64,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           ),
                           FutureBuilder(
                             future: FirebaseFirestore.instance
-                                .collection('Admin')
-                                .doc('all_properties')
                                 .collection('property_data')
                                 .get(),
                             builder: (context, snapshot) {

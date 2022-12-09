@@ -38,6 +38,7 @@ class CommonWidget {
         ),
         cursorColor: Colors.black,
         decoration: InputDecoration(
+          counterText: "",
           contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
           suffixIcon: suffix,
           filled: true,

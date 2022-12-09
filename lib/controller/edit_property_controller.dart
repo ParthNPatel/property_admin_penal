@@ -19,6 +19,10 @@ class EditPropertyController extends GetxController {
   bool? isParkingAvailable;
   String? productId;
   String? docId;
+  List? features = [];
+  bool? isNewBuild;
+  bool? isSharedOwnerShip;
+  bool? underOffer;
 
   void addPropertyData({
     String? docId,
@@ -39,6 +43,10 @@ class EditPropertyController extends GetxController {
     String? category,
     String? description,
     bool? isParkingAvailable = false,
+    List? features,
+    bool? isNewBuild,
+    bool? isSharedOwnerShip,
+    bool? underOffer,
   }) {
     this.docId = docId;
     this.productId = productId;
@@ -59,5 +67,9 @@ class EditPropertyController extends GetxController {
     this.category = category;
     this.description = description;
     this.isParkingAvailable = isParkingAvailable;
+    this.isSharedOwnerShip = isSharedOwnerShip;
+    this.isNewBuild = isNewBuild;
+    this.underOffer = underOffer;
+    this.features = features;
   }
 }

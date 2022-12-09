@@ -1,8 +1,8 @@
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:property/controller/handle_screen_controller.dart';
 import 'package:sizer/sizer.dart';
 import '../components/common_widget.dart';
@@ -12,7 +12,6 @@ import '../constant/text_styel.dart';
 import '../controller/edit_property_controller.dart';
 import '../model/req_model/add_property_req_model.dart';
 import 'package:get/get.dart';
-
 
 class EditPropertyScreen extends StatefulWidget {
   const EditPropertyScreen({Key? key}) : super(key: key);
@@ -59,6 +58,20 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   bool isLoading = true;
 
   bool isParkingAvailable = false;
+  bool isNewBuild = false;
+  bool isSharedOwnerShip = false;
+  bool underOffer = false;
+
+  final featureController = TextEditingController();
+
+  List featureList = [];
+
+  String dropDownValue = "For Rent";
+
+  List<String> dropDownList = [
+    "For Rent",
+    "To Sale",
+  ];
 
   @override
   void initState() {
@@ -84,7 +97,19 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     nearByPlaces =
         TextEditingController(text: editProductController.nearByPlaces);
 
+    featureList.addAll(editProductController.features!);
+
     category = editProductController.category!;
+
+    try {
+      isNewBuild = editProductController.isNewBuild!;
+      isSharedOwnerShip = editProductController.isSharedOwnerShip!;
+      underOffer = editProductController.underOffer!;
+    } catch (e) {
+      isNewBuild = editProductController.isNewBuild!;
+      isSharedOwnerShip = editProductController.isSharedOwnerShip!;
+      underOffer = editProductController.underOffer!;
+    }
 
     super.initState();
   }
@@ -184,7 +209,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   ),
                 ),
               ),
-              CommonWidget.commonSizedBox(height: 30),
+              CommonWidget.commonSizedBox(height: 40),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -253,6 +278,66 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   )
                 ],
               ),
+              CommonWidget.commonSizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText.textBoldWight500(
+                      text: 'Property Features', fontSize: 7.sp),
+                  CommonWidget.commonSizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonWidget.textFormField(
+                        controller: featureController,
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {});
+                          if (featureController.text.isNotEmpty) {
+                            featureList.add(featureController.text);
+                          }
+
+                          featureController.clear();
+                        },
+                        child: Container(
+                          height: 14.sp,
+                          width: 14.sp,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(
+                              color: themColors309D9D,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: themColors309D9D,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  CommonWidget.commonSizedBox(height: 10),
+                  featureList.length != 0
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(
+                              featureList.length,
+                              (index) => Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: CommonText.textBoldWight500(
+                                        text: "• ${featureList[index]}",
+                                        fontSize: 6.sp,
+                                        color: themColors309D9D),
+                                  )),
+                        )
+                      : SizedBox()
+                ],
+              ),
+              CommonWidget.commonSizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -349,7 +434,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                           controller: totalBedRooms!,
                         ),
                       ),
-                      CommonWidget.commonSizedBox(height: 20),
                     ],
                   ),
                   SizedBox(
@@ -358,6 +442,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      CommonWidget.commonSizedBox(height: 20),
                       CommonText.textBoldWight500(
                           text: 'Total BathRooms', fontSize: 7.sp),
                       CommonWidget.commonSizedBox(height: 10),
@@ -371,18 +456,72 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // CommonWidget.commonSizedBox(height: 20),
+              Row(
                 children: [
-                  CommonText.textBoldWight500(
-                      text: 'Property Status', fontSize: 7.sp),
-                  CommonWidget.commonSizedBox(height: 10),
-                  CommonWidget.textFormField(
-                    controller: propertyStatus!,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonText.textBoldWight500(
+                          text: 'Property Status', fontSize: 7.sp),
+                      CommonWidget.commonSizedBox(height: 10),
+                      Container(
+                        height: 14.sp,
+                        width: 70.sp,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(color: Colors.grey)),
+                        child: Center(
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            value: dropDownValue,
+                            icon: Padding(
+                              padding: EdgeInsets.only(left: 7.sp),
+                              child: Icon(Icons.arrow_drop_down),
+                            ),
+                            items: dropDownList.map((e) {
+                              return DropdownMenuItem(
+                                child: Text(e),
+                                value: e,
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                dropDownValue = value as String;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonWidget.commonSizedBox(height: 20),
+                      CommonText.textBoldWight500(
+                          text: 'Price', fontSize: 7.sp),
+                      CommonWidget.commonSizedBox(height: 10),
+                      SizedBox(
+                        width: 70.sp,
+                        child: CommonWidget.textFormField(
+                          controller: price!,
+                          maxLength: 9,
+                          inpuFormator: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      CommonWidget.commonSizedBox(height: 20),
+                    ],
                   ),
                 ],
               ),
-              CommonWidget.commonSizedBox(height: 20),
+              // CommonWidget.commonSizedBox(height: 20),
               Row(
                 children: [
                   Column(
@@ -475,29 +614,108 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonWidget.commonSizedBox(height: 10),
-                  SizedBox(
-                    width: 70.sp,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          activeColor: themColors309D9D,
-                          value: isParkingAvailable,
-                          onChanged: (value) {
-                            setState(() {
-                              isParkingAvailable = value!;
-                            });
-                          },
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isParkingAvailable,
+                              onChanged: (value) {
+                                setState(() {
+                                  isParkingAvailable = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Parking Available', fontSize: 6.sp),
+                          ],
                         ),
-                        SizedBox(
-                          width: 20,
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isNewBuild,
+                              onChanged: (value) {
+                                setState(() {
+                                  isNewBuild = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'New Build Home', fontSize: 6.sp),
+                          ],
                         ),
-                        CommonText.textBoldWight500(
-                            text: 'Parking Available', fontSize: 7.sp),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  CommonWidget.commonSizedBox(height: 20),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isSharedOwnerShip,
+                              onChanged: (value) {
+                                setState(() {
+                                  isSharedOwnerShip = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Shared Ownership', fontSize: 6.sp),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: underOffer,
+                              onChanged: (value) {
+                                setState(() {
+                                  underOffer = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Under Offer', fontSize: 6.sp),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
+              CommonWidget.commonSizedBox(height: 50),
               CommonWidget.commonSizedBox(height: 50),
               SizedBox(
                 width: 50.sp,

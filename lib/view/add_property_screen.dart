@@ -14,6 +14,7 @@ import '../model/req_model/add_property_req_model.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
+import 'package:flutter/services.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -27,7 +28,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   List<Uint8List> _listOfImage = [];
 
+  List featureList = [];
+
   String category = "Home";
+
+  String dropDownValue = "For Rent";
+
+  List<String> dropDownList = [
+    "For Rent",
+    "To Sale",
+  ];
 
   // List<String> categoryList = [
   //   'Home',
@@ -44,21 +54,60 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   final totalBedRooms = TextEditingController();
   final totalBathrooms = TextEditingController();
   final description = TextEditingController();
-  final propertyStatus = TextEditingController();
+  // final propertyStatus = TextEditingController();
   final label = TextEditingController();
   final garages = TextEditingController();
   final nearByPlaces = TextEditingController();
   final propertyDate = TextEditingController();
   final distance = TextEditingController();
+  final featureController = TextEditingController();
 
   bool isParkingAvailable = false;
+  bool isNewBuild = false;
+  bool isSharedOwnerShip = false;
+  bool underOffer = false;
 
   AddPropertyReqModel _addProductReqModel = AddPropertyReqModel();
+
   bool isLoading = true;
 
   int groupValue = 1;
 
   HandleScreenController controller = Get.find();
+
+  List categories = [];
+
+  CollectionReference _collectionRef = FirebaseFirestore.instance
+      .collection("Admin")
+      .doc("categories")
+      .collection("categories_list");
+
+  getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    // Get data from docs and convert map to List
+    List<Object?> allData =
+        querySnapshot.docs.map((doc) => doc.data()).toList();
+    print('All Data==>${allData}');
+
+    allData.forEach((element) {
+      // categories.add(element['category_name']);
+      print('All Data1==>${element}');
+    });
+
+    // // categories = allData;
+    // categories.removeWhere((element) {
+    //   return element['category_name'] == "All";
+    // });
+
+    print("CATEGORIES++>>$categories");
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,6 +302,65 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CommonText.textBoldWight500(
+                      text: 'Property Features', fontSize: 7.sp),
+                  CommonWidget.commonSizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonWidget.textFormField(
+                        controller: featureController,
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {});
+                          if (featureController.text.isNotEmpty) {
+                            featureList.add(featureController.text);
+                          }
+
+                          featureController.clear();
+                        },
+                        child: Container(
+                          height: 14.sp,
+                          width: 14.sp,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(
+                              color: themColors309D9D,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: themColors309D9D,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  CommonWidget.commonSizedBox(height: 10),
+                  featureList.length != 0
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(
+                              featureList.length,
+                              (index) => Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: CommonText.textBoldWight500(
+                                        text: "• ${featureList[index]}",
+                                        fontSize: 6.sp,
+                                        color: themColors309D9D),
+                                  )),
+                        )
+                      : SizedBox()
+                ],
+              ),
+              CommonWidget.commonSizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   //CommonWidget.commonSizedBox(height: 20),
                   CommonText.textBoldWight500(text: 'Address', fontSize: 7.sp),
                   CommonWidget.commonSizedBox(height: 10),
@@ -301,27 +409,37 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 children: [
                   CommonText.textBoldWight500(
                       text: 'Select Size Input', fontSize: 7.sp),
-                  RadioListTile(
-                    activeColor: themColors309D9D,
-                    value: 1,
-                    groupValue: groupValue,
-                    title: Text("Square feet"),
-                    onChanged: (int? value) {
-                      setState(() {
-                        groupValue = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile(
-                    activeColor: themColors309D9D,
-                    value: 2,
-                    groupValue: groupValue,
-                    title: Text("Metres"),
-                    onChanged: (int? value) {
-                      setState(() {
-                        groupValue = value!;
-                      });
-                    },
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: RadioListTile(
+                          activeColor: themColors309D9D,
+                          value: 1,
+                          groupValue: groupValue,
+                          title: Text("Square feet"),
+                          onChanged: (int? value) {
+                            setState(() {
+                              groupValue = value!;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: RadioListTile(
+                          activeColor: themColors309D9D,
+                          value: 2,
+                          groupValue: groupValue,
+                          title: Text("Metres"),
+                          onChanged: (int? value) {
+                            setState(() {
+                              groupValue = value!;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   CommonWidget.commonSizedBox(height: 20),
                   CommonText.textBoldWight500(text: 'Size', fontSize: 7.sp),
@@ -344,6 +462,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         width: 70.sp,
                         child: CommonWidget.textFormField(
                           controller: totalBedRooms,
+                          maxLength: 3,
+                          inpuFormator: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                     ],
@@ -362,6 +484,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         width: 70.sp,
                         child: CommonWidget.textFormField(
                           controller: totalBathrooms,
+                          maxLength: 3,
+                          inpuFormator: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                     ],
@@ -376,10 +502,33 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       CommonText.textBoldWight500(
                           text: 'Property Status', fontSize: 7.sp),
                       CommonWidget.commonSizedBox(height: 10),
-                      SizedBox(
+                      Container(
+                        height: 14.sp,
                         width: 70.sp,
-                        child: CommonWidget.textFormField(
-                          controller: propertyStatus,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(color: Colors.grey)),
+                        child: Center(
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            value: dropDownValue,
+                            icon: Padding(
+                              padding: EdgeInsets.only(left: 7.sp),
+                              child: Icon(Icons.arrow_drop_down),
+                            ),
+                            items: dropDownList.map((e) {
+                              return DropdownMenuItem(
+                                child: Text(e),
+                                value: e,
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                dropDownValue = value as String;
+                              });
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -398,6 +547,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         width: 70.sp,
                         child: CommonWidget.textFormField(
                           controller: price,
+                          maxLength: 9,
+                          inpuFormator: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                       CommonWidget.commonSizedBox(height: 20),
@@ -485,26 +638,104 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CommonWidget.commonSizedBox(height: 10),
-                  SizedBox(
-                    width: 70.sp,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          activeColor: themColors309D9D,
-                          value: isParkingAvailable,
-                          onChanged: (value) {
-                            setState(() {
-                              isParkingAvailable = value!;
-                            });
-                          },
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isParkingAvailable,
+                              onChanged: (value) {
+                                setState(() {
+                                  isParkingAvailable = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Parking Available', fontSize: 6.sp),
+                          ],
                         ),
-                        SizedBox(
-                          width: 20,
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isNewBuild,
+                              onChanged: (value) {
+                                setState(() {
+                                  isNewBuild = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'New Build Home', fontSize: 6.sp),
+                          ],
                         ),
-                        CommonText.textBoldWight500(
-                            text: 'Parking Available', fontSize: 7.sp),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  CommonWidget.commonSizedBox(height: 20),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: isSharedOwnerShip,
+                              onChanged: (value) {
+                                setState(() {
+                                  isSharedOwnerShip = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Shared Ownership', fontSize: 6.sp),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.sp,
+                      ),
+                      SizedBox(
+                        width: 70.sp,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              activeColor: themColors309D9D,
+                              value: underOffer,
+                              onChanged: (value) {
+                                setState(() {
+                                  underOffer = value!;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            CommonText.textBoldWight500(
+                                text: 'Under Offer', fontSize: 6.sp),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -560,10 +791,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             _addProductReqModel.pinCode = pinCode.text;
                             _addProductReqModel.nearByPlaces =
                                 nearByPlaces.text;
-                            _addProductReqModel.propertyStatus =
-                                propertyStatus.text;
+                            _addProductReqModel.propertyStatus = dropDownValue;
                             _addProductReqModel.label = label.text;
+                            _addProductReqModel.features = featureList;
+                            _addProductReqModel.isNewBuild = isNewBuild;
+                            _addProductReqModel.underOffer = underOffer;
+                            _addProductReqModel.isSharedOwnerShip =
+                                isSharedOwnerShip;
                             _addProductReqModel.garages = garages.text;
+
                             _addProductReqModel.propertySlugName =
                                 propertyName.text.toLowerCase();
                             _addProductReqModel.propertyId =
@@ -577,7 +813,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             address.clear();
                             country.clear();
                             pinCode.clear();
-                            propertyStatus.clear();
+                            dropDownValue = "For Rent";
                             label.clear();
                             garages.clear();
                             nearByPlaces.clear();
@@ -623,8 +859,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       )
                     : Center(
                         child: CircularProgressIndicator(
-                        color: themColors309D9D,
-                      )),
+                          color: themColors309D9D,
+                        ),
+                      ),
               ),
               CommonWidget.commonSizedBox(height: 30),
             ],

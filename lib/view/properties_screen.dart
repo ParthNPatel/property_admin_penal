@@ -260,6 +260,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     label: properties[index].get("label"),
                     propertyStatus: properties[index].get("propertyStatus"),
                     nearByPlaces: properties[index].get("nearByPlaces"),
+                    features: properties[index].get("features"),
+                    isNewBuild: properties[index].get("isNewBuild"),
+                    isSharedOwnerShip:
+                        properties[index].get("isSharedOwnerShip"),
+                    underOffer: properties[index].get("underOffer"),
                   );
 
                   controller.changeTapped1(true);
@@ -289,8 +294,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       TextButton(
                         onPressed: () {
                           FirebaseFirestore.instance
-                              .collection('Admin')
-                              .doc('all_properties ')
                               .collection('property_data')
                               .doc(properties[index].id)
                               .delete();

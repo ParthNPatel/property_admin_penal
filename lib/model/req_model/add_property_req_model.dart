@@ -21,6 +21,10 @@ class AddPropertyReqModel {
   String? description;
   int? propertyId;
   bool? isParkingAvailable;
+  List? features = [];
+  bool? isNewBuild;
+  bool? isSharedOwnerShip;
+  bool? underOffer;
 
   AddPropertyReqModel({
     this.propertyName,
@@ -38,6 +42,10 @@ class AddPropertyReqModel {
     this.description,
     this.propertyId,
     this.isParkingAvailable = false,
+    this.features,
+    this.isNewBuild,
+    this.isSharedOwnerShip,
+    this.underOffer,
   });
   Map<String, dynamic> toJson() {
     return {
@@ -61,6 +69,10 @@ class AddPropertyReqModel {
       "description": description,
       "isParkingAvailable": isParkingAvailable,
       "productId": propertyId,
+      "features": features,
+      "isNewBuild": isNewBuild,
+      "isSharedOwnerShip": isSharedOwnerShip,
+      "underOffer": underOffer,
       "create_time": DateTime.now().toString()
     };
   }
