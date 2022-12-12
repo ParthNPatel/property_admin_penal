@@ -1,9 +1,10 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:property/controller/handle_screen_controller.dart';
 import 'package:sizer/sizer.dart';
 import '../components/common_widget.dart';
@@ -15,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -27,6 +29,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   double progress = 0.0;
 
   List<Uint8List> _listOfImage = [];
+
+  List<Uint8List> florPlan = [];
+  List<Uint8List> leaseHold = [];
+  List<Uint8List> ecp = [];
+  List<Uint8List> councilTax = [];
 
   List featureList = [];
 
@@ -103,9 +110,38 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     print("CATEGORIES++>>$categories");
   }
 
+  Future<CroppedFile?> cropSquareImage(File imageFile) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+        WebUiSettings(
+          context: context,
+        ),
+      ],
+    );
+
+    return croppedFile;
+  }
+
   @override
   void initState() {
-    getData();
+    //getData();
     super.initState();
   }
 
@@ -739,8 +775,213 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   ),
                 ],
               ),
+              CommonWidget.commonSizedBox(height: 30),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText.textBoldWight500(
+                      text: 'Upload Documents', fontSize: 7.sp),
+                  CommonWidget.commonSizedBox(height: 20),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          FilePickerResult? selectedImages =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf'],
+                          );
+
+                          // final List<XFile>? selectedImages =
+                          //     await _picker.pickMultiImage();
+
+                          if (selectedImages != null) {
+                            selectedImages.files.forEach((element) {
+                              leaseHold.add(element.bytes!);
+                            });
+
+                            // Uint8List? file = selectedImages.files.first.bytes;
+
+                            print('Lease Hold of  ${selectedImages}');
+                          }
+
+                          print("Lease Hold Length:${leaseHold.length}");
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 30.sp,
+                          width: 30.sp,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: CommonColor.greyColorD9D9D9),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              leaseHold.length != 0
+                                  ? Icon(Icons.check_outlined)
+                                  : Icon(Icons.cloud_upload_outlined),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CommonText.textBoldWight500(
+                                  text: 'Leasehold', fontSize: 4.sp),
+                            ],
+                          ),
+                        ),
+                      ),
+                      CommonWidget.commonSizedBox(width: 20),
+                      InkWell(
+                        onTap: () async {
+                          FilePickerResult? selectedImages =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf'],
+                          );
+
+                          // final List<XFile>? selectedImages =
+                          //     await _picker.pickMultiImage();
+
+                          if (selectedImages != null) {
+                            selectedImages.files.forEach((element) {
+                              florPlan.add(element.bytes!);
+                            });
+
+                            // Uint8List? file = selectedImages.files.first.bytes;
+
+                            print('florPlan of  ${selectedImages}');
+                          }
+
+                          print("florPlan Length:${florPlan.length}");
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 30.sp,
+                          width: 30.sp,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: CommonColor.greyColorD9D9D9),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              florPlan.length != 0
+                                  ? Icon(Icons.check_outlined)
+                                  : Icon(Icons.cloud_upload_outlined),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CommonText.textBoldWight500(
+                                  text: 'Floorplan', fontSize: 4.sp),
+                            ],
+                          ),
+                        ),
+                      ),
+                      CommonWidget.commonSizedBox(width: 20),
+                      InkWell(
+                        onTap: () async {
+                          FilePickerResult? selectedImages =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf'],
+                          );
+
+                          // final List<XFile>? selectedImages =
+                          //     await _picker.pickMultiImage();
+
+                          if (selectedImages != null) {
+                            selectedImages.files.forEach((element) {
+                              ecp.add(element.bytes!);
+                            });
+
+                            // Uint8List? file = selectedImages.files.first.bytes;
+
+                            print('ecp of  ${selectedImages}');
+                          }
+
+                          print("ecp Length:${ecp.length}");
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 30.sp,
+                          width: 30.sp,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: CommonColor.greyColorD9D9D9),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ecp.length != 0
+                                  ? Icon(Icons.check_outlined)
+                                  : Icon(Icons.cloud_upload_outlined),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CommonText.textBoldWight500(
+                                  text: 'EPC', fontSize: 4.sp),
+                            ],
+                          ),
+                        ),
+                      ),
+                      CommonWidget.commonSizedBox(width: 20),
+                      InkWell(
+                        onTap: () async {
+                          FilePickerResult? selectedImages =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf'],
+                          );
+
+                          // final List<XFile>? selectedImages =
+                          //     await _picker.pickMultiImage();
+
+                          if (selectedImages != null) {
+                            selectedImages.files.forEach((element) {
+                              councilTax.add(element.bytes!);
+                            });
+
+                            // Uint8List? file = selectedImages.files.first.bytes;
+
+                            print('councilTax of  ${selectedImages}');
+                          }
+
+                          print("councilTax Length:${councilTax.length}");
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 30.sp,
+                          width: 30.sp,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: CommonColor.greyColorD9D9D9),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              councilTax.length != 0
+                                  ? Icon(Icons.check_outlined)
+                                  : Icon(Icons.cloud_upload_outlined),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CommonText.textBoldWight500(
+                                  text: 'Council Tax', fontSize: 4.sp),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  CommonWidget.commonSizedBox(height: 20),
+                ],
+              ),
               CommonWidget.commonSizedBox(height: 50),
-              // SearchPlacesScreen(),
+              SearchPlacesScreen(),
               SizedBox(
                 width: 50.sp,
                 child: isLoading
@@ -758,6 +999,29 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             var getAllURL = await uploadFiles(_listOfImage);
                             print('url of image $getAllURL');
 
+                            List? leaseHoldDocs;
+                            List? floorPlanDocs;
+                            List? epcDocs;
+                            List? councilTaxDocs;
+
+                            if (leaseHold.length != 0) {
+                              leaseHoldDocs = await uploadPdfFile(leaseHold);
+                            }
+
+                            if (florPlan.length != 0) {
+                              floorPlanDocs = await uploadPdfFile(florPlan);
+                            }
+
+                            if (ecp.length != 0) {
+                              epcDocs = await uploadPdfFile(ecp);
+                            }
+
+                            if (councilTax.length != 0) {
+                              councilTaxDocs = await uploadPdfFile(councilTax);
+                            }
+
+                            print("DOC 1==>>${leaseHoldDocs!.first}");
+
                             var getOldCount = FirebaseFirestore.instance
                                 .collection('Admin')
                                 .doc('property_count');
@@ -768,6 +1032,26 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 {'total_count': FieldValue.increment(1)});
 
                             _addProductReqModel.listOfImage = getAllURL;
+
+                            if (leaseHold.length != 0) {
+                              _addProductReqModel.leasHold =
+                                  leaseHoldDocs.first ?? "";
+                            }
+
+                            if (florPlan.length != 0) {
+                              _addProductReqModel.florPlan =
+                                  floorPlanDocs!.first ?? "";
+                            }
+
+                            if (ecp.length != 0) {
+                              _addProductReqModel.epc = epcDocs!.first ?? "";
+                            }
+
+                            if (councilTax.length != 0) {
+                              _addProductReqModel.councilTax =
+                                  councilTaxDocs!.first ?? "";
+                            }
+
                             _addProductReqModel.propertyName =
                                 propertyName.text;
 
@@ -848,13 +1132,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(2),
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CommonText.textBoldWight500(
-                                    text: "Add",
-                                    color: Colors.white,
-                                    fontSize: 5.sp)
-                              ]),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CommonText.textBoldWight500(
+                                  text: "Add",
+                                  color: Colors.white,
+                                  fontSize: 5.sp)
+                            ],
+                          ),
                         ),
                       )
                     : Center(
@@ -912,6 +1197,28 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
     return finalImage;
   }
+
+  Future<List<String>> uploadPdfFile(List _images) async {
+    var imageUrls =
+        await Future.wait(_images.map((_image) => uploadPdf(_image)));
+    print('all url  ${imageUrls}');
+    return imageUrls;
+  }
+
+  Future<String> uploadPdf(Uint8List _image) async {
+    String finalImage = '';
+
+    String getUrl = "files/${DateTime.now()}";
+    var task = FirebaseStorage.instance.ref().child(getUrl);
+
+    await task
+        .putData(_image, SettableMetadata(contentType: 'pdf'))
+        .then((p0) async {
+      finalImage = await p0.storage.ref(getUrl).getDownloadURL();
+    });
+
+    return finalImage;
+  }
 }
 
 class SearchPlacesScreen extends StatefulWidget {
@@ -964,6 +1271,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
 
     final lat = detail.result.geometry!.location.lat;
     final lng = detail.result.geometry!.location.lng;
+    print('get lat long by map $lat  $lng  ');
     print('get lat long by map $lat  $lng  ');
 
     setState(() {});

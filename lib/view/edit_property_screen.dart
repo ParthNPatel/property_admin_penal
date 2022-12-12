@@ -77,6 +77,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   void initState() {
     print(
         'editProductController.propertyName   ${editProductController.propertyName}');
+
     propertyName =
         TextEditingController(text: editProductController.propertyName);
     address = TextEditingController(text: editProductController.address);
@@ -102,13 +103,15 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     category = editProductController.category!;
 
     try {
+      category = editProductController.category!;
       isNewBuild = editProductController.isNewBuild!;
       isSharedOwnerShip = editProductController.isSharedOwnerShip!;
       underOffer = editProductController.underOffer!;
     } catch (e) {
-      isNewBuild = editProductController.isNewBuild!;
-      isSharedOwnerShip = editProductController.isSharedOwnerShip!;
-      underOffer = editProductController.underOffer!;
+      isNewBuild = false;
+      isSharedOwnerShip = false;
+      underOffer = false;
+      category = "Home";
     }
 
     super.initState();
@@ -276,6 +279,46 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                       CommonWidget.commonSizedBox(height: 30),
                     ],
                   )
+                ],
+              ),
+              CommonWidget.commonSizedBox(height: 30),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText.textBoldWight500(
+                      text: 'Description', fontSize: 7.sp),
+                  CommonWidget.commonSizedBox(height: 10),
+                  SizedBox(
+                    width: 150.sp,
+                    child: TextFormField(
+                      controller: description,
+                      maxLines: 5,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontFamily: TextConst.fontFamily,
+                      ),
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 13.sp, left: 6.sp),
+                        filled: true,
+                        fillColor: Colors.white,
+                        // hintText: "Write Description here",
+                        hintStyle: TextStyle(
+                            fontFamily: TextConst.fontFamily,
+                            fontWeight: FontWeight.w500,
+                            color: CommonColor.hinTextColor),
+                        border: InputBorder.none,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: themColors309D9D),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               CommonWidget.commonSizedBox(height: 20),
@@ -569,46 +612,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   ),
                 ],
               ),
-              CommonWidget.commonSizedBox(height: 30),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonText.textBoldWight500(
-                      text: 'Description', fontSize: 7.sp),
-                  CommonWidget.commonSizedBox(height: 10),
-                  SizedBox(
-                    width: 150.sp,
-                    child: TextFormField(
-                      controller: description,
-                      maxLines: 5,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontFamily: TextConst.fontFamily,
-                      ),
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 13.sp, left: 6.sp),
-                        filled: true,
-                        fillColor: Colors.white,
-                        // hintText: "Write Description here",
-                        hintStyle: TextStyle(
-                            fontFamily: TextConst.fontFamily,
-                            fontWeight: FontWeight.w500,
-                            color: CommonColor.hinTextColor),
-                        border: InputBorder.none,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: themColors309D9D),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+
               CommonWidget.commonSizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,7 +720,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 50),
-              CommonWidget.commonSizedBox(height: 50),
+
               SizedBox(
                 width: 50.sp,
                 child: isLoading
@@ -781,6 +785,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                             _addProductReqModel.garages = garages!.text;
                             _addProductReqModel.nearByPlaces =
                                 nearByPlaces!.text;
+                            _addProductReqModel.features = featureList;
+                            _addProductReqModel.isNewBuild = isNewBuild;
+                            _addProductReqModel.underOffer = underOffer;
+                            _addProductReqModel.isSharedOwnerShip =
+                                isSharedOwnerShip;
                             _addProductReqModel.propertySlugName =
                                 propertyName!.text.toLowerCase();
 

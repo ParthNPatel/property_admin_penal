@@ -52,6 +52,7 @@ dependencies:
   google_fonts: ^3.0.1
   fluttertoast: ^8.1.1
   flutter_google_places: ^0.3.0
+  image_cropper: ^3.0.1
 #  geolocator: ^9.0.1
 #  google_maps_flutter: ^2.2.0
 

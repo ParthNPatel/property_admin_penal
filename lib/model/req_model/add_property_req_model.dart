@@ -17,6 +17,10 @@ class AddPropertyReqModel {
   String? label;
   String? garages;
   List? listOfImage;
+  String? leasHold;
+  String? florPlan;
+  String? epc;
+  String? councilTax;
   String? category;
   String? description;
   int? propertyId;
@@ -45,6 +49,10 @@ class AddPropertyReqModel {
     this.features,
     this.isNewBuild,
     this.isSharedOwnerShip,
+    this.leasHold,
+    this.florPlan,
+    this.epc,
+    this.councilTax,
     this.underOffer,
   });
   Map<String, dynamic> toJson() {
@@ -73,6 +81,10 @@ class AddPropertyReqModel {
       "isNewBuild": isNewBuild,
       "isSharedOwnerShip": isSharedOwnerShip,
       "underOffer": underOffer,
+      "leasehold_doc": leasHold,
+      "floorplan_doc": florPlan,
+      "epc_doc": epc,
+      "counciltax_doc": councilTax,
       "create_time": DateTime.now().toString()
     };
   }
