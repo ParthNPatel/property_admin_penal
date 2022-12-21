@@ -4,6 +4,7 @@ class AddPropertyReqModel {
   String? propertyName;
   String? propertySlugName;
   String? address;
+  String? address1;
   String? country;
   String? addressSearch;
   String? countrySearch;
@@ -13,7 +14,7 @@ class AddPropertyReqModel {
   String? totalBedRooms;
   String? totalBathrooms;
   String? propertyStatus;
-  String? nearByPlaces;
+
   String? label;
   String? garages;
   List? listOfImage;
@@ -34,6 +35,7 @@ class AddPropertyReqModel {
     this.propertyName,
     this.propertySlugName,
     this.address,
+    this.address1,
     this.country,
     this.addressSearch,
     this.countrySearch,
@@ -55,11 +57,13 @@ class AddPropertyReqModel {
     this.councilTax,
     this.underOffer,
   });
+
   Map<String, dynamic> toJson() {
     return {
       "propertySlugName": propertySlugName,
       "propertyName": propertyName,
       "address": address,
+      "address1": address1,
       "country": country,
       "address_search": addressSearch,
       "country_search": countrySearch,
@@ -69,7 +73,6 @@ class AddPropertyReqModel {
       "totalBedRooms": totalBedRooms,
       "totalBathrooms": totalBathrooms,
       "propertyStatus": propertyStatus,
-      "nearByPlaces": nearByPlaces,
       "label": label,
       "garages": garages,
       "listOfImage": listOfImage,
@@ -89,3 +92,6 @@ class AddPropertyReqModel {
     };
   }
 }
+
+//"nearByPlaces": nearByPlaces,
+//String? nearByPlaces;

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:property/controller/handle_screen_controller.dart';
-import 'package:property/view/edit_property_screen.dart';
 import 'package:sizer/sizer.dart';
 import 'package:get/get.dart';
 import '../components/common_widget.dart';
@@ -10,8 +9,6 @@ import '../components/product_tile.dart';
 import '../constant/color_const.dart';
 import '../constant/text_styel.dart';
 import '../controller/edit_property_controller.dart';
-import '../responsive/responsive.dart';
-import 'home_page.dart';
 
 class PropertiesScreen extends StatefulWidget {
   const PropertiesScreen({super.key});
@@ -259,14 +256,14 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     garages: properties[index].get("garages"),
                     label: properties[index].get("label"),
                     propertyStatus: properties[index].get("propertyStatus"),
-                    nearByPlaces: properties[index].get("nearByPlaces"),
+                    //nearByPlaces: properties[index].get("nearByPlaces"),
                     features: properties[index].get("features"),
                     isNewBuild: properties[index].get("isNewBuild"),
                     isSharedOwnerShip:
                         properties[index].get("isSharedOwnerShip"),
                     underOffer: properties[index].get("underOffer"),
+                    address1: properties[index].get("address1"),
                   );
-
                   controller.changeTapped1(true);
                   //editPropertyController.listOfImage!.clear();
                   //Get.to(() => EditPropertyScreen());

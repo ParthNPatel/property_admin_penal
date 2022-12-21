@@ -5,6 +5,7 @@ import 'package:property/view/add_category_screen.dart';
 import 'package:property/view/add_property_screen.dart';
 import 'package:property/view/edit_category_screen.dart';
 import 'package:property/view/edit_property_screen.dart';
+import 'package:property/view/image_crop_screen.dart';
 import 'package:property/view/property_inquiry_screen.dart';
 import 'package:property/view/service_inquiry_screen.dart';
 import 'package:sizer/sizer.dart';
@@ -208,7 +209,9 @@ class _HomePageState extends State<HomePage> {
                             ? AddPropertyScreen()
                             : controller.isTapped1 == true
                                 ? EditPropertyScreen()
-                                : PropertiesScreen()
+                                : controller.isTapped4 == true
+                                    ? Cropper(image: controller.image!)
+                                    : PropertiesScreen()
                         : selected == 3
                             ? ServiceInquiryScreen()
                             : selected == 4

@@ -35,6 +35,7 @@ class _ServiceInquiryScreenState extends State<ServiceInquiryScreen>
   ];
 
   int selected = 0;
+
   @override
   void initState() {
     tabController = TabController(length: items.length, vsync: this);

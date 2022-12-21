@@ -24,14 +24,16 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
   TabController? tabController;
 
   List<String> items = [
+    'Property Inquiries',
     'Valuation Inquiries',
     'Mortgage Check',
   ];
 
   int selected = 0;
+
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -62,7 +64,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                     });
                   },
                   tabs: List.generate(
-                    2,
+                    3,
                     (index) => Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 0, vertical: 11),
@@ -97,7 +99,27 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                           Padding(
                             padding: EdgeInsets.only(left: 20, top: 20),
                             child: CommonText.textBoldWight700(
-                                text: 'Valuation Inquiries', fontSize: 10.sp),
+                                text: 'Property Inquiries', fontSize: 9.sp),
+                          ),
+                          CommonWidget.commonSizedBox(height: 20),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  messagesInquiry(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20, top: 20),
+                            child: CommonText.textBoldWight700(
+                                text: 'Valuation Inquiries', fontSize: 9.sp),
                           ),
                           CommonWidget.commonSizedBox(height: 20),
                           Expanded(
@@ -117,7 +139,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                           Padding(
                             padding: EdgeInsets.only(left: 20, top: 20),
                             child: CommonText.textBoldWight700(
-                                text: 'Mortgage Check', fontSize: 10.sp),
+                                text: 'Mortgage Check', fontSize: 9.sp),
                           ),
                           CommonWidget.commonSizedBox(height: 20),
                           Expanded(
@@ -177,6 +199,88 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
     );
   }
 
+  StreamBuilder<QuerySnapshot<Object?>> messagesInquiry() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Admin')
+          .doc('inquires_list')
+          .collection('messages')
+          .snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasData) {
+          List<DocumentSnapshot> inquiries = snapshot.data!.docs;
+          print("length======>${inquiries.length}");
+          if (searchText.isNotEmpty) {
+            inquiries = inquiries.where((element) {
+              return element
+                  .get('full_name')
+                  .toString()
+                  .toLowerCase()
+                  .contains(searchText.toLowerCase());
+            }).toList();
+          }
+          return ListView.builder(
+            padding: EdgeInsets.only(left: 20),
+            shrinkWrap: true,
+            itemCount: inquiries.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: Responsive.isDesktop(context) ? 200.sp : 100.sp,
+                      child: Card(
+                        child: ExpansionTile(
+                          title: Text(inquiries[index]['full_name']),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      CommonText.textBoldWight500(
+                                          text: "Message ",
+                                          color: themColors309D9D),
+                                      Text(inquiries[index]['message']),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      CommonText.textBoldWight500(
+                                          text: "Email: ",
+                                          color: themColors309D9D),
+                                      Text(inquiries[index]['email']),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        } else {
+          return InquiryShimmer();
+        }
+      },
+    );
+  }
+
   StreamBuilder<QuerySnapshot<Object?>> propertyInquiry() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -212,7 +316,7 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                       child: Card(
                         child: ExpansionTile(
                           title: Text(inquiries[index]['full_name']),
-                          subtitle: Text(inquiries[index]['to_sell & to_let']),
+                          subtitle: Text(inquiries[index]['email']),
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -228,17 +332,6 @@ class _PropertyInquiryScreenState extends State<PropertyInquiryScreen>
                                           text: "Phone No: ",
                                           color: themColors309D9D),
                                       Text(inquiries[index]['phone_number']),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      CommonText.textBoldWight500(
-                                          text: "Email: ",
-                                          color: themColors309D9D),
-                                      Text(inquiries[index]['email']),
                                     ],
                                   ),
                                 ],

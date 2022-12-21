@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 class EditPropertyController extends GetxController {
   String? propertyName;
   String? address;
+  String? address1;
   String? country;
   String? pinCode;
   String? size;
@@ -10,7 +11,6 @@ class EditPropertyController extends GetxController {
   String? totalBedRooms;
   String? totalBathrooms;
   String? propertyStatus;
-  String? nearByPlaces;
   String? label;
   String? garages;
   List? listOfImage = [];
@@ -29,6 +29,7 @@ class EditPropertyController extends GetxController {
     String? productId,
     String? propertyName,
     String? address,
+    String? address1,
     String? country,
     String? pinCode,
     String? size,
@@ -36,7 +37,6 @@ class EditPropertyController extends GetxController {
     String? totalBedRooms,
     String? propertyStatus,
     String? totalBathrooms,
-    String? nearByPlaces,
     String? label,
     String? garages,
     List? listOfImage,
@@ -52,6 +52,7 @@ class EditPropertyController extends GetxController {
     this.productId = productId;
     this.propertyName = propertyName;
     this.address = address;
+    this.address1 = address1;
     this.country = country;
     this.pinCode = pinCode;
     this.size = size;
@@ -59,7 +60,6 @@ class EditPropertyController extends GetxController {
     this.propertyStatus = propertyStatus;
     this.totalBedRooms = totalBedRooms;
     this.totalBathrooms = totalBathrooms;
-    this.nearByPlaces = nearByPlaces;
     this.label = label;
     this.garages = garages;
     this.propertyStatus = propertyStatus;

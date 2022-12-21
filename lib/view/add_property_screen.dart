@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:flutter/services.dart';
-import 'package:image_cropper/image_cropper.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -46,6 +45,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     "To Sale",
   ];
 
+  bool isOpened = false;
+
   // List<String> categoryList = [
   //   'Home',
   //   'Villa',
@@ -64,10 +65,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   // final propertyStatus = TextEditingController();
   final label = TextEditingController();
   final garages = TextEditingController();
-  final nearByPlaces = TextEditingController();
+  // final nearByPlaces = TextEditingController();
   final propertyDate = TextEditingController();
   final distance = TextEditingController();
   final featureController = TextEditingController();
+  TextEditingController address1 = TextEditingController();
 
   bool isParkingAvailable = false;
   bool isNewBuild = false;
@@ -139,6 +141,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     return croppedFile;
   }
 
+  FilePickerResult? selectedImages;
+
   @override
   void initState() {
     //getData();
@@ -176,37 +180,130 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 20),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _listOfImage.length != 0
-                      ? Row(
-                          children: List.generate(
-                            _listOfImage.length,
-                            (index) => Container(
-                              height: 200,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: MemoryImage(_listOfImage[index]),
-                                      fit: BoxFit.cover),
-                                  border: Border.all(color: Colors.black)),
-                            ),
-                          ),
-                        )
+                      ? isOpened == true
+                          ? Wrap(
+                              children: List.generate(
+                                _listOfImage.length,
+                                (index) => Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: 200,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: MemoryImage(
+                                                  _listOfImage[index]),
+                                              fit: BoxFit.cover),
+                                          border:
+                                              Border.all(color: Colors.black)),
+                                    ),
+                                    Positioned(
+                                      right: 5,
+                                      top: 5,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          setState(() {});
+                                          _listOfImage.removeAt(index);
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: themColors309D9D,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Row(
+                              children: List.generate(
+                                _listOfImage.length > 5
+                                    ? 5
+                                    : _listOfImage.length,
+                                (index) => Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: 200,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: MemoryImage(
+                                                  _listOfImage[index]),
+                                              fit: BoxFit.cover),
+                                          border:
+                                              Border.all(color: Colors.black)),
+                                    ),
+                                    _listOfImage.length > 5 && index == 4
+                                        ? Align(
+                                            alignment: Alignment.center,
+                                            child: InkWell(
+                                              onTap: () {
+                                                setState(() {});
+                                                isOpened = true;
+                                              },
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.image,
+                                                    color: themColors309D9D,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  CommonText.textBoldWight700(
+                                                      text:
+                                                          "and ${_listOfImage.length - 5} More",
+                                                      color: themColors309D9D,
+                                                      fontSize: 5.sp),
+                                                ],
+                                              ),
+                                            ))
+                                        : SizedBox(),
+                                    Positioned(
+                                      right: 5,
+                                      top: 5,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          setState(() {});
+                                          _listOfImage.removeAt(index);
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: themColors309D9D,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                       : SizedBox(),
                   InkWell(
                     onTap: () async {
-                      FilePickerResult? selectedImages =
-                          await FilePicker.platform.pickFiles(
+                      selectedImages = await FilePicker.platform.pickFiles(
                         allowMultiple: true,
                         type: FileType.custom,
                         allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
                       );
+
+                      // .then((value) {
+                      // // controller.changeTapped4(true);
+                      // // controller.setImage(selectedImages!.files.first.bytes!);
+                      // });
                       // final List<XFile>? selectedImages =
                       //     await _picker.pickMultiImage();
+                      //cropSquareImage(File(selectedImages!.files.first.path!));
 
                       if (selectedImages != null) {
-                        selectedImages.files.forEach((element) {
+                        selectedImages!.files.forEach((element) {
                           _listOfImage.add(element.bytes!);
                         });
 
@@ -214,7 +311,26 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
                         print('selectedImages  image of  ${selectedImages}');
                       }
+
+                      // var fileName = '${_listOfImage[0]}';
+                      // ByteData bytes = await rootBundle
+                      //     .load(fileName); //load sound from assets
+                      // Uint8List rawData = bytes.buffer.asUint8List(
+                      //     bytes.offsetInBytes, bytes.lengthInBytes);
+                      //
+                      // Uint8List imageInUnit8List = rawData;
+                      //
+                      // final tempDir = await getTemporaryDirectory();
+                      //
+                      // File file =
+                      //     await File('${tempDir.path}/${DateTime.now()}')
+                      //         .create();
+                      //
+                      // file.writeAsBytesSync(imageInUnit8List);
+                      //
+                      // print('FILE>>>>>>>>>>> $file');
                       print("Image List Length:${_listOfImage.length}");
+
                       setState(() {});
                     },
                     child: Container(
@@ -234,8 +350,20 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CommonText.textBoldWight500(
-                          text: 'Property Name', fontSize: 7.sp),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Property Name', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       CommonWidget.textFormField(controller: propertyName),
                     ],
@@ -298,14 +426,26 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonText.textBoldWight500(
-                      text: 'Description', fontSize: 7.sp),
+                  Row(
+                    children: [
+                      CommonText.textBoldWight500(
+                          text: 'Description', fontSize: 7.sp),
+                      SizedBox(
+                        width: 1.sp,
+                      ),
+                      CommonText.textBoldWight500(
+                        text: '*',
+                        fontSize: 5.sp,
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
                   CommonWidget.commonSizedBox(height: 10),
                   SizedBox(
                     width: 150.sp,
                     child: TextFormField(
                       controller: description,
-                      maxLines: 5,
+                      maxLines: 10,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontFamily: TextConst.fontFamily,
@@ -338,8 +478,24 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonText.textBoldWight500(
-                      text: 'Property Features', fontSize: 7.sp),
+                  Row(
+                    children: [
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Property Features', fontSize: 7.sp),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 1.sp,
+                      ),
+                      CommonText.textBoldWight500(
+                        text: '*',
+                        fontSize: 5.sp,
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
                   CommonWidget.commonSizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,12 +538,31 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(
                               featureList.length,
-                              (index) => Padding(
-                                    padding: EdgeInsets.only(bottom: 10),
-                                    child: CommonText.textBoldWight500(
-                                        text: "• ${featureList[index]}",
-                                        fontSize: 6.sp,
-                                        color: themColors309D9D),
+                              (index) => Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        child: CommonText.textBoldWight500(
+                                            text: "• ${featureList[index]}",
+                                            fontSize: 6.sp,
+                                            color: themColors309D9D),
+                                      ),
+                                      SizedBox(
+                                        width: 4.sp,
+                                      ),
+                                      InkResponse(
+                                        onTap: () {
+                                          setState(() {});
+                                          featureList.removeAt(index);
+                                        },
+                                        child: Icon(
+                                          Icons.remove_circle_outline,
+                                          color: Colors.red.shade300,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ],
                                   )),
                         )
                       : SizedBox()
@@ -398,9 +573,27 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //CommonWidget.commonSizedBox(height: 20),
-                  CommonText.textBoldWight500(text: 'Address', fontSize: 7.sp),
+                  Row(
+                    children: [
+                      CommonText.textBoldWight500(
+                          text: 'Address', fontSize: 7.sp),
+                      SizedBox(
+                        width: 1.sp,
+                      ),
+                      CommonText.textBoldWight500(
+                        text: '*',
+                        fontSize: 5.sp,
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
+
                   CommonWidget.commonSizedBox(height: 10),
-                  CommonWidget.textFormField(controller: address),
+                  CommonWidget.textFormField(
+                      controller: address, hintText: "Address line 1"),
+                  CommonWidget.commonSizedBox(height: 10),
+                  CommonWidget.textFormField(
+                      controller: address1, hintText: "Address line 2"),
                 ],
               ),
               Row(
@@ -408,8 +601,20 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CommonText.textBoldWight500(
-                          text: 'Country', fontSize: 7.sp),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Country', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       SizedBox(
                         width: 70.sp,
@@ -467,7 +672,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           activeColor: themColors309D9D,
                           value: 2,
                           groupValue: groupValue,
-                          title: Text("Metres"),
+                          title: Text("Square Meters"),
                           onChanged: (int? value) {
                             setState(() {
                               groupValue = value!;
@@ -491,8 +696,20 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonWidget.commonSizedBox(height: 20),
-                      CommonText.textBoldWight500(
-                          text: 'Total BedRooms', fontSize: 7.sp),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Total BedRooms', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       SizedBox(
                         width: 70.sp,
@@ -513,8 +730,20 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonWidget.commonSizedBox(height: 20),
-                      CommonText.textBoldWight500(
-                          text: 'Total BathRooms', fontSize: 7.sp),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Total BathRooms', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       SizedBox(
                         width: 70.sp,
@@ -535,8 +764,20 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CommonText.textBoldWight500(
-                          text: 'Property Status', fontSize: 7.sp),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Property Status', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       Container(
                         height: 14.sp,
@@ -576,17 +817,30 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonWidget.commonSizedBox(height: 20),
-                      CommonText.textBoldWight500(
-                          text: 'Price', fontSize: 7.sp),
+                      CommonWidget.commonSizedBox(height: 10),
+                      Row(
+                        children: [
+                          CommonText.textBoldWight500(
+                              text: 'Price', fontSize: 7.sp),
+                          SizedBox(
+                            width: 1.sp,
+                          ),
+                          CommonText.textBoldWight500(
+                            text: '*',
+                            fontSize: 5.sp,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                       CommonWidget.commonSizedBox(height: 10),
                       SizedBox(
                         width: 70.sp,
                         child: CommonWidget.textFormField(
                           controller: price,
                           maxLength: 9,
-                          inpuFormator: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          // inpuFormator: [
+                          //   FilteringTextInputFormatter.digitsOnly
+                          // ],
                         ),
                       ),
                       CommonWidget.commonSizedBox(height: 20),
@@ -629,46 +883,46 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   ),
                 ],
               ),
-              CommonWidget.commonSizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonText.textBoldWight500(
-                      text: 'NearBy Places', fontSize: 7.sp),
-                  CommonWidget.commonSizedBox(height: 10),
-                  SizedBox(
-                    width: 150.sp,
-                    child: TextFormField(
-                      controller: nearByPlaces,
-                      maxLines: 5,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontFamily: TextConst.fontFamily,
-                      ),
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
-                        filled: true,
-                        fillColor: Colors.white,
-                        // hintText: "Write Description here",
-                        hintStyle: TextStyle(
-                            fontFamily: TextConst.fontFamily,
-                            fontWeight: FontWeight.w500,
-                            color: CommonColor.hinTextColor),
-                        border: InputBorder.none,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: themColors309D9D),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // CommonWidget.commonSizedBox(height: 20),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     CommonText.textBoldWight500(
+              //         text: 'NearBy Places', fontSize: 7.sp),
+              //     CommonWidget.commonSizedBox(height: 10),
+              //     SizedBox(
+              //       width: 150.sp,
+              //       child: TextFormField(
+              //         controller: nearByPlaces,
+              //         maxLines: 5,
+              //         style: TextStyle(
+              //           fontWeight: FontWeight.w500,
+              //           fontFamily: TextConst.fontFamily,
+              //         ),
+              //         cursorColor: Colors.black,
+              //         decoration: InputDecoration(
+              //           contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
+              //           filled: true,
+              //           fillColor: Colors.white,
+              //           // hintText: "Write Description here",
+              //           hintStyle: TextStyle(
+              //               fontFamily: TextConst.fontFamily,
+              //               fontWeight: FontWeight.w500,
+              //               color: CommonColor.hinTextColor),
+              //           border: InputBorder.none,
+              //           enabledBorder: OutlineInputBorder(
+              //             borderSide: BorderSide(color: Colors.grey),
+              //             borderRadius: BorderRadius.circular(3),
+              //           ),
+              //           focusedBorder: OutlineInputBorder(
+              //             borderSide: BorderSide(color: themColors309D9D),
+              //             borderRadius: BorderRadius.circular(3),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               CommonWidget.commonSizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -981,7 +1235,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 50),
-              SearchPlacesScreen(),
+              // SearchPlacesScreen(),
               SizedBox(
                 width: 50.sp,
                 child: isLoading
@@ -992,130 +1246,158 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               address.text.isNotEmpty &&
                               totalBedRooms.text.isNotEmpty &&
                               totalBathrooms.text.isNotEmpty &&
-                              propertyName.text.isNotEmpty) {
-                            isLoading = false;
-                            setState(() {});
+                              propertyName.text.isNotEmpty &&
+                              featureList.length != 0) {
+                            try {
+                              isLoading = false;
+                              setState(() {});
 
-                            var getAllURL = await uploadFiles(_listOfImage);
-                            print('url of image $getAllURL');
+                              var getAllURL = await uploadFiles(_listOfImage);
+                              print('url of image $getAllURL');
 
-                            List? leaseHoldDocs;
-                            List? floorPlanDocs;
-                            List? epcDocs;
-                            List? councilTaxDocs;
+                              List? leaseHoldDocs;
+                              List? floorPlanDocs;
+                              List? epcDocs;
+                              List? councilTaxDocs;
 
-                            if (leaseHold.length != 0) {
-                              leaseHoldDocs = await uploadPdfFile(leaseHold);
+                              if (leaseHold.length != 0) {
+                                leaseHoldDocs = await uploadPdfFile(leaseHold);
+                              }
+
+                              print("===>>1111");
+
+                              if (florPlan.length != 0) {
+                                floorPlanDocs = await uploadPdfFile(florPlan);
+                              }
+                              print("===>>222");
+                              if (ecp.length != 0) {
+                                epcDocs = await uploadPdfFile(ecp);
+                              }
+                              print("===>>333");
+                              if (councilTax.length != 0) {
+                                councilTaxDocs =
+                                    await uploadPdfFile(councilTax);
+                              }
+                              print("===>>4444");
+                              print("===>>${_listOfImage}");
+
+                              //print("DOC 1==>>${leaseHoldDocs!.first}");
+
+                              var getOldCount = FirebaseFirestore.instance
+                                  .collection('Admin')
+                                  .doc('property_count');
+
+                              var fetchCount = await getOldCount.get();
+
+                              getOldCount.update(
+                                  {'total_count': FieldValue.increment(1)});
+
+                              _addProductReqModel.listOfImage = getAllURL;
+
+                              print("===>>55555");
+                              if (leaseHold.length != 0) {
+                                _addProductReqModel.leasHold =
+                                    leaseHoldDocs!.first;
+                              }
+                              // else {
+                              //   _addProductReqModel.leasHold = "null";
+                              // }
+                              print("===>>66666");
+
+                              if (florPlan.length != 0) {
+                                _addProductReqModel.florPlan =
+                                    floorPlanDocs!.first;
+                              }
+                              //else
+                              // {
+                              //   _addProductReqModel.florPlan = "null";
+                              // }
+                              print("===>>77777");
+                              if (ecp.length != 0) {
+                                _addProductReqModel.epc = epcDocs!.first;
+                              }
+                              // else {
+                              //   _addProductReqModel.epc = "null";
+                              // }
+                              print("===>>8888");
+                              if (councilTax.length != 0) {
+                                _addProductReqModel.councilTax =
+                                    councilTaxDocs!.first;
+                              }
+                              //else {
+                              //   _addProductReqModel.councilTax = "null";
+                              // }
+
+                              _addProductReqModel.propertyName =
+                                  propertyName.text;
+
+                              _addProductReqModel.totalBathrooms =
+                                  totalBathrooms.text;
+                              _addProductReqModel.totalBedRooms =
+                                  totalBedRooms.text;
+                              _addProductReqModel.isParkingAvailable =
+                                  isParkingAvailable;
+                              _addProductReqModel.price = price.text;
+                              _addProductReqModel.size =
+                                  "${size.text}${groupValue == 0 ? ' Meters' : ' Squares'}";
+                              _addProductReqModel.description =
+                                  description.text;
+                              _addProductReqModel.category = category;
+                              _addProductReqModel.country = country.text;
+                              _addProductReqModel.address = "${address.text}";
+                              _addProductReqModel.address1 = "${address1.text}";
+                              _addProductReqModel.addressSearch =
+                                  address.text.toLowerCase();
+                              _addProductReqModel.countrySearch =
+                                  country.text.toLowerCase();
+                              _addProductReqModel.pinCode = pinCode.text;
+                              // _addProductReqModel.nearByPlaces =
+                              //     nearByPlaces.text;
+                              _addProductReqModel.propertyStatus =
+                                  dropDownValue;
+                              _addProductReqModel.label = label.text;
+                              _addProductReqModel.features = featureList;
+                              _addProductReqModel.isNewBuild = isNewBuild;
+                              _addProductReqModel.underOffer = underOffer;
+                              _addProductReqModel.isSharedOwnerShip =
+                                  isSharedOwnerShip;
+                              _addProductReqModel.garages = garages.text;
+
+                              _addProductReqModel.propertySlugName =
+                                  propertyName.text.toLowerCase();
+                              _addProductReqModel.propertyId =
+                                  fetchCount['total_count'] + 1;
+
+                              await FirebaseFirestore.instance
+                                  .collection('property_data')
+                                  .add(_addProductReqModel.toJson());
+
+                              size.clear();
+                              address.clear();
+                              country.clear();
+                              pinCode.clear();
+                              dropDownValue = "For Rent";
+                              label.clear();
+                              garages.clear();
+                              //nearByPlaces.clear();
+                              totalBedRooms.clear();
+                              totalBathrooms.clear();
+                              propertyName.clear();
+                              category = "Home";
+
+                              _listOfImage.clear();
+                              isLoading = true;
+                              setState(() {});
+                              controller.changeTapped(false);
+                              //Navigator.pop(context);
+                              CommonWidget.getSnackBar(
+                                  color: themColors309D9D,
+                                  duration: 2,
+                                  title: 'Successful!',
+                                  message: 'Your Property Added Successfully');
+                            } catch (e) {
+                              print("UPLOAD PROPERTY ERROR++>>>${e}");
                             }
-
-                            if (florPlan.length != 0) {
-                              floorPlanDocs = await uploadPdfFile(florPlan);
-                            }
-
-                            if (ecp.length != 0) {
-                              epcDocs = await uploadPdfFile(ecp);
-                            }
-
-                            if (councilTax.length != 0) {
-                              councilTaxDocs = await uploadPdfFile(councilTax);
-                            }
-
-                            print("DOC 1==>>${leaseHoldDocs!.first}");
-
-                            var getOldCount = FirebaseFirestore.instance
-                                .collection('Admin')
-                                .doc('property_count');
-
-                            var fetchCount = await getOldCount.get();
-
-                            getOldCount.update(
-                                {'total_count': FieldValue.increment(1)});
-
-                            _addProductReqModel.listOfImage = getAllURL;
-
-                            if (leaseHold.length != 0) {
-                              _addProductReqModel.leasHold =
-                                  leaseHoldDocs.first ?? "";
-                            }
-
-                            if (florPlan.length != 0) {
-                              _addProductReqModel.florPlan =
-                                  floorPlanDocs!.first ?? "";
-                            }
-
-                            if (ecp.length != 0) {
-                              _addProductReqModel.epc = epcDocs!.first ?? "";
-                            }
-
-                            if (councilTax.length != 0) {
-                              _addProductReqModel.councilTax =
-                                  councilTaxDocs!.first ?? "";
-                            }
-
-                            _addProductReqModel.propertyName =
-                                propertyName.text;
-
-                            _addProductReqModel.totalBathrooms =
-                                totalBathrooms.text;
-                            _addProductReqModel.totalBedRooms =
-                                totalBedRooms.text;
-                            _addProductReqModel.isParkingAvailable =
-                                isParkingAvailable;
-                            _addProductReqModel.price = price.text;
-                            _addProductReqModel.size =
-                                "${size.text}${groupValue == 0 ? ' Metres' : ' Squares'}";
-                            _addProductReqModel.description = description.text;
-                            _addProductReqModel.category = category;
-                            _addProductReqModel.country = country.text;
-                            _addProductReqModel.address = address.text;
-                            _addProductReqModel.addressSearch =
-                                address.text.toLowerCase();
-                            _addProductReqModel.countrySearch =
-                                country.text.toLowerCase();
-                            _addProductReqModel.pinCode = pinCode.text;
-                            _addProductReqModel.nearByPlaces =
-                                nearByPlaces.text;
-                            _addProductReqModel.propertyStatus = dropDownValue;
-                            _addProductReqModel.label = label.text;
-                            _addProductReqModel.features = featureList;
-                            _addProductReqModel.isNewBuild = isNewBuild;
-                            _addProductReqModel.underOffer = underOffer;
-                            _addProductReqModel.isSharedOwnerShip =
-                                isSharedOwnerShip;
-                            _addProductReqModel.garages = garages.text;
-
-                            _addProductReqModel.propertySlugName =
-                                propertyName.text.toLowerCase();
-                            _addProductReqModel.propertyId =
-                                fetchCount['total_count'] + 1;
-
-                            await FirebaseFirestore.instance
-                                .collection('property_data')
-                                .add(_addProductReqModel.toJson());
-
-                            size.clear();
-                            address.clear();
-                            country.clear();
-                            pinCode.clear();
-                            dropDownValue = "For Rent";
-                            label.clear();
-                            garages.clear();
-                            nearByPlaces.clear();
-                            totalBedRooms.clear();
-                            totalBathrooms.clear();
-                            propertyName.clear();
-                            category = "Home";
-
-                            _listOfImage.clear();
-                            isLoading = true;
-                            setState(() {});
-                            controller.changeTapped(false);
-                            //Navigator.pop(context);
-                            CommonWidget.getSnackBar(
-                                color: themColors309D9D,
-                                duration: 2,
-                                title: 'Successful!',
-                                message: 'Your Property Added Successfully');
                           } else {
                             CommonWidget.getSnackBar(
                                 duration: 2,
@@ -1176,25 +1458,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       //   _uploadOfImage.add(await p0.storage.ref(getUrl).getDownloadURL());
     });
 
-    // await task.snapshotEvents.listen((event) async {
-    //   double progress = 0.0;
-    //
-    //   progress =
-    //       ((event.bytesTransferred.toDouble() / event.totalBytes.toDouble()) *
-    //               100)
-    //           .roundToDouble();
-    //
-    //   if (progress == 100) {
-    //     finalImage = await event.ref.getDownloadURL();
-    //     log('final url for  ${finalImage}');
-    //     _uploadOfImage.add(finalImage);
-    //   } else {
-    //     finalImage = '';
-    //   }
-    //
-    //   print(progress);
-    // });
-
     return finalImage;
   }
 
@@ -1212,7 +1475,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     var task = FirebaseStorage.instance.ref().child(getUrl);
 
     await task
-        .putData(_image, SettableMetadata(contentType: 'pdf'))
+        .putData(_image, SettableMetadata(contentType: 'application/pdf'))
         .then((p0) async {
       finalImage = await p0.storage.ref(getUrl).getDownloadURL();
     });
@@ -1228,7 +1491,7 @@ class SearchPlacesScreen extends StatefulWidget {
   State<SearchPlacesScreen> createState() => _SearchPlacesScreenState();
 }
 
-const kGoogleApiKey = 'AIzaSyBLjgELUHE9X1z5OI0if3tMRDG5nWK2Rt8';
+const kGoogleApiKey = 'AIzaSyCMYLPYjJOBU6Pn_ho0IwbEIZNZfH-yjlg';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 
 class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
