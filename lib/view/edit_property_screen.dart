@@ -1080,8 +1080,9 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                                   propertyStatus!.text;
                               _addProductReqModel.label = label!.text;
                               _addProductReqModel.garages = garages!.text;
-                              // _addProductReqModel.nearByPlaces =
-                              //     nearByPlaces!.text;
+                              _addProductReqModel.nearByPlaces =
+                                  editProductController.nearByPlaces
+                                      as List<String>;
                               _addProductReqModel.features = featureList;
                               _addProductReqModel.isNewBuild = isNewBuild;
                               _addProductReqModel.underOffer = underOffer;

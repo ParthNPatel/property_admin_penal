@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -90,6 +89,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
   bool isLoading1 = true;
 
+  var data;
+
   Future<void> findLatLong(String address) async {
     GeocoderResponse? addressQuery = await GoogleGeocoderKrutus.addressQuery(
       apiKey: '$kGoogleApiKey',
@@ -97,8 +98,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     );
     _center = LatLng(addressQuery!.results.first.geometry.location.latitude,
         addressQuery.results.first.geometry.location.longitude);
-
-    isLoading1 = false;
 
     lat = addressQuery.results.first.geometry.location.latitude;
     long = addressQuery.results.first.geometry.location.longitude;
@@ -118,7 +117,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
     if (response.statusCode == 200) {
       print("RESPONSE===>>${result}");
-
+      setState(
+        () {},
+      );
+      isLoading1 = false;
+      data = result;
       return result;
     } else {
       print(response.reasonPhrase);
@@ -227,7 +230,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     return Flexible(
       flex: 8,
       child: Padding(
-        padding: EdgeInsets.only(left: 13.sp),
+        padding: EdgeInsets.only(
+            left: 13.sp, right: isOpened == true ? 15.sp : 28.sp),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,56 +270,83 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               //     },
               //     child: Text("Get Data")),
               //SearchPlacesScreen(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _listOfImage.length != 0
-                      ? isOpened == true
-                          ? Wrap(
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 10)),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          selectedImages = await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
+                          );
+
+                          // .then((value) {
+                          // // controller.changeTapped4(true);
+                          // // controller.setImage(selectedImages!.files.first.bytes!);
+                          // });
+                          // final List<XFile>? selectedImages =
+                          //     await _picker.pickMultiImage();
+                          //cropSquareImage(File(selectedImages!.files.first.path!));
+
+                          if (selectedImages != null) {
+                            selectedImages!.files.forEach((element) {
+                              _listOfImage.add(element.bytes!);
+                            });
+
+                            // Uint8List? file = selectedImages.files.first.bytes;
+
+                            print(
+                                'selectedImages  image of  ${selectedImages}');
+                          }
+
+                          // var fileName = '${_listOfImage[0]}';
+                          // ByteData bytes = await rootBundle
+                          //     .load(fileName); //load sound from assets
+                          // Uint8List rawData = bytes.buffer.asUint8List(
+                          //     bytes.offsetInBytes, bytes.lengthInBytes);
+                          //
+                          // Uint8List imageInUnit8List = rawData;
+                          //
+                          // final tempDir = await getTemporaryDirectory();
+                          //
+                          // File file =
+                          //     await File('${tempDir.path}/${DateTime.now()}')
+                          //         .create();
+                          //
+                          // file.writeAsBytesSync(imageInUnit8List);
+                          //
+                          // print('FILE>>>>>>>>>>> $file');
+                          print("Image List Length:${_listOfImage.length}");
+
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 250,
+                          width: 200,
+                          child: Icon(Icons.add),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black)),
+                        ),
+                      ),
+                      _listOfImage.length != 0
+                          ? Row(
                               children: List.generate(
-                                _listOfImage.length,
-                                (index) => Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: 200,
-                                      width: 200,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: MemoryImage(
-                                                  _listOfImage[index]),
-                                              fit: BoxFit.cover),
-                                          border:
-                                              Border.all(color: Colors.black)),
-                                    ),
-                                    Positioned(
-                                      right: 5,
-                                      top: 5,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          setState(() {});
-                                          _listOfImage.removeAt(index);
-                                        },
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: themColors309D9D,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : Row(
-                              children: List.generate(
-                                _listOfImage.length > 5
-                                    ? 5
+                                _listOfImage.length > 6
+                                    ? isOpened == true
+                                        ? _listOfImage.length
+                                        : 6
                                     : _listOfImage.length,
                                 (index) => Stack(
                                   alignment: Alignment.center,
                                   children: [
                                     Container(
-                                      height: 200,
+                                      height: 250,
                                       width: 200,
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
@@ -371,63 +402,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 ),
                               ),
                             )
-                      : SizedBox(),
-                  InkWell(
-                    onTap: () async {
-                      selectedImages = await FilePicker.platform.pickFiles(
-                        allowMultiple: true,
-                        type: FileType.custom,
-                        allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
-                      );
-
-                      // .then((value) {
-                      // // controller.changeTapped4(true);
-                      // // controller.setImage(selectedImages!.files.first.bytes!);
-                      // });
-                      // final List<XFile>? selectedImages =
-                      //     await _picker.pickMultiImage();
-                      //cropSquareImage(File(selectedImages!.files.first.path!));
-
-                      if (selectedImages != null) {
-                        selectedImages!.files.forEach((element) {
-                          _listOfImage.add(element.bytes!);
-                        });
-
-                        // Uint8List? file = selectedImages.files.first.bytes;
-
-                        print('selectedImages  image of  ${selectedImages}');
-                      }
-
-                      // var fileName = '${_listOfImage[0]}';
-                      // ByteData bytes = await rootBundle
-                      //     .load(fileName); //load sound from assets
-                      // Uint8List rawData = bytes.buffer.asUint8List(
-                      //     bytes.offsetInBytes, bytes.lengthInBytes);
-                      //
-                      // Uint8List imageInUnit8List = rawData;
-                      //
-                      // final tempDir = await getTemporaryDirectory();
-                      //
-                      // File file =
-                      //     await File('${tempDir.path}/${DateTime.now()}')
-                      //         .create();
-                      //
-                      // file.writeAsBytesSync(imageInUnit8List);
-                      //
-                      // print('FILE>>>>>>>>>>> $file');
-                      print("Image List Length:${_listOfImage.length}");
-
-                      setState(() {});
-                    },
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      child: Icon(Icons.add),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black)),
-                    ),
+                          : SizedBox(),
+                    ],
                   ),
-                ],
+                ),
               ),
               CommonWidget.commonSizedBox(height: 35),
               Row(
@@ -528,17 +506,17 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   ),
                   CommonWidget.commonSizedBox(height: 10),
                   SizedBox(
-                    width: 150.sp,
+                    width: 500.sp,
                     child: TextFormField(
                       controller: description,
-                      maxLines: 10,
+                      maxLines: 15,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontFamily: TextConst.fontFamily,
                       ),
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 7.sp, left: 6.sp),
+                        contentPadding: EdgeInsets.only(top: 13.sp, left: 6.sp),
                         filled: true,
                         fillColor: Colors.white,
                         // hintText: "Write Description here",
@@ -564,30 +542,42 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          CommonText.textBoldWight500(
-                              text: 'Property Features', fontSize: 7.sp),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 1.sp,
-                      ),
-                      CommonText.textBoldWight500(
-                        text: '*',
-                        fontSize: 5.sp,
-                        color: Colors.red,
-                      ),
-                    ],
-                  ),
+                  CommonText.textBoldWight500(
+                      text: 'Property Features', fontSize: 7.sp),
                   CommonWidget.commonSizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CommonWidget.textFormField(
-                        controller: featureController,
+                      SizedBox(
+                        width: 412.sp,
+                        child: TextFormField(
+                          controller: featureController,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontFamily: TextConst.fontFamily,
+                          ),
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.only(top: 13.sp, left: 6.sp),
+                            filled: true,
+                            fillColor: Colors.white,
+                            // hintText: "Write Description here",
+                            hintStyle: TextStyle(
+                                fontFamily: TextConst.fontFamily,
+                                fontWeight: FontWeight.w500,
+                                color: CommonColor.hinTextColor),
+                            border: InputBorder.none,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: themColors309D9D),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(
                         width: 5.sp,
@@ -623,33 +613,33 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(
-                              featureList.length,
-                              (index) => Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 5),
-                                        child: CommonText.textBoldWight500(
-                                            text: "• ${featureList[index]}",
-                                            fontSize: 6.sp,
-                                            color: themColors309D9D),
-                                      ),
-                                      SizedBox(
-                                        width: 4.sp,
-                                      ),
-                                      InkResponse(
-                                        onTap: () {
-                                          setState(() {});
-                                          featureList.removeAt(index);
-                                        },
-                                        child: Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Colors.red.shade300,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
+                            featureList.length,
+                            (index) => Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  child: CommonText.textBoldWight500(
+                                      text: "• ${featureList[index]}",
+                                      fontSize: 6.sp,
+                                      color: themColors309D9D),
+                                ),
+                                SizedBox(
+                                  width: 4.sp,
+                                ),
+                                InkResponse(
+                                  onTap: () {
+                                    setState(() {});
+                                    featureList.removeAt(index);
+                                  },
+                                  child: Icon(
+                                    Icons.remove_circle_outline,
+                                    color: Colors.red.shade300,
+                                    size: 23,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         )
                       : SizedBox()
                 ],
@@ -731,11 +721,14 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   )
                 ],
               ),
-
               ElevatedButton(
                   onPressed: () async {
                     if (address.text.isNotEmpty) {
                       await findLatLong("${address}");
+
+                      searchNearByLocation(
+                          lat: "${_center!.latitude}",
+                          long: "${_center!.longitude}");
                     } else {
                       CommonWidget.getSnackBar(
                           title: "Required!",
@@ -752,174 +745,303 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               SizedBox(
                 height: 20,
               ),
+              // isLoading1 == true
+              //     ? SizedBox()
+              //     : FutureBuilder(
+              //         future: searchNearByLocation(
+              //             lat: '${_center!.latitude}',
+              //             long: '${_center!.longitude}'),
+              //         builder: (BuildContext context,
+              //             AsyncSnapshot<dynamic> snapshot) {
+              //           try {
+              //             if (snapshot.connectionState ==
+              //                 ConnectionState.done) {
+              //               try {
+              //                 return Padding(
+              //                   padding: EdgeInsets.only(right: 30.sp),
+              //                   child: Column(
+              //                     children: List.generate(
+              //                         // (snapshot.data['results'] as List).length <
+              //                         //         5
+              //                         //     ? (snapshot.data['results'] as List)
+              //                         //         .length
+              //                         //     : 5,
+              //                         (snapshot.data['results'] as List).length,
+              //                         (index) {
+              //                       _controllers.add(new TextEditingController(
+              //                           text: "${calculateDistance(
+              //                         lat,
+              //                         long,
+              //                         snapshot.data['results'][index]
+              //                             ['geometry']['location']['lat'],
+              //                         snapshot.data['results'][index]
+              //                             ['geometry']['location']['lng'],
+              //                       ).toStringAsFixed(2)} m'  ${snapshot.data['results'][index]['name']}"));
+              //                       return Padding(
+              //                         padding: const EdgeInsets.only(top: 13),
+              //                         child: Row(
+              //                           mainAxisAlignment:
+              //                               MainAxisAlignment.spaceBetween,
+              //                           crossAxisAlignment:
+              //                               CrossAxisAlignment.start,
+              //                           children: [
+              //                             Flexible(
+              //                               child: Row(
+              //                                 children: [
+              //                                   CommonText.textBoldWight500(
+              //                                       text: "${index + 1})"),
+              //                                   // getKmWidget(snapshot, index),
+              //                                   SizedBox(
+              //                                     width: 30,
+              //                                   ),
+              //                                   SizedBox(
+              //                                     width: 250.sp,
+              //                                     child: Padding(
+              //                                       padding:
+              //                                           EdgeInsets.symmetric(
+              //                                               vertical: 3.sp),
+              //                                       child: TextFormField(
+              //                                         controller:
+              //                                             _controllers[index],
+              //                                         maxLines: 1,
+              //                                         style: TextStyle(
+              //                                           fontWeight:
+              //                                               FontWeight.w500,
+              //                                           fontFamily: TextConst
+              //                                               .fontFamily,
+              //                                         ),
+              //                                         cursorColor: Colors.black,
+              //                                         decoration:
+              //                                             InputDecoration(
+              //                                           contentPadding:
+              //                                               EdgeInsets.only(
+              //                                                   top: 7.sp,
+              //                                                   left: 6.sp),
+              //                                           filled: true,
+              //                                           fillColor: Colors.white,
+              //                                           // hintText: "Write Description here",
+              //                                           hintStyle: TextStyle(
+              //                                               fontFamily:
+              //                                                   TextConst
+              //                                                       .fontFamily,
+              //                                               fontWeight:
+              //                                                   FontWeight.w500,
+              //                                               color: CommonColor
+              //                                                   .hinTextColor),
+              //                                           border:
+              //                                               InputBorder.none,
+              //                                           enabledBorder:
+              //                                               OutlineInputBorder(
+              //                                             borderSide:
+              //                                                 BorderSide(
+              //                                                     color: Colors
+              //                                                         .grey),
+              //                                             borderRadius:
+              //                                                 BorderRadius
+              //                                                     .circular(3),
+              //                                           ),
+              //                                           focusedBorder:
+              //                                               OutlineInputBorder(
+              //                                             borderSide: BorderSide(
+              //                                                 color:
+              //                                                     themColors309D9D),
+              //                                             borderRadius:
+              //                                                 BorderRadius
+              //                                                     .circular(3),
+              //                                           ),
+              //                                         ),
+              //                                       ),
+              //                                     ),
+              //                                   ),
+              //                                   // CommonText.textBoldWight500(
+              //                                   //     text:
+              //                                   //         "${snapshot.data['results'][index]['name']}",
+              //                                   //     color: Colors.black,
+              //                                   //     fontSize: 17),
+              //
+              //                                   // constWidgets.textWidget(
+              //                                   //     "School",
+              //                                   //     FontWeight.w500,
+              //                                   //     12,
+              //                                   //     Colors.grey.shade400),
+              //                                 ],
+              //                               ),
+              //                             ),
+              //
+              //                             // SizedBox(
+              //                             //   width: 4.sp,
+              //                             // ),
+              //                             // InkResponse(
+              //                             //   onTap: () {
+              //                             //     setState(() {});
+              //                             //     snapshot.data['results']
+              //                             //         .removeAt(index);
+              //                             //   },
+              //                             //   child: Icon(
+              //                             //     Icons.remove_circle_outline,
+              //                             //     color: Colors.red.shade300,
+              //                             //     size: 20,
+              //                             //   ),
+              //                             // ),
+              //                           ],
+              //                         ),
+              //                       );
+              //                     }),
+              //                   ),
+              //                 );
+              //               } catch (e) {
+              //                 return SizedBox();
+              //               }
+              //             } else {
+              //               return Center(
+              //                   child: CircularProgressIndicator(
+              //                 backgroundColor: themColors309D9D,
+              //               ));
+              //             }
+              //           } catch (e) {
+              //             return SizedBox();
+              //           }
+              //         },
+              //       ),
+
               isLoading1 == true
                   ? SizedBox()
-                  : FutureBuilder(
-                      future: searchNearByLocation(
-                          lat: '${_center!.latitude}',
-                          long: '${_center!.longitude}'),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        try {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            try {
-                              return Padding(
-                                padding: EdgeInsets.only(right: 30.sp),
-                                child: Column(
-                                  children: List.generate(
-                                      // (snapshot.data['results'] as List).length <
-                                      //         5
-                                      //     ? (snapshot.data['results'] as List)
-                                      //         .length
-                                      //     : 5,
-                                      (snapshot.data['results'] as List).length,
-                                      (index) {
-                                    _controllers.add(new TextEditingController(
-                                        text: "${calculateDistance(
-                                      lat,
-                                      long,
-                                      snapshot.data['results'][index]
-                                          ['geometry']['location']['lat'],
-                                      snapshot.data['results'][index]
-                                          ['geometry']['location']['lng'],
-                                    ).toStringAsFixed(2)} m'  ${snapshot.data['results'][index]['name']}"));
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 13),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Flexible(
-                                            child: Row(
-                                              children: [
-                                                CommonText.textBoldWight500(
-                                                    text: "${index + 1})"),
-                                                // getKmWidget(snapshot, index),
-                                                SizedBox(
-                                                  width: 30,
-                                                ),
-                                                SizedBox(
-                                                  width: 250.sp,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 3.sp),
-                                                    child: TextFormField(
-                                                      controller:
-                                                          _controllers[index],
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: TextConst
-                                                            .fontFamily,
-                                                      ),
-                                                      cursorColor: Colors.black,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets.only(
-                                                                top: 7.sp,
-                                                                left: 6.sp),
-                                                        filled: true,
-                                                        fillColor: Colors.white,
-                                                        // hintText: "Write Description here",
-                                                        hintStyle: TextStyle(
-                                                            fontFamily:
-                                                                TextConst
-                                                                    .fontFamily,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: CommonColor
-                                                                .hinTextColor),
-                                                        border:
-                                                            InputBorder.none,
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
-                                                                  color: Colors
-                                                                      .grey),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3),
-                                                        ),
-                                                        focusedBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  themColors309D9D),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                // CommonText.textBoldWight500(
-                                                //     text:
-                                                //         "${snapshot.data['results'][index]['name']}",
-                                                //     color: Colors.black,
-                                                //     fontSize: 17),
-
-                                                // constWidgets.textWidget(
-                                                //     "School",
-                                                //     FontWeight.w500,
-                                                //     12,
-                                                //     Colors.grey.shade400),
-                                              ],
+                  : Padding(
+                      padding: EdgeInsets.only(right: 30.sp),
+                      child: Column(
+                        children: List.generate(
+                            // (snapshot.data['results'] as List).length <
+                            //         5
+                            //     ? (snapshot.data['results'] as List)
+                            //         .length
+                            //     : 5,
+                            (data['results'] as List).length, (index) {
+                          _controllers.add(new TextEditingController(
+                              text: "${calculateDistance(
+                            lat,
+                            long,
+                            data['results'][index]['geometry']['location']
+                                ['lat'],
+                            data['results'][index]['geometry']['location']
+                                ['lng'],
+                          ).toStringAsFixed(2)} m'  ${data['results'][index]['name']}"));
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 13),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Row(
+                                    children: [
+                                      CommonText.textBoldWight500(
+                                          text: "${index + 1})"),
+                                      // getKmWidget(snapshot, index),
+                                      SizedBox(
+                                        width: 30,
+                                      ),
+                                      SizedBox(
+                                        width: 250.sp,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 3.sp),
+                                          child: TextFormField(
+                                            controller: _controllers[index],
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: TextConst.fontFamily,
+                                            ),
+                                            cursorColor: Colors.black,
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                  top: 7.sp, left: 6.sp),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              // hintText: "Write Description here",
+                                              hintStyle: TextStyle(
+                                                  fontFamily:
+                                                      TextConst.fontFamily,
+                                                  fontWeight: FontWeight.w500,
+                                                  color:
+                                                      CommonColor.hinTextColor),
+                                              border: InputBorder.none,
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: themColors309D9D),
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                              ),
                                             ),
                                           ),
-
-                                          // SizedBox(
-                                          //   width: 4.sp,
-                                          // ),
-                                          // InkResponse(
-                                          //   onTap: () {
-                                          //     setState(() {});
-                                          //     snapshot.data['results']
-                                          //         .removeAt(index);
-                                          //   },
-                                          //   child: Icon(
-                                          //     Icons.remove_circle_outline,
-                                          //     color: Colors.red.shade300,
-                                          //     size: 20,
-                                          //   ),
-                                          // ),
-                                        ],
+                                        ),
                                       ),
-                                    );
-                                  }),
+                                      // CommonText.textBoldWight500(
+                                      //     text:
+                                      //         "${snapshot.data['results'][index]['name']}",
+                                      //     color: Colors.black,
+                                      //     fontSize: 17),
+
+                                      // constWidgets.textWidget(
+                                      //     "School",
+                                      //     FontWeight.w500,
+                                      //     12,
+                                      //     Colors.grey.shade400),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            } catch (e) {
-                              return SizedBox();
-                            }
-                          } else {
-                            return Center(
-                                child: CircularProgressIndicator(
-                              backgroundColor: themColors309D9D,
-                            ));
-                          }
-                        } catch (e) {
-                          return SizedBox();
-                        }
-                      },
+
+                                // SizedBox(
+                                //   width: 4.sp,
+                                // ),
+                                // InkResponse(
+                                //   onTap: () {
+                                //     setState(() {});
+                                //     snapshot.data['results']
+                                //         .removeAt(index);
+                                //   },
+                                //   child: Icon(
+                                //     Icons.remove_circle_outline,
+                                //     color: Colors.red.shade300,
+                                //     size: 20,
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
                     ),
               SizedBox(
                 height: 20,
               ),
-              Column(
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      CommonText.textBoldWight500(
-                          text: 'Select Size Input', fontSize: 7.sp),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 3.sp),
+                        child: CommonText.textBoldWight500(
+                            text: 'Size', fontSize: 7.sp),
+                      ),
+                      CommonWidget.commonSizedBox(width: 20),
+                      SizedBox(
+                        width: 50.sp,
+                        child: CommonWidget.textFormField(
+                          controller: size!,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
                       CommonWidget.commonSizedBox(width: 20),
                       SizedBox(
                         width: 170,
@@ -952,23 +1074,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       CommonWidget.commonSizedBox(width: 20),
                     ],
                   ),
-                  CommonWidget.commonSizedBox(height: 20),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 3.sp),
-                        child: CommonText.textBoldWight500(
-                            text: 'Size', fontSize: 7.sp),
-                      ),
-                      CommonWidget.commonSizedBox(width: 20),
-                      SizedBox(
-                        width: 100.sp,
-                        child: CommonWidget.textFormField(
-                          controller: size,
-                        ),
-                      ),
-                    ],
-                  ),
+                  CommonWidget.commonSizedBox(width: 20),
                   CommonWidget.commonSizedBox(height: 20),
                 ],
               ),
