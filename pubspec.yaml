@@ -55,6 +55,10 @@ dependencies:
   image_cropper: ^3.0.1
   path_provider: ^2.0.11
   image: ^3.2.2
+  http: ^0.13.5
+  google_geocoder_krutus: ^1.1.0
+  google_maps_flutter: ^2.2.2
+
 
 #  geolocator: ^9.0.1
 #  google_maps_flutter: ^2.2.0

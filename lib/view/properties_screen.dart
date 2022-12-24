@@ -263,6 +263,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                         properties[index].get("isSharedOwnerShip"),
                     underOffer: properties[index].get("underOffer"),
                     address1: properties[index].get("address1"),
+                    nearByPlaces: properties[index].get("nearByPlaces"),
                   );
                   controller.changeTapped1(true);
                   //editPropertyController.listOfImage!.clear();

@@ -14,6 +14,7 @@ class AddPropertyReqModel {
   String? totalBedRooms;
   String? totalBathrooms;
   String? propertyStatus;
+  List<String>? nearByPlaces;
 
   String? label;
   String? garages;
@@ -31,32 +32,32 @@ class AddPropertyReqModel {
   bool? isSharedOwnerShip;
   bool? underOffer;
 
-  AddPropertyReqModel({
-    this.propertyName,
-    this.propertySlugName,
-    this.address,
-    this.address1,
-    this.country,
-    this.addressSearch,
-    this.countrySearch,
-    this.size,
-    this.price,
-    this.totalBedRooms,
-    this.totalBathrooms,
-    this.listOfImage,
-    this.category,
-    this.description,
-    this.propertyId,
-    this.isParkingAvailable = false,
-    this.features,
-    this.isNewBuild,
-    this.isSharedOwnerShip,
-    this.leasHold,
-    this.florPlan,
-    this.epc,
-    this.councilTax,
-    this.underOffer,
-  });
+  AddPropertyReqModel(
+      {this.propertyName,
+      this.propertySlugName,
+      this.address,
+      this.address1,
+      this.country,
+      this.addressSearch,
+      this.countrySearch,
+      this.size,
+      this.price,
+      this.totalBedRooms,
+      this.totalBathrooms,
+      this.listOfImage,
+      this.category,
+      this.description,
+      this.propertyId,
+      this.isParkingAvailable = false,
+      this.features,
+      this.isNewBuild,
+      this.isSharedOwnerShip,
+      this.leasHold,
+      this.florPlan,
+      this.epc,
+      this.councilTax,
+      this.underOffer,
+      this.nearByPlaces});
 
   Map<String, dynamic> toJson() {
     return {
@@ -81,6 +82,7 @@ class AddPropertyReqModel {
       "isParkingAvailable": isParkingAvailable,
       "productId": propertyId,
       "features": features,
+      "nearByPlaces": nearByPlaces,
       "isNewBuild": isNewBuild,
       "isSharedOwnerShip": isSharedOwnerShip,
       "underOffer": underOffer,

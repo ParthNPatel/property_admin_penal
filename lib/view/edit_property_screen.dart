@@ -51,7 +51,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
   TextEditingController? label;
   TextEditingController? garages;
-  //TextEditingController? nearByPlaces;
+  List<TextEditingController> _controllers = [];
 
   int groupValue = 1;
 
@@ -97,8 +97,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
         TextEditingController(text: editProductController.propertyStatus);
     label = TextEditingController(text: editProductController.label);
     garages = TextEditingController(text: editProductController.garages);
-    // nearByPlaces =
-    //     TextEditingController(text: editProductController.nearByPlaces);
+
+    editProductController.nearByPlaces!.forEach((element) {
+      _controllers.add(TextEditingController(text: element));
+    });
 
     featureList.addAll(editProductController.features!);
 
@@ -129,7 +131,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
         child: Padding(
-          padding: EdgeInsets.only(left: 10.sp),
+          padding: EdgeInsets.only(
+              left: 10.sp, right: isOpened == true ? 15.sp : 28.sp),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,204 +158,161 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   ],
                 ),
                 CommonWidget.commonSizedBox(height: 20),
-                GetBuilder<EditPropertyController>(
-                  builder: (controller) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      editProductController.listOfImage!.length != 0
-                          ? isOpened == false
-                              ? Row(
-                                  children: List.generate(
-                                    editProductController.listOfImage!.length >
-                                            5
-                                        ? 5
-                                        : editProductController
-                                            .listOfImage!.length,
-                                    (index) => Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          height: 200,
-                                          width: 200,
-                                          child: editProductController
-                                                      .listOfImage![index]
-                                                      .runtimeType ==
-                                                  Uint8List
-                                              ? Image.memory(
-                                                  editProductController
-                                                          .listOfImage![index]
-                                                      as Uint8List,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.network(
-                                                  '${editProductController.listOfImage![index].toString()}',
-                                                  fit: BoxFit.cover),
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.black)),
-                                        ),
-                                        editProductController
-                                                        .listOfImage!.length >
-                                                    5 &&
-                                                index == 4
-                                            ? Align(
-                                                alignment: Alignment.center,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      isOpened = true;
-                                                    });
-                                                  },
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.image,
-                                                        color: themColors309D9D,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      CommonText.textBoldWight700(
-                                                          text:
-                                                              "and ${editProductController.listOfImage!.length - 5} More",
-                                                          color:
-                                                              themColors309D9D,
-                                                          fontSize: 5.sp),
-                                                    ],
-                                                  ),
-                                                ))
-                                            : SizedBox(),
-                                        Positioned(
-                                          right: 5,
-                                          top: 5,
-                                          child: IconButton(
-                                            onPressed: () {
-                                              setState(() {});
-                                              editProductController.listOfImage!
-                                                  .removeAt(index);
-                                            },
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: themColors309D9D,
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 10)),
+                  child: GetBuilder<EditPropertyController>(
+                    builder: (controller) => SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              FilePickerResult? selectedImages =
+                                  await FilePicker.platform.pickFiles(
+                                allowMultiple: true,
+                                type: FileType.custom,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'png',
+                                  'webp',
+                                  'jpeg'
+                                ],
+                              );
+
+                              if (selectedImages != null) {
+                                selectedImages.files.forEach((element) {
+                                  editProductController.listOfImage!
+                                      .add(element.bytes!);
+                                });
+
+                                print(
+                                    'selectedImages  image of  ${selectedImages.files.first.bytes.runtimeType}');
+                              }
+                              print(
+                                  "Image List Length:${editProductController.listOfImage!.length}");
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 250,
+                              width: 200,
+                              child: Icon(Icons.add),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.black, width: 2.5),
+                              ),
+                            ),
+                          ),
+                          editProductController.listOfImage!.length != 0
+                              ? Padding(
+                                  padding: EdgeInsets.only(right: 10.sp),
+                                  child: Row(
+                                    children: List.generate(
+                                      editProductController
+                                                  .listOfImage!.length >
+                                              6
+                                          ? isOpened == true
+                                              ? editProductController
+                                                      .listOfImage!.length -
+                                                  6
+                                              : 6
+                                          : editProductController
+                                                  .listOfImage!.length -
+                                              6,
+                                      (index) => Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Container(
+                                            height: 250,
+                                            width: 200,
+                                            child: editProductController
+                                                        .listOfImage![index]
+                                                        .runtimeType ==
+                                                    Uint8List
+                                                ? Image.memory(
+                                                    editProductController
+                                                            .listOfImage![index]
+                                                        as Uint8List,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.network(
+                                                    '${editProductController.listOfImage![index].toString()}',
+                                                    fit: BoxFit.cover),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black)),
+                                          ),
+                                          editProductController
+                                                          .listOfImage!.length >
+                                                      6 &&
+                                                  index == 5
+                                              ? isOpened == true
+                                                  ? SizedBox()
+                                                  : Align(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Container(
+                                                        height: 250,
+                                                        width: 200,
+                                                        color: Colors.black54,
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              isOpened = true;
+                                                            });
+                                                          },
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.image,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 13.sp,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              CommonText.textBoldWight700(
+                                                                  text:
+                                                                      "and ${editProductController.listOfImage!.length - 5} More",
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      7.sp),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ))
+                                              : SizedBox(),
+                                          Positioned(
+                                            right: 5,
+                                            top: 5,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                setState(() {});
+                                                editProductController
+                                                    .listOfImage!
+                                                    .removeAt(index);
+                                              },
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: themColors309D9D,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 )
-                              : Wrap(
-                                  children: List.generate(
-                                    editProductController.listOfImage!.length,
-                                    (index) => Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          height: 200,
-                                          width: 200,
-                                          child: editProductController
-                                                      .listOfImage![index]
-                                                      .runtimeType ==
-                                                  Uint8List
-                                              ? Image.memory(
-                                                  editProductController
-                                                          .listOfImage![index]
-                                                      as Uint8List,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.network(
-                                                  '${editProductController.listOfImage![index].toString()}',
-                                                  fit: BoxFit.cover),
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.black)),
-                                        ),
-                                        // editProductController
-                                        //                 .listOfImage!.length >
-                                        //             5 &&
-                                        //         index == 4
-                                        //     ? Align(
-                                        //         alignment: Alignment.center,
-                                        //         child: InkWell(
-                                        //           onTap: () {
-                                        //             setState(() {
-                                        //               isOpened = true;
-                                        //             });
-                                        //           },
-                                        //           child: Column(
-                                        //             mainAxisAlignment:
-                                        //                 MainAxisAlignment.center,
-                                        //             children: [
-                                        //               Icon(
-                                        //                 Icons.image,
-                                        //                 color: themColors309D9D,
-                                        //               ),
-                                        //               SizedBox(
-                                        //                 height: 10,
-                                        //               ),
-                                        //               CommonText.textBoldWight700(
-                                        //                   text:
-                                        //                       "and ${editProductController.listOfImage!.length - 5} More",
-                                        //                   color: themColors309D9D,
-                                        //                   fontSize: 5.sp),
-                                        //             ],
-                                        //           ),
-                                        //         ))
-                                        //     : SizedBox(),
-                                        Positioned(
-                                          right: 5,
-                                          top: 5,
-                                          child: IconButton(
-                                            onPressed: () {
-                                              setState(() {});
-                                              editProductController.listOfImage!
-                                                  .removeAt(index);
-                                            },
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: themColors309D9D,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                          : SizedBox(),
-                      InkWell(
-                        onTap: () async {
-                          FilePickerResult? selectedImages =
-                              await FilePicker.platform.pickFiles(
-                            allowMultiple: true,
-                            type: FileType.custom,
-                            allowedExtensions: ['jpg', 'png', 'webp', 'jpeg'],
-                          );
-
-                          if (selectedImages != null) {
-                            selectedImages.files.forEach((element) {
-                              editProductController.listOfImage!
-                                  .add(element.bytes!);
-                            });
-
-                            print(
-                                'selectedImages  image of  ${selectedImages.files.first.bytes.runtimeType}');
-                          }
-                          print(
-                              "Image List Length:${editProductController.listOfImage!.length}");
-                          setState(() {});
-                        },
-                        child: Container(
-                          height: 200,
-                          width: 200,
-                          child: Icon(Icons.add),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
-                        ),
+                              : SizedBox(),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 CommonWidget.commonSizedBox(height: 40),
@@ -432,7 +392,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                         text: 'Description', fontSize: 7.sp),
                     CommonWidget.commonSizedBox(height: 10),
                     SizedBox(
-                      width: 150.sp,
+                      width: 500.sp,
                       child: TextFormField(
                         controller: description,
                         maxLines: 15,
@@ -475,8 +435,36 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CommonWidget.textFormField(
-                          controller: featureController,
+                        SizedBox(
+                          width: 417.sp,
+                          child: TextFormField(
+                            controller: featureController,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontFamily: TextConst.fontFamily,
+                            ),
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.only(top: 13.sp, left: 6.sp),
+                              filled: true,
+                              fillColor: Colors.white,
+                              // hintText: "Write Description here",
+                              hintStyle: TextStyle(
+                                  fontFamily: TextConst.fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                  color: CommonColor.hinTextColor),
+                              border: InputBorder.none,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: themColors309D9D),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            ),
+                          ),
                         ),
                         SizedBox(
                           width: 5.sp,
@@ -595,39 +583,163 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                     )
                   ],
                 ),
-                Column(
+                GetBuilder<EditPropertyController>(
+                  builder: (controller) => Padding(
+                    padding: EdgeInsets.only(right: 30.sp),
+                    child: Column(
+                      children: List.generate(5, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 13),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: Row(
+                                  children: [
+                                    CommonText.textBoldWight500(
+                                        text: "${index + 1})"),
+                                    // getKmWidget(snapshot, index),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      width: 250.sp,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 3.sp),
+                                        child: TextFormField(
+                                          controller: _controllers[index],
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: TextConst.fontFamily,
+                                          ),
+                                          cursorColor: Colors.black,
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.only(
+                                                top: 7.sp, left: 6.sp),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            // hintText: "Write Description here",
+                                            hintStyle: TextStyle(
+                                                fontFamily:
+                                                    TextConst.fontFamily,
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    CommonColor.hinTextColor),
+                                            border: InputBorder.none,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(3),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: themColors309D9D),
+                                              borderRadius:
+                                                  BorderRadius.circular(3),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // CommonText.textBoldWight500(
+                                    //     text:
+                                    //         "${snapshot.data['results'][index]['name']}",
+                                    //     color: Colors.black,
+                                    //     fontSize: 17),
+
+                                    // constWidgets.textWidget(
+                                    //     "School",
+                                    //     FontWeight.w500,
+                                    //     12,
+                                    //     Colors.grey.shade400),
+                                  ],
+                                ),
+                              ),
+
+                              // SizedBox(
+                              //   width: 4.sp,
+                              // ),
+                              // InkResponse(
+                              //   onTap: () {
+                              //     setState(() {});
+                              //     snapshot.data['results']
+                              //         .removeAt(index);
+                              //   },
+                              //   child: Icon(
+                              //     Icons.remove_circle_outline,
+                              //     color: Colors.red.shade300,
+                              //     size: 20,
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CommonText.textBoldWight500(
-                        text: 'Select Size Input', fontSize: 7.sp),
-                    RadioListTile(
-                      activeColor: themColors309D9D,
-                      value: 1,
-                      groupValue: groupValue,
-                      title: Text("Square feet"),
-                      onChanged: (int? value) {
-                        setState(() {
-                          groupValue = value!;
-                        });
-                      },
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 3.sp),
+                          child: CommonText.textBoldWight500(
+                              text: 'Size', fontSize: 7.sp),
+                        ),
+                        CommonWidget.commonSizedBox(width: 20),
+                        SizedBox(
+                          width: 50.sp,
+                          child: CommonWidget.textFormField(
+                            controller: size!,
+                          ),
+                        ),
+                      ],
                     ),
-                    RadioListTile(
-                      activeColor: themColors309D9D,
-                      value: 2,
-                      groupValue: groupValue,
-                      title: Text("Square Meters"),
-                      onChanged: (int? value) {
-                        setState(() {
-                          groupValue = value!;
-                        });
-                      },
+                    Row(
+                      children: [
+                        CommonWidget.commonSizedBox(width: 20),
+                        SizedBox(
+                          width: 170,
+                          child: RadioListTile(
+                            activeColor: themColors309D9D,
+                            value: 1,
+                            groupValue: groupValue,
+                            title: Text("Square feet"),
+                            onChanged: (int? value) {
+                              setState(() {
+                                groupValue = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 190,
+                          child: RadioListTile(
+                            activeColor: themColors309D9D,
+                            value: 2,
+                            groupValue: groupValue,
+                            title: Text("Square Meters"),
+                            onChanged: (int? value) {
+                              setState(() {
+                                groupValue = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        CommonWidget.commonSizedBox(width: 20),
+                      ],
                     ),
+                    CommonWidget.commonSizedBox(width: 20),
                     CommonWidget.commonSizedBox(height: 20),
-                    CommonText.textBoldWight500(text: 'Size', fontSize: 7.sp),
-                    CommonWidget.commonSizedBox(height: 10),
-                    CommonWidget.textFormField(
-                      controller: size!,
-                    ),
                   ],
                 ),
                 Row(
@@ -694,7 +806,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                               underline: SizedBox(),
                               value: dropDownValue,
                               icon: Padding(
-                                padding: EdgeInsets.only(left: 7.sp),
+                                padding: EdgeInsets.only(left: 30.sp),
                                 child: Icon(Icons.arrow_drop_down),
                               ),
                               items: dropDownList.map((e) {

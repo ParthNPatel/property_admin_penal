@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_geocoder_krutus/models.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:property/controller/handle_screen_controller.dart';
 import 'package:sizer/sizer.dart';
@@ -13,9 +20,11 @@ import '../constant/text_const.dart';
 import '../constant/text_styel.dart';
 import '../model/req_model/add_property_req_model.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
-import 'package:flutter/services.dart';
+import 'package:google_geocoder_krutus/google_geocoder_krutus.dart';
+//import 'dart:math' show sin;
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen({Key? key}) : super(key: key);
@@ -52,6 +61,70 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   //   'Villa',
   //   'Apartment',
   // ];
+
+  //final kGoogleApiKey = 'AIzaSyCMYLPYjJOBU6Pn_ho0IwbEIZNZfH-yjlg';
+
+  final kGoogleApiKey = 'AIzaSyBLjgELUHE9X1z5OI0if3tMRDG5nWK2Rt8';
+
+  // Future<void> displayPrediction(Prediction p) async {
+  //   GoogleMapsPlaces places = GoogleMapsPlaces(
+  //       apiKey: kGoogleApiKey,
+  //       apiHeaders: await const GoogleApiHeaders().getHeaders());
+  //
+  //   PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
+  //
+  //   lat = detail.result.geometry!.location.lat;
+  //   long = detail.result.geometry!.location.lng;
+  //
+  //   print('get lat long by map $lat  $long');
+  //
+  //   setState(() {});
+  // }
+
+  List<TextEditingController> _controllers = [];
+
+  double? lat;
+  double? long;
+
+  LatLng? _center;
+
+  bool isLoading1 = true;
+
+  Future<void> findLatLong(String address) async {
+    GeocoderResponse? addressQuery = await GoogleGeocoderKrutus.addressQuery(
+      apiKey: '$kGoogleApiKey',
+      address: '${address}',
+    );
+    _center = LatLng(addressQuery!.results.first.geometry.location.latitude,
+        addressQuery.results.first.geometry.location.longitude);
+
+    isLoading1 = false;
+
+    lat = addressQuery.results.first.geometry.location.latitude;
+    long = addressQuery.results.first.geometry.location.longitude;
+
+    setState(() {});
+
+    print('LAT==>>${addressQuery.results.first.geometry.location.longitude}');
+    print('LAT==>>${addressQuery.results.first.geometry.location.latitude}');
+  }
+
+  Future searchNearByLocation(
+      {required String lat, required String long}) async {
+    print("LAT LONG==>>${lat} ${long}");
+    http.Response response = await http.get(Uri.parse(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat%2C$long&radius=500&type=restaurant,school,bank,hospital&keyword=cruise&key=AIzaSyBLjgELUHE9X1z5OI0if3tMRDG5nWK2Rt8"));
+    var result = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      print("RESPONSE===>>${result}");
+
+      return result;
+    } else {
+      print(response.reasonPhrase);
+      return null;
+    }
+  }
 
   final propertyName = TextEditingController();
   final address = TextEditingController();
@@ -180,6 +253,19 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ],
               ),
               CommonWidget.commonSizedBox(height: 20),
+
+              /// Testing
+              // ElevatedButton(
+              //     onPressed: () async {
+              //       // await displayPrediction();
+              //       await findLatLong("${address}");
+              //       // var data =
+              //       //     await searchNearByLocation(lat: '$lat', long: '$lat');
+              //       //
+              //       // print("DAtA====>>${data}");
+              //     },
+              //     child: Text("Get Data")),
+              //SearchPlacesScreen(),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -645,15 +731,198 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                   )
                 ],
               ),
+
+              ElevatedButton(
+                  onPressed: () async {
+                    if (address.text.isNotEmpty) {
+                      await findLatLong("${address}");
+                    } else {
+                      CommonWidget.getSnackBar(
+                          title: "Required!",
+                          message: "please enter property address");
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 13,
+                      horizontal: 53.sp,
+                    ),
+                    child: Text("Find Near By Places"),
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              isLoading1 == true
+                  ? SizedBox()
+                  : FutureBuilder(
+                      future: searchNearByLocation(
+                          lat: '${_center!.latitude}',
+                          long: '${_center!.longitude}'),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        try {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            try {
+                              return Padding(
+                                padding: EdgeInsets.only(right: 30.sp),
+                                child: Column(
+                                  children: List.generate(
+                                      // (snapshot.data['results'] as List).length <
+                                      //         5
+                                      //     ? (snapshot.data['results'] as List)
+                                      //         .length
+                                      //     : 5,
+                                      (snapshot.data['results'] as List).length,
+                                      (index) {
+                                    _controllers.add(new TextEditingController(
+                                        text: "${calculateDistance(
+                                      lat,
+                                      long,
+                                      snapshot.data['results'][index]
+                                          ['geometry']['location']['lat'],
+                                      snapshot.data['results'][index]
+                                          ['geometry']['location']['lng'],
+                                    ).toStringAsFixed(2)} m'  ${snapshot.data['results'][index]['name']}"));
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 13),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: Row(
+                                              children: [
+                                                CommonText.textBoldWight500(
+                                                    text: "${index + 1})"),
+                                                // getKmWidget(snapshot, index),
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                SizedBox(
+                                                  width: 250.sp,
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 3.sp),
+                                                    child: TextFormField(
+                                                      controller:
+                                                          _controllers[index],
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily: TextConst
+                                                            .fontFamily,
+                                                      ),
+                                                      cursorColor: Colors.black,
+                                                      decoration:
+                                                          InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                top: 7.sp,
+                                                                left: 6.sp),
+                                                        filled: true,
+                                                        fillColor: Colors.white,
+                                                        // hintText: "Write Description here",
+                                                        hintStyle: TextStyle(
+                                                            fontFamily:
+                                                                TextConst
+                                                                    .fontFamily,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: CommonColor
+                                                                .hinTextColor),
+                                                        border:
+                                                            InputBorder.none,
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .grey),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(3),
+                                                        ),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color:
+                                                                  themColors309D9D),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(3),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // CommonText.textBoldWight500(
+                                                //     text:
+                                                //         "${snapshot.data['results'][index]['name']}",
+                                                //     color: Colors.black,
+                                                //     fontSize: 17),
+
+                                                // constWidgets.textWidget(
+                                                //     "School",
+                                                //     FontWeight.w500,
+                                                //     12,
+                                                //     Colors.grey.shade400),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // SizedBox(
+                                          //   width: 4.sp,
+                                          // ),
+                                          // InkResponse(
+                                          //   onTap: () {
+                                          //     setState(() {});
+                                          //     snapshot.data['results']
+                                          //         .removeAt(index);
+                                          //   },
+                                          //   child: Icon(
+                                          //     Icons.remove_circle_outline,
+                                          //     color: Colors.red.shade300,
+                                          //     size: 20,
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              );
+                            } catch (e) {
+                              return SizedBox();
+                            }
+                          } else {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: themColors309D9D,
+                            ));
+                          }
+                        } catch (e) {
+                          return SizedBox();
+                        }
+                      },
+                    ),
+              SizedBox(
+                height: 20,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonText.textBoldWight500(
-                      text: 'Select Size Input', fontSize: 7.sp),
                   Row(
                     children: [
+                      CommonText.textBoldWight500(
+                          text: 'Select Size Input', fontSize: 7.sp),
+                      CommonWidget.commonSizedBox(width: 20),
                       SizedBox(
-                        width: 200,
+                        width: 170,
                         child: RadioListTile(
                           activeColor: themColors309D9D,
                           value: 1,
@@ -667,7 +936,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: 200,
+                        width: 190,
                         child: RadioListTile(
                           activeColor: themColors309D9D,
                           value: 2,
@@ -680,14 +949,27 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           },
                         ),
                       ),
+                      CommonWidget.commonSizedBox(width: 20),
                     ],
                   ),
                   CommonWidget.commonSizedBox(height: 20),
-                  CommonText.textBoldWight500(text: 'Size', fontSize: 7.sp),
-                  CommonWidget.commonSizedBox(height: 10),
-                  CommonWidget.textFormField(
-                    controller: size,
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 3.sp),
+                        child: CommonText.textBoldWight500(
+                            text: 'Size', fontSize: 7.sp),
+                      ),
+                      CommonWidget.commonSizedBox(width: 20),
+                      SizedBox(
+                        width: 100.sp,
+                        child: CommonWidget.textFormField(
+                          controller: size,
+                        ),
+                      ),
+                    ],
                   ),
+                  CommonWidget.commonSizedBox(height: 20),
                 ],
               ),
               Row(
@@ -1281,8 +1563,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               print("===>>4444");
                               print("===>>${_listOfImage}");
 
-                              //print("DOC 1==>>${leaseHoldDocs!.first}");
-
                               var getOldCount = FirebaseFirestore.instance
                                   .collection('Admin')
                                   .doc('property_count');
@@ -1299,34 +1579,34 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 _addProductReqModel.leasHold =
                                     leaseHoldDocs!.first;
                               }
-                              // else {
-                              //   _addProductReqModel.leasHold = "null";
-                              // }
+
                               print("===>>66666");
 
                               if (florPlan.length != 0) {
                                 _addProductReqModel.florPlan =
                                     floorPlanDocs!.first;
                               }
-                              //else
-                              // {
-                              //   _addProductReqModel.florPlan = "null";
-                              // }
+
                               print("===>>77777");
                               if (ecp.length != 0) {
                                 _addProductReqModel.epc = epcDocs!.first;
                               }
-                              // else {
-                              //   _addProductReqModel.epc = "null";
-                              // }
+
                               print("===>>8888");
                               if (councilTax.length != 0) {
                                 _addProductReqModel.councilTax =
                                     councilTaxDocs!.first;
                               }
-                              //else {
-                              //   _addProductReqModel.councilTax = "null";
-                              // }
+
+                              List<String> places = [];
+
+                              try {
+                                _controllers.forEach((element) {
+                                  places.add(element.text);
+                                });
+                              } catch (e) {
+                                places = [];
+                              }
 
                               _addProductReqModel.propertyName =
                                   propertyName.text;
@@ -1351,8 +1631,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               _addProductReqModel.countrySearch =
                                   country.text.toLowerCase();
                               _addProductReqModel.pinCode = pinCode.text;
-                              // _addProductReqModel.nearByPlaces =
-                              //     nearByPlaces.text;
                               _addProductReqModel.propertyStatus =
                                   dropDownValue;
                               _addProductReqModel.label = label.text;
@@ -1363,8 +1641,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   isSharedOwnerShip;
                               _addProductReqModel.garages = garages.text;
 
-                              _addProductReqModel.propertySlugName =
-                                  propertyName.text.toLowerCase();
+                              _addProductReqModel.nearByPlaces = places;
                               _addProductReqModel.propertyId =
                                   fetchCount['total_count'] + 1;
 
@@ -1379,7 +1656,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               dropDownValue = "For Rent";
                               label.clear();
                               garages.clear();
-                              //nearByPlaces.clear();
+
                               totalBedRooms.clear();
                               totalBathrooms.clear();
                               propertyName.clear();
@@ -1482,6 +1759,36 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
 
     return finalImage;
   }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    print('lat1     ${lat1}');
+    print('lat1     ${lon1}');
+    print('lat1     ${lat2}');
+    print('lat1     ${lon2}');
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+
+    return 1000 * 12742 * asin(sqrt(a));
+  }
+
+  Widget getKmWidget(AsyncSnapshot<dynamic> snapshot, int index) {
+    try {
+      return CommonText.textBoldWight500(
+          text: '${index + 1}) ${calculateDistance(
+            lat,
+            long,
+            snapshot.data['results'][index]['geometry']['location']['lat'],
+            snapshot.data['results'][index]['geometry']['location']['lng'],
+          ).toStringAsFixed(2)} m',
+          color: Colors.black,
+          fontSize: 17);
+    } catch (e) {
+      return SizedBox();
+    }
+  }
 }
 
 class SearchPlacesScreen extends StatefulWidget {
@@ -1491,20 +1798,43 @@ class SearchPlacesScreen extends StatefulWidget {
   State<SearchPlacesScreen> createState() => _SearchPlacesScreenState();
 }
 
-const kGoogleApiKey = 'AIzaSyCMYLPYjJOBU6Pn_ho0IwbEIZNZfH-yjlg';
+//const kGoogleApiKey = 'AIzaSyCMYLPYjJOBU6Pn_ho0IwbEIZNZfH-yjlg';
+const kGoogleApiKey = 'AIzaSyBLjgELUHE9X1z5OI0if3tMRDG5nWK2Rt8';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 
 class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
   final Mode _mode = Mode.overlay;
 
+  double? lat;
+  double? long;
+
+  Future<void> displayPrediction(
+      Prediction p, ScaffoldState? currentState) async {
+    GoogleMapsPlaces places = GoogleMapsPlaces(
+        apiKey: kGoogleApiKey,
+        apiHeaders: await const GoogleApiHeaders().getHeaders());
+
+    PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
+
+    lat = detail.result.geometry!.location.lat;
+    long = detail.result.geometry!.location.lng;
+
+    print('get lat long by map $lat $long');
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: _handlePressButton, child: const Text("Search Places"));
+      onPressed: _handlePressButton,
+      child: const Text("Search Places"),
+    );
   }
 
   Future<void> _handlePressButton() async {
     Prediction? p = await PlacesAutocomplete.show(
+        logo: SizedBox(),
         context: context,
         apiKey: kGoogleApiKey,
         mode: _mode,
@@ -1522,21 +1852,5 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen> {
         ]);
 
     displayPrediction(p!, homeScaffoldKey.currentState);
-  }
-
-  Future<void> displayPrediction(
-      Prediction p, ScaffoldState? currentState) async {
-    GoogleMapsPlaces places = GoogleMapsPlaces(
-        apiKey: kGoogleApiKey,
-        apiHeaders: await const GoogleApiHeaders().getHeaders());
-
-    PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
-
-    final lat = detail.result.geometry!.location.lat;
-    final lng = detail.result.geometry!.location.lng;
-    print('get lat long by map $lat  $lng  ');
-    print('get lat long by map $lat  $lng  ');
-
-    setState(() {});
   }
 }
