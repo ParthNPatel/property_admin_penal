@@ -142,51 +142,51 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                     child: CommonText.textBoldWight700(
                                         text: "RATING", fontSize: 13),
                                   )),
-                              FutureBuilder(
-                                future: FirebaseFirestore.instance
-                                    .collection('Admin')
-                                    .doc('categories')
-                                    .collection('categories_list')
-                                    .get(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<
-                                            QuerySnapshot<Map<String, dynamic>>>
-                                        snapshot) {
-                                  if (snapshot.hasData) {
-                                    return Container(
-                                      height: 14.sp,
-                                      width: 45.sp,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          border:
-                                              Border.all(color: Colors.grey)),
-                                      child: Center(
-                                        child: DropdownButton(
-                                          underline: SizedBox(),
-                                          hint: Text("All"),
-                                          disabledHint: Text("All"),
-                                          value: category,
-                                          items: snapshot.data!.docs.map((e) {
-                                            return DropdownMenuItem(
-                                              child: Text(e['category_name']),
-                                              value: e['category_name'],
-                                            );
-                                          }).toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              category = value as String;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return SizedBox();
-                                  }
-                                },
-                              ),
+                              // FutureBuilder(
+                              //   future: FirebaseFirestore.instance
+                              //       .collection('Admin')
+                              //       .doc('categories')
+                              //       .collection('categories_list')
+                              //       .get(),
+                              //   builder: (BuildContext context,
+                              //       AsyncSnapshot<
+                              //               QuerySnapshot<Map<String, dynamic>>>
+                              //           snapshot) {
+                              //     if (snapshot.hasData) {
+                              //       return Container(
+                              //         height: 14.sp,
+                              //         width: 45.sp,
+                              //         decoration: BoxDecoration(
+                              //             color: Colors.white,
+                              //             borderRadius:
+                              //                 BorderRadius.circular(3),
+                              //             border:
+                              //                 Border.all(color: Colors.grey)),
+                              //         child: Center(
+                              //           child: DropdownButton(
+                              //             underline: SizedBox(),
+                              //             hint: Text("All"),
+                              //             disabledHint: Text("All"),
+                              //             value: category,
+                              //             items: snapshot.data!.docs.map((e) {
+                              //               return DropdownMenuItem(
+                              //                 child: Text(e['category_name']),
+                              //                 value: e['category_name'],
+                              //               );
+                              //             }).toList(),
+                              //             onChanged: (value) {
+                              //               setState(() {
+                              //                 category = value as String;
+                              //               });
+                              //             },
+                              //           ),
+                              //         ),
+                              //       );
+                              //     } else {
+                              //       return SizedBox();
+                              //     }
+                              //   },
+                              // ),
                             ],
                           ),
                         ),

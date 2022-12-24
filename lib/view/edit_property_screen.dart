@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -77,7 +79,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   @override
   void initState() {
     print(
-        'editProductController.propertyName   ${editProductController.propertyName}');
+        'editProductController.propertyName   ${editProductController.nearByPlaces}');
 
     propertyName =
         TextEditingController(text: editProductController.propertyName);
@@ -98,12 +100,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     label = TextEditingController(text: editProductController.label);
     garages = TextEditingController(text: editProductController.garages);
 
-    editProductController.nearByPlaces!.forEach((element) {
-      _controllers.add(TextEditingController(text: element));
-    });
+    log('list of nera by place  ${editProductController.features!}');
 
     featureList.addAll(editProductController.features!);
-
+    print('tetettettete  ${featureList}');
     category = editProductController.category!;
 
     try {
@@ -214,12 +214,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                                               6
                                           ? isOpened == true
                                               ? editProductController
-                                                      .listOfImage!.length -
-                                                  6
+                                                  .listOfImage!.length
                                               : 6
                                           : editProductController
-                                                  .listOfImage!.length -
-                                              6,
+                                              .listOfImage!.length,
                                       (index) => Stack(
                                         alignment: Alignment.center,
                                         children: [
@@ -587,7 +585,16 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                   builder: (controller) => Padding(
                     padding: EdgeInsets.only(right: 30.sp),
                     child: Column(
-                      children: List.generate(5, (index) {
+                      children: List.generate(
+                          editProductController.nearByPlaces!.length > 5
+                              ? 5
+                              : editProductController.nearByPlaces!.length,
+                          (index) {
+                        editProductController.nearByPlaces!.forEach((element) {
+                          print('elelelelelle   ${element}');
+                          _controllers
+                              .add(TextEditingController(text: element));
+                        });
                         return Padding(
                           padding: const EdgeInsets.only(top: 13),
                           child: Row(
